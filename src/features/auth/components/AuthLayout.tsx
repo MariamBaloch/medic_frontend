@@ -8,13 +8,16 @@ import {
   FeatureCard,
   FeatureGrid,
   FormPanel,
-  GlobalStyle, HeroContent,
+  GlobalStyle,
+  HeroContent,
   HeroEyebrow,
   HeroPanel,
   HeroSubtitle,
   HeroTitle,
-  LoginPageShell, PageColumn,
-  SecurePill, TopBar
+  LoginPageShell,
+  PageColumn,
+  SecurePill,
+  TopBar,
 } from "./AuthLayout.styles";
 
 const features = [
@@ -40,10 +43,10 @@ export function AuthLayout({ children }: AuthLayoutProps) {
       <LoginPageShell>
         <PageColumn>
           <TopBar>
-            <Brand aria-label="Clarity Health Patient Portal">
+            <Brand>
               <BrandIcon>♡</BrandIcon>
               <div>
-                <BrandName>Clarity Health</BrandName>
+                <BrandName>Medic</BrandName>
                 <BrandKicker>Patient Portal</BrandKicker>
               </div>
             </Brand>
@@ -56,7 +59,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
 
             <HeroContent>
               <HeroEyebrow>{today}</HeroEyebrow>
-              <HeroTitle>Your care, coordinated with clarity.</HeroTitle>
+              <HeroTitle>Your care, coordinated with medics.</HeroTitle>
               <HeroSubtitle>
                 Sign in to book appointments, review visit details, and stay connected with your
                 care team.
