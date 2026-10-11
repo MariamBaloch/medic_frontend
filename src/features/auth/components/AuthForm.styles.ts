@@ -1,6 +1,6 @@
 import { Checkbox, Form } from "antd";
 import styled from "styled-components";
-import { colors } from "../../../theme/tokens";
+import { colors } from "@theme/tokens";
 
 interface AuthFormCardProps {
   $wide?: boolean;

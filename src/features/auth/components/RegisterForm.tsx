@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Button, DatePicker, Form, Input, InputNumber, Segmented, Select, message } from "antd";
 import type { Dayjs } from "dayjs";
-import { FormField } from "../../../components/FormField";
+import { Link } from "react-router-dom";
+import { FormField } from "@components/FormField";
 import {
   AuthFormCard,
   AuthFormFooter,
@@ -196,7 +197,9 @@ export function RegisterForm() {
           <Button type="primary" htmlType="submit" block>
             Create account
           </Button>
-          <AuthFormLink href="#login">Already have an account? Sign in</AuthFormLink>
+          <AuthFormLink as={Link} to="/login">
+            Already have an account? Sign in
+          </AuthFormLink>
         </AuthFormFooter>
       </Form>
     </AuthFormCard>
