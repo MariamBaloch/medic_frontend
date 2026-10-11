@@ -13,6 +13,7 @@ export default defineConfig({
       "@routes": fileURLToPath(new URL("./src/routes", import.meta.url)),
       "@services": fileURLToPath(new URL("./src/services", import.meta.url)),
       "@theme": fileURLToPath(new URL("./src/theme", import.meta.url)),
+      "@utils": fileURLToPath(new URL("./src/utils", import.meta.url)),
     },
   },
 });

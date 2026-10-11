@@ -3,6 +3,7 @@ import { Button, DatePicker, Form, Input, InputNumber, Segmented, Select, messag
 import type { Dayjs } from "dayjs";
 import { Link } from "react-router-dom";
 import { FormField } from "@components/FormField";
+import { PhoneInput } from "@components/PhoneInput";
 import {
   AuthFormCard,
   AuthFormFooter,
@@ -95,16 +96,15 @@ export function RegisterForm() {
             <Input placeholder="maya@example.com" autoComplete="email" />
           </FormField>
 
-          <FormField
-            $compact
-            label="Phone number"
-            name="phone"
-            rules={[
-              { required: true, message: "Phone number is required" },
-              { pattern: /^\+?[0-9]{7,20}$/, message: "Enter a valid phone number" },
-            ]}
-          >
-            <Input placeholder="+97312345678" autoComplete="tel" />
+          <FormField $compact label="Gender" name="gender">
+            <Select
+              placeholder="Select gender (optional)"
+              allowClear
+              options={[
+                { label: "Male", value: "MALE" },
+                { label: "Female", value: "FEMALE" },
+              ]}
+            />
           </FormField>
 
           <FormField
@@ -152,15 +152,16 @@ export function RegisterForm() {
             <Input.Password placeholder="Confirm your password" autoComplete="new-password" />
           </FormField>
 
-          <FormField $compact $fullWidth label="Gender" name="gender">
-            <Select
-              placeholder="Select gender (optional)"
-              allowClear
-              options={[
-                { label: "Male", value: "MALE" },
-                { label: "Female", value: "FEMALE" },
-              ]}
-            />
+          <FormField
+            $fullWidth
+            label="Phone number"
+            name="phone"
+            rules={[
+              { required: true, message: "Phone number is required" },
+              { pattern: /^\+?[0-9]{7,20}$/, message: "Enter a valid phone number" },
+            ]}
+          >
+            <PhoneInput />
           </FormField>
 
           {accountType === "doctor" ? (
@@ -172,12 +173,7 @@ export function RegisterForm() {
                 preserve={false}
                 rules={[{ required: true, message: "Specialization ID is required" }]}
               >
-                <InputNumber
-                  style={{ width: "100%" }}
-                  min={1}
-                  placeholder="1"
-                  controls={false}
-                />
+                <InputNumber style={{ width: "100%" }} min={1} placeholder="1" controls={false} />
               </FormField>
 
               <FormField

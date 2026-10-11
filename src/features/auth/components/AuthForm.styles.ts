@@ -1,4 +1,4 @@
-import { Checkbox, Form } from "antd";
+import { Form } from "antd";
 import styled from "styled-components";
 import { colors } from "@theme/tokens";
 
@@ -23,15 +23,6 @@ export const RememberMeField = styled(Form.Item)`
   }
 `;
 
-export const RememberMeCheckbox = styled(Checkbox)`
-  color: ${colors.textSecondary};
-  font-size: 14px;
-
-  .ant-checkbox-inner {
-    width: 16px;
-    height: 16px;
-  }
-`;
 
 export const AuthFormHeader = styled.div`
   margin-bottom: 32px;

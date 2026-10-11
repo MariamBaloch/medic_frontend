@@ -18,7 +18,8 @@
       "@features/*": ["src/features/*"],
       "@routes/*": ["src/routes/*"],
       "@services/*": ["src/services/*"],
-      "@theme/*": ["src/theme/*"]
+      "@theme/*": ["src/theme/*"],
+      "@utils/*": ["src/utils/*"]
     },
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",

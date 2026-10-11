@@ -1,4 +1,4 @@
-import { Button, Form, Input } from "antd";
+import { Button, Checkbox, Form, Input } from "antd";
 import { Link } from "react-router-dom";
 import { FormField } from "@components/FormField";
 import {
@@ -9,7 +9,6 @@ import {
   AuthFormLink,
   AuthFormSubtitle,
   AuthFormTitle,
-  RememberMeCheckbox,
   RememberMeField,
 } from "./AuthForm.styles";
 
@@ -25,7 +24,7 @@ export function LoginForm() {
       <Form<LoginFormValues> layout="vertical" requiredMark={false}>
         <AuthFormHeader>
           <AuthFormTitle>Welcome back</AuthFormTitle>
-          <AuthFormSubtitle>Use your patient portal details to continue.</AuthFormSubtitle>
+          <AuthFormSubtitle>Use your portal details to continue.</AuthFormSubtitle>
         </AuthFormHeader>
 
         <FormField
@@ -51,7 +50,7 @@ export function LoginForm() {
 
         <AuthFormActions>
           <RememberMeField name="remember" valuePropName="checked">
-            <RememberMeCheckbox>Remember me</RememberMeCheckbox>
+            <Checkbox>Remember me</Checkbox>
           </RememberMeField>
           <AuthFormLink as={Link} to="/forgot-password">
             Forgot password?
@@ -64,7 +63,10 @@ export function LoginForm() {
 
         <AuthFormFooter>
           <span>
-            New to Medic? <AuthFormLink as={Link} to="/register">Create an account</AuthFormLink>
+            New to Medic?{" "}
+            <AuthFormLink as={Link} to="/register">
+              Create an account
+            </AuthFormLink>
           </span>
         </AuthFormFooter>
       </Form>
