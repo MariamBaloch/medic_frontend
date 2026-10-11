@@ -1,11 +1,7 @@
-import { Form, message } from "antd";
+import { useState } from "react";
+import { Button, DatePicker, Form, Input, InputNumber, Segmented, Select, message } from "antd";
 import type { Dayjs } from "dayjs";
-import { DateInput } from "../../../components/DateInput";
 import { FormField } from "../../../components/FormField";
-import { PasswordInput } from "../../../components/PasswordInput";
-import { PrimaryButton } from "../../../components/PrimaryButton";
-import { SelectInput } from "../../../components/SelectInput";
-import { TextInput } from "../../../components/TextInput";
 import {
   AuthFormCard,
   AuthFormFooter,
@@ -17,6 +13,7 @@ import {
 } from "./AuthForm.styles";
 
 interface RegisterFormValues {
+  accountType: "patient" | "doctor";
   firstName: string;
   lastName: string;
   email: string;
@@ -25,29 +22,54 @@ interface RegisterFormValues {
   password: string;
   confirmPassword: string;
   gender?: "MALE" | "FEMALE";
+  specializationId?: number;
+  licenseNumber?: string;
 }
 
 export function RegisterForm() {
+  const [accountType, setAccountType] = useState<RegisterFormValues["accountType"]>("patient");
+
   const handleFinish = () => {
-    message.info("Registration is not connected yet.");
+    message.info(
+      `${accountType === "doctor" ? "Doctor" : "Patient"} registration is not connected yet.`,
+    );
   };
 
   return (
     <AuthFormCard $wide>
-      <Form<RegisterFormValues> layout="vertical" requiredMark={false} onFinish={handleFinish}>
+      <Form<RegisterFormValues>
+        layout="vertical"
+        requiredMark={false}
+        onFinish={handleFinish}
+        initialValues={{ accountType: "patient" }}
+      >
         <AuthFormHeader>
           <AuthFormTitle>Register</AuthFormTitle>
-          <AuthFormSubtitle>Register as a patient to start booking appointments.</AuthFormSubtitle>
+          <AuthFormSubtitle>
+            Create a patient or doctor account to access the Medic portal.
+          </AuthFormSubtitle>
         </AuthFormHeader>
 
         <RegisterFieldsGrid>
+          <FormField $compact $fullWidth label="Account type" name="accountType">
+            <Segmented
+              block
+              size="large"
+              options={[
+                { label: "Patient", value: "patient" },
+                { label: "Doctor", value: "doctor" },
+              ]}
+              onChange={(value) => setAccountType(value as RegisterFormValues["accountType"])}
+            />
+          </FormField>
+
           <FormField
             $compact
             label="First name"
             name="firstName"
             rules={[{ required: true, message: "First name is required" }]}
           >
-            <TextInput $compact placeholder="Mariam" autoComplete="given-name" />
+            <Input placeholder="Mariam" autoComplete="given-name" />
           </FormField>
 
           <FormField
@@ -56,7 +78,7 @@ export function RegisterForm() {
             name="lastName"
             rules={[{ required: true, message: "Last name is required" }]}
           >
-            <TextInput $compact placeholder="Ali" autoComplete="family-name" />
+            <Input placeholder="Ali" autoComplete="family-name" />
           </FormField>
 
           <FormField
@@ -69,7 +91,7 @@ export function RegisterForm() {
               { type: "email", message: "Enter a valid email" },
             ]}
           >
-            <TextInput $compact placeholder="maya@example.com" autoComplete="email" />
+            <Input placeholder="maya@example.com" autoComplete="email" />
           </FormField>
 
           <FormField
@@ -81,7 +103,7 @@ export function RegisterForm() {
               { pattern: /^\+?[0-9]{7,20}$/, message: "Enter a valid phone number" },
             ]}
           >
-            <TextInput $compact placeholder="+97312345678" autoComplete="tel" />
+            <Input placeholder="+97312345678" autoComplete="tel" />
           </FormField>
 
           <FormField
@@ -90,7 +112,7 @@ export function RegisterForm() {
             name="dateOfBirth"
             rules={[{ required: true, message: "Date of birth is required" }]}
           >
-            <DateInput $compact placeholder="dd/MM/yyyy" format="DD/MM/YYYY" />
+            <DatePicker style={{ width: "100%" }} placeholder="dd/MM/yyyy" format="DD/MM/YYYY" />
           </FormField>
 
           <FormField
@@ -106,7 +128,7 @@ export function RegisterForm() {
               },
             ]}
           >
-            <PasswordInput $compact placeholder="Create a password" autoComplete="new-password" />
+            <Input.Password placeholder="Create a password" autoComplete="new-password" />
           </FormField>
 
           <FormField
@@ -126,16 +148,11 @@ export function RegisterForm() {
               }),
             ]}
           >
-            <PasswordInput
-              $compact
-              placeholder="Confirm your password"
-              autoComplete="new-password"
-            />
+            <Input.Password placeholder="Confirm your password" autoComplete="new-password" />
           </FormField>
 
           <FormField $compact $fullWidth label="Gender" name="gender">
-            <SelectInput
-              $compact
+            <Select
               placeholder="Select gender (optional)"
               allowClear
               options={[
@@ -144,12 +161,41 @@ export function RegisterForm() {
               ]}
             />
           </FormField>
+
+          {accountType === "doctor" ? (
+            <>
+              <FormField
+                $compact
+                label="Specialization ID"
+                name="specializationId"
+                preserve={false}
+                rules={[{ required: true, message: "Specialization ID is required" }]}
+              >
+                <InputNumber
+                  style={{ width: "100%" }}
+                  min={1}
+                  placeholder="1"
+                  controls={false}
+                />
+              </FormField>
+
+              <FormField
+                $compact
+                label="Medical license number"
+                name="licenseNumber"
+                preserve={false}
+                rules={[{ required: true, message: "License number is required" }]}
+              >
+                <Input placeholder="BHP-12345" />
+              </FormField>
+            </>
+          ) : null}
         </RegisterFieldsGrid>
 
         <AuthFormFooter>
-          <PrimaryButton type="primary" htmlType="submit" block>
+          <Button type="primary" htmlType="submit" block>
             Create account
-          </PrimaryButton>
+          </Button>
           <AuthFormLink href="#login">Already have an account? Sign in</AuthFormLink>
         </AuthFormFooter>
       </Form>

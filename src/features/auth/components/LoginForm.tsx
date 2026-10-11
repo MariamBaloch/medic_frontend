@@ -1,8 +1,5 @@
-import { Form } from "antd";
+import { Button, Form, Input } from "antd";
 import { FormField } from "../../../components/FormField";
-import { PasswordInput } from "../../../components/PasswordInput";
-import { PrimaryButton } from "../../../components/PrimaryButton";
-import { TextInput } from "../../../components/TextInput";
 import {
   AuthFormCard,
   AuthFormActions,
@@ -39,7 +36,7 @@ export function LoginForm() {
             { type: "email", message: "Enter a valid email address" },
           ]}
         >
-          <TextInput placeholder="maya@example.com" type="email" autoComplete="email" />
+          <Input placeholder="maya@example.com" type="email" autoComplete="email" />
         </FormField>
 
         <FormField
@@ -48,7 +45,7 @@ export function LoginForm() {
           name="password"
           rules={[{ required: true, message: "Password is required" }]}
         >
-          <PasswordInput placeholder="Enter your password" autoComplete="current-password" />
+          <Input.Password placeholder="Enter your password" autoComplete="current-password" />
         </FormField>
 
         <AuthFormActions>
@@ -58,9 +55,9 @@ export function LoginForm() {
           <AuthFormLink href="#forgot-password">Forgot password?</AuthFormLink>
         </AuthFormActions>
 
-        <PrimaryButton type="primary" htmlType="submit" block>
+        <Button type="primary" htmlType="submit" block>
           Sign in
-        </PrimaryButton>
+        </Button>
 
         <AuthFormFooter>
           <span>

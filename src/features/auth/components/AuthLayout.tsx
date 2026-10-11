@@ -47,7 +47,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
               <BrandIcon>♡</BrandIcon>
               <div>
                 <BrandName>Medic</BrandName>
-                <BrandKicker>Patient Portal</BrandKicker>
+                <BrandKicker>Health made easy</BrandKicker>
               </div>
             </Brand>
             <SecurePill>Secure sign in</SecurePill>
@@ -59,7 +59,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
 
             <HeroContent>
               <HeroEyebrow>{today}</HeroEyebrow>
-              <HeroTitle>Your care, coordinated with medics.</HeroTitle>
+              <HeroTitle>Your care, coordinated with clarity.</HeroTitle>
               <HeroSubtitle>
                 Sign in to book appointments, review visit details, and stay connected with your
                 care team.

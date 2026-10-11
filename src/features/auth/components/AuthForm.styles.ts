@@ -7,12 +7,12 @@ interface AuthFormCardProps {
 }
 
 export const AuthFormCard = styled.section<AuthFormCardProps>`
-  width: min(100%, ${({ $wide }) => ($wide ? "600px" : "456px")});
+  width: min(100%, ${({ $wide }) => ($wide ? "600px" : "392px")});
   position: relative;
   z-index: 1;
   border: 1px solid rgba(224, 233, 230, 0.18);
   border-radius: 28px;
-  padding: clamp(28px, 4vw, 42px);
+  padding: ${({ $wide }) => ($wide ? "clamp(28px, 4vw, 42px)" : "38px")};
   background: #f5f6f6;
   box-shadow: 0 30px 80px rgba(4, 22, 19, 0.34);
 `;
@@ -41,7 +41,7 @@ export const AuthFormTitle = styled.h2`
   margin: 0;
   color: ${colors.text};
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(34px, 4vw, 44px);
+  font-size: clamp(34px, 4vw, 42px);
   letter-spacing: -0.045em;
 `;
 
@@ -87,7 +87,7 @@ export const AuthFormFooter = styled.div`
   display: grid;
   gap: 16px;
   justify-items: center;
-  margin-top: 24px;
+  margin-top: 22px;
   color: ${colors.textSecondary};
   font-size: 14px;
 

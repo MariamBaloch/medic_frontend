@@ -10,21 +10,51 @@ export const antdTheme: ThemeConfig = {
     colorTextSecondary: colors.textSecondary,
     colorBorder: colors.border,
     borderRadius: 14,
-    controlHeight: 52,
+    controlHeight: 48,
     controlHeightLG: 54,
     fontFamily: "Inter, sans-serif",
   },
   components: {
+    Button: {
+      borderRadius: 14,
+      controlHeight: 48,
+      fontWeight: 800,
+      primaryShadow: "0 16px 30px rgba(23, 107, 91, 0.24)",
+    },
     DatePicker: {
+      borderRadius: 14,
       cellWidth: 36,
       cellHeight: 24,
       textHeight: 40,
       withoutTimeCellHeight: 66,
     },
     Form: {
-      itemMarginBottom: 24,
+      itemMarginBottom: 10,
       labelColor: colors.text,
       labelFontSize: 13,
+      labelHeight: 18,
+      verticalLabelPadding: "0 0 3px",
+    },
+    Input: {
+      borderRadius: 14,
+      paddingBlock: 12,
+      paddingInline: 16,
+      activeShadow: "0 0 0 4px rgba(23, 107, 91, 0.12)",
+    },
+    InputNumber: {
+      borderRadius: 14,
+      paddingBlock: 12,
+      paddingInline: 16,
+      activeShadow: "0 0 0 4px rgba(23, 107, 91, 0.12)",
+    },
+    Segmented: {
+      itemSelectedBg: colors.primary,
+      itemSelectedColor: colors.surface,
+      trackBg: colors.background,
+    },
+    Select: {
+      borderRadius: 14,
+      controlHeight: 48,
     },
   },
 };
