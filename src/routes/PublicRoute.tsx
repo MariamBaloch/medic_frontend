@@ -1,10 +1,9 @@
 import { Navigate, Outlet } from "react-router-dom";
-
-const isAuthenticated = () => Boolean(localStorage.getItem("authToken"));
+import { hasActiveSession } from "@features/auth/authSession";
 
 export function PublicRoute() {
-  if (isAuthenticated()) {
-    return <Navigate to="/app" replace />;
+  if (hasActiveSession()) {
+    return <Navigate to="/patient/overview" replace />;
   }
 
   return <Outlet />;

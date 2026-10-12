@@ -1,11 +1,10 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-
-const isAuthenticated = () => Boolean(localStorage.getItem("authToken"));
+import { hasActiveSession } from "@features/auth/authSession";
 
 export function ProtectedRoute() {
   const location = useLocation();
 
-  if (!isAuthenticated()) {
+  if (!hasActiveSession()) {
     return <Navigate to="/login" replace state={{ from: location }} />;
   }
 

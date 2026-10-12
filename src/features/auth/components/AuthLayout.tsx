@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
+import { Space } from "antd";
 import {
   AmbientCircle,
   Brand,
-  BrandIcon,
   BrandKicker,
   BrandName,
   FeatureCard,
@@ -19,6 +19,7 @@ import {
   SecurePill,
   TopBar,
 } from "./AuthLayout.styles";
+import { AppBrandIcon } from "@components/AppBrandIcon";
 
 const features = [
   "Book appointments in minutes",
@@ -44,11 +45,11 @@ export function AuthLayout({ children }: AuthLayoutProps) {
         <PageColumn>
           <TopBar>
             <Brand>
-              <BrandIcon>♡</BrandIcon>
-              <div>
+              <AppBrandIcon />
+              <Space direction="vertical" size={0}>
                 <BrandName>Medic</BrandName>
                 <BrandKicker>Health made easy</BrandKicker>
-              </div>
+              </Space>
             </Brand>
             <SecurePill>Secure sign in</SecurePill>
           </TopBar>

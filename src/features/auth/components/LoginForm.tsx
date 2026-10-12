@@ -1,6 +1,7 @@
-import { Button, Checkbox, Form, Input } from "antd";
-import { Link } from "react-router-dom";
+import { Button, Checkbox, Form, Input, Typography } from "antd";
+import { Link, useNavigate } from "react-router-dom";
 import { FormField } from "@components/FormField";
+import { startDemoSession } from "@features/auth/authSession";
 import {
   AuthFormCard,
   AuthFormActions,
@@ -19,9 +20,17 @@ interface LoginFormValues {
 }
 
 export function LoginForm() {
+  const navigate = useNavigate();
+
+  const handleFinish = () => {
+    // Temporary UI-only session until the login API is connected.
+    startDemoSession();
+    navigate("/patient/overview", { replace: true });
+  };
+
   return (
     <AuthFormCard>
-      <Form<LoginFormValues> layout="vertical" requiredMark={false}>
+      <Form<LoginFormValues> layout="vertical" requiredMark={false} onFinish={handleFinish}>
         <AuthFormHeader>
           <AuthFormTitle>Welcome back</AuthFormTitle>
           <AuthFormSubtitle>Use your portal details to continue.</AuthFormSubtitle>
@@ -62,12 +71,12 @@ export function LoginForm() {
         </Button>
 
         <AuthFormFooter>
-          <span>
+          <Typography.Text>
             New to Medic?{" "}
             <AuthFormLink as={Link} to="/register">
               Create an account
             </AuthFormLink>
-          </span>
+          </Typography.Text>
         </AuthFormFooter>
       </Form>
     </AuthFormCard>

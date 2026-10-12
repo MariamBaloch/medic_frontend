@@ -54,19 +54,6 @@ export const Brand = styled.div`
   gap: 12px;
 `;
 
-export const BrandIcon = styled.div`
-  width: 42px;
-  height: 42px;
-  border-radius: 14px;
-  display: grid;
-  place-items: center;
-  color: ${colors.surface};
-  background: ${colors.primary};
-  box-shadow: 0 18px 36px rgba(23, 107, 91, 0.24);
-  font-size: 22px;
-  font-weight: 800;
-`;
-
 export const BrandName = styled.p`
   margin: 0;
   color: ${colors.text};

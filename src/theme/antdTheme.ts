@@ -47,6 +47,13 @@ export const antdTheme: ThemeConfig = {
       paddingInline: 16,
       activeShadow: "0 0 0 4px rgba(23, 107, 91, 0.12)",
     },
+    Menu: {
+      darkItemBg: colors.sidebar,
+      darkItemSelectedBg: colors.sidebarActive,
+      darkItemHoverBg: colors.sidebarActive,
+      darkItemColor: "rgba(255, 255, 255, 0.72)",
+      darkItemSelectedColor: colors.surface,
+    },
     Segmented: {
       itemSelectedBg: colors.primary,
       itemSelectedColor: colors.surface,
