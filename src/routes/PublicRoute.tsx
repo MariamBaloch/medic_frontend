@@ -1,9 +1,12 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { hasActiveSession } from "@features/auth/authSession";
+import { ROUTES } from "@constants/routes";
+import { useAuthStore } from "@stores/authStore";
 
 export function PublicRoute() {
-  if (hasActiveSession()) {
-    return <Navigate to="/patient/overview" replace />;
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+
+  if (isAuthenticated) {
+    return <Navigate to={ROUTES.app} replace />;
   }
 
   return <Outlet />;
