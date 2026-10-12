@@ -1,84 +1,118 @@
-import { Button, Checkbox, Form, Input, Typography } from "antd";
+import { Button, Input, Typography, message } from "antd";
+import { Controller, useForm } from "react-hook-form";
+import type { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
 import { FormField } from "@components/FormField";
-import { startDemoSession } from "@features/auth/authSession";
+import { ROUTES } from "@constants/routes";
+import { useLoginMutation } from "@features/auth/api/authQueries";
+import { loginRequestSchema } from "@features/auth/schemas/auth.schemas";
+import { getApiErrorMessage } from "@services/api/errors";
 import {
   AuthFormCard,
   AuthFormActions,
+  AuthFormElement,
   AuthFormFooter,
   AuthFormHeader,
   AuthFormLink,
   AuthFormSubtitle,
   AuthFormTitle,
-  RememberMeField,
 } from "./AuthForm.styles";
-
-interface LoginFormValues {
-  email: string;
-  password: string;
-  remember: boolean;
-}
 
 export function LoginForm() {
   const navigate = useNavigate();
+  const loginMutation = useLoginMutation();
+  type LoginInput = z.input<typeof loginRequestSchema>;
+  type LoginOutput = z.output<typeof loginRequestSchema>;
+  const form = useForm<LoginInput, unknown, LoginOutput>({
+    resolver: zodResolver(loginRequestSchema),
+    defaultValues: { email: "", password: "" },
+  });
 
-  const handleFinish = () => {
-    // Temporary UI-only session until the login API is connected.
-    startDemoSession();
-    navigate("/patient/overview", { replace: true });
+  const handleSubmit = async ({ email, password }: LoginOutput) => {
+    try {
+      await loginMutation.mutateAsync({ email, password });
+      navigate(ROUTES.app, { replace: true });
+    } catch (error) {
+      message.error(getApiErrorMessage(error));
+    }
   };
 
   return (
     <AuthFormCard>
-      <Form<LoginFormValues> layout="vertical" requiredMark={false} onFinish={handleFinish}>
+      <AuthFormElement noValidate onSubmit={form.handleSubmit(handleSubmit)}>
         <AuthFormHeader>
           <AuthFormTitle>Welcome back</AuthFormTitle>
           <AuthFormSubtitle>Use your portal details to continue.</AuthFormSubtitle>
         </AuthFormHeader>
 
-        <FormField
-          $compact
-          label="Email address"
+        <Controller
+          control={form.control}
           name="email"
-          rules={[
-            { required: true, message: "Email is required" },
-            { type: "email", message: "Enter a valid email address" },
-          ]}
-        >
-          <Input placeholder="maya@example.com" type="email" autoComplete="email" />
-        </FormField>
+          render={({ field, fieldState }) => (
+            <FormField
+              $compact
+              label="Email address"
+              htmlFor="login-email"
+              validateStatus={fieldState.error ? "error" : undefined}
+              help={fieldState.error?.message}
+            >
+              <Input
+                {...field}
+                id="login-email"
+                type="email"
+                placeholder="maya@example.com"
+                autoComplete="email"
+              />
+            </FormField>
+          )}
+        />
 
-        <FormField
-          $compact
-          label="Password"
+        <Controller
+          control={form.control}
           name="password"
-          rules={[{ required: true, message: "Password is required" }]}
-        >
-          <Input.Password placeholder="Enter your password" autoComplete="current-password" />
-        </FormField>
+          render={({ field, fieldState }) => (
+            <FormField
+              $compact
+              label="Password"
+              htmlFor="login-password"
+              validateStatus={fieldState.error ? "error" : undefined}
+              help={fieldState.error?.message}
+            >
+              <Input.Password
+                {...field}
+                id="login-password"
+                placeholder="Enter your password"
+                autoComplete="current-password"
+              />
+            </FormField>
+          )}
+        />
 
         <AuthFormActions>
-          <RememberMeField name="remember" valuePropName="checked">
-            <Checkbox>Remember me</Checkbox>
-          </RememberMeField>
-          <AuthFormLink as={Link} to="/forgot-password">
+          <AuthFormLink as={Link} to={ROUTES.forgotPassword}>
             Forgot password?
           </AuthFormLink>
         </AuthFormActions>
 
-        <Button type="primary" htmlType="submit" block>
+        <Button
+          type="primary"
+          htmlType="submit"
+          block
+          loading={loginMutation.isPending || form.formState.isSubmitting}
+        >
           Sign in
         </Button>
 
         <AuthFormFooter>
           <Typography.Text>
             New to Medic?{" "}
-            <AuthFormLink as={Link} to="/register">
+            <AuthFormLink as={Link} to={ROUTES.register}>
               Create an account
             </AuthFormLink>
           </Typography.Text>
         </AuthFormFooter>
-      </Form>
+      </AuthFormElement>
     </AuthFormCard>
   );
 }
