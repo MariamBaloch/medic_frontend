@@ -46,7 +46,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
           <TopBar>
             <Brand>
               <AppBrandIcon />
-              <Space direction="vertical" size={0}>
+              <Space orientation="vertical" size={0}>
                 <BrandName>Medic</BrandName>
                 <BrandKicker>Health made easy</BrandKicker>
               </Space>
@@ -60,7 +60,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
 
             <HeroContent>
               <HeroEyebrow>{today}</HeroEyebrow>
-              <HeroTitle>Your care, coordinated with clarity.</HeroTitle>
+              <HeroTitle>Your care, coordinated with medics.</HeroTitle>
               <HeroSubtitle>
                 Sign in to book appointments, review visit details, and stay connected with your
                 care team.

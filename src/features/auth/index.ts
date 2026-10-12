@@ -1,5 +1,10 @@
 export { LoginPage } from "./pages/LoginPage";
 export { RegisterPage } from "./pages/RegisterPage";
+export { ForgotPasswordPage } from "./pages/ForgotPasswordPage";
+export { ResetPasswordPage } from "./pages/ResetPasswordPage";
 export { LoginForm } from "./components/LoginForm";
 export { RegisterForm } from "./components/RegisterForm";
 export { AuthLayout } from "./components/AuthLayout";
+export * from "./api/authApi";
+export * from "./api/authQueries";
+export * from "./schemas/auth.schemas";

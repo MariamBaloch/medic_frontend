@@ -1,4 +1,3 @@
-import { Form } from "antd";
 import styled from "styled-components";
 import { colors } from "@theme/tokens";
 
@@ -7,7 +6,7 @@ interface AuthFormCardProps {
 }
 
 export const AuthFormCard = styled.section<AuthFormCardProps>`
-  width: min(100%, ${({ $wide }) => ($wide ? "600px" : "392px")});
+  width: min(100%, ${({ $wide }) => ($wide ? "600px" : "450px")});
   position: relative;
   z-index: 1;
   border: 1px solid rgba(224, 233, 230, 0.18);
@@ -17,12 +16,9 @@ export const AuthFormCard = styled.section<AuthFormCardProps>`
   box-shadow: 0 30px 80px rgba(4, 22, 19, 0.34);
 `;
 
-export const RememberMeField = styled(Form.Item)`
-  && {
-    margin-bottom: 0;
-  }
+export const AuthFormElement = styled.form`
+  width: 100%;
 `;
-
 
 export const AuthFormHeader = styled.div`
   margin-bottom: 32px;
@@ -58,7 +54,7 @@ export const AuthFormActions = styled.div`
   margin: 4px 0 16px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 14px;
   flex-wrap: wrap;
 `;
