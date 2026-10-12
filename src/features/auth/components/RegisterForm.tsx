@@ -1,9 +1,17 @@
-import { useState } from "react";
-import { Button, DatePicker, Form, Input, InputNumber, Segmented, Select, message } from "antd";
-import type { Dayjs } from "dayjs";
-import { Link } from "react-router-dom";
+import dayjs from "dayjs";
+import { Button, DatePicker, Input, InputNumber, Segmented, Select, message } from "antd";
+import { Controller, useForm, useWatch } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { z } from "zod";
+import { Link, useNavigate } from "react-router-dom";
 import { FormField } from "@components/FormField";
+import { ROUTES } from "@constants/routes";
 import { PhoneInput } from "@components/PhoneInput";
+import { getApiErrorMessage } from "@services/api/errors";
+import {
+  useRegisterDoctorMutation,
+  useRegisterPatientMutation,
+} from "@features/auth/api/authQueries";
 import {
   AuthFormCard,
   AuthFormFooter,
@@ -12,39 +20,66 @@ import {
   AuthFormSubtitle,
   AuthFormTitle,
   RegisterFieldsGrid,
+  AuthFormElement,
 } from "./AuthForm.styles";
-
-interface RegisterFormValues {
-  accountType: "patient" | "doctor";
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  dateOfBirth: Dayjs;
-  password: string;
-  confirmPassword: string;
-  gender?: "MALE" | "FEMALE";
-  specializationId?: number;
-  licenseNumber?: string;
-}
+import { registrationFormSchema } from "@features/auth/schemas/auth.schemas";
 
 export function RegisterForm() {
-  const [accountType, setAccountType] = useState<RegisterFormValues["accountType"]>("patient");
+  const navigate = useNavigate();
+  type FormInput = z.input<typeof registrationFormSchema>;
+  type FormOutput = z.output<typeof registrationFormSchema>;
+  const form = useForm<FormInput, unknown, FormOutput>({
+    resolver: zodResolver(registrationFormSchema),
+    defaultValues: {
+      accountType: "patient",
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      dateOfBirth: "",
+      password: "",
+      confirmPassword: "",
+      gender: undefined,
+    },
+    shouldUnregister: true,
+  });
+  const accountType = useWatch({ control: form.control, name: "accountType" });
+  const registerPatient = useRegisterPatientMutation();
+  const registerDoctor = useRegisterDoctorMutation();
+  const isSubmitting = registerPatient.isPending || registerDoctor.isPending;
 
-  const handleFinish = () => {
-    message.info(
-      `${accountType === "doctor" ? "Doctor" : "Patient"} registration is not connected yet.`,
-    );
+  const handleSubmit = async (values: FormOutput) => {
+    const commonPayload = {
+      firstName: values.firstName,
+      lastName: values.lastName,
+      email: values.email,
+      password: values.password,
+      phone: values.phone,
+      dateOfBirth: values.dateOfBirth,
+      gender: values.gender,
+    };
+
+    try {
+      if (values.accountType === "doctor") {
+        await registerDoctor.mutateAsync({
+          ...commonPayload,
+          specializationId: values.specializationId,
+          licenseNumber: values.licenseNumber,
+        });
+      } else {
+        await registerPatient.mutateAsync(commonPayload);
+      }
+
+      message.success("Registration successful. Check your email to verify your account.");
+      navigate(ROUTES.login, { replace: true });
+    } catch (error) {
+      message.error(getApiErrorMessage(error));
+    }
   };
 
   return (
     <AuthFormCard $wide>
-      <Form<RegisterFormValues>
-        layout="vertical"
-        requiredMark={false}
-        onFinish={handleFinish}
-        initialValues={{ accountType: "patient" }}
-      >
+      <AuthFormElement noValidate onSubmit={form.handleSubmit(handleSubmit)}>
         <AuthFormHeader>
           <AuthFormTitle>Register</AuthFormTitle>
           <AuthFormSubtitle>
@@ -53,151 +88,280 @@ export function RegisterForm() {
         </AuthFormHeader>
 
         <RegisterFieldsGrid>
-          <FormField $compact $fullWidth label="Account type" name="accountType">
-            <Segmented
-              block
-              size="large"
-              options={[
-                { label: "Patient", value: "patient" },
-                { label: "Doctor", value: "doctor" },
-              ]}
-              onChange={(value) => setAccountType(value as RegisterFormValues["accountType"])}
-            />
-          </FormField>
+          <Controller
+            control={form.control}
+            name="accountType"
+            render={({ field, fieldState }) => (
+              <FormField
+                $compact
+                $fullWidth
+                label="Account type"
+                htmlFor="accountType"
+                required
+                validateStatus={fieldState.error ? "error" : undefined}
+                help={fieldState.error?.message}
+              >
+                <Segmented
+                  id="accountType"
+                  block
+                  size="large"
+                  value={field.value}
+                  options={[
+                    { label: "Patient", value: "patient" },
+                    { label: "Doctor", value: "doctor" },
+                  ]}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                />
+              </FormField>
+            )}
+          />
 
-          <FormField
-            $compact
-            label="First name"
+          <Controller
+            control={form.control}
             name="firstName"
-            rules={[{ required: true, message: "First name is required" }]}
-          >
-            <Input placeholder="Mariam" autoComplete="given-name" />
-          </FormField>
-
-          <FormField
-            $compact
-            label="Last name"
+            render={({ field, fieldState }) => (
+              <FormField
+                $compact
+                label="First name"
+                htmlFor="register-first-name"
+                validateStatus={fieldState.error ? "error" : undefined}
+                help={fieldState.error?.message}
+              >
+                <Input
+                  {...field}
+                  id="register-first-name"
+                  placeholder="Mariam"
+                  autoComplete="given-name"
+                />
+              </FormField>
+            )}
+          />
+          <Controller
+            control={form.control}
             name="lastName"
-            rules={[{ required: true, message: "Last name is required" }]}
-          >
-            <Input placeholder="Ali" autoComplete="family-name" />
-          </FormField>
-
-          <FormField
-            $compact
-            $fullWidth
-            label="Email address"
+            render={({ field, fieldState }) => (
+              <FormField
+                $compact
+                label="Last name"
+                htmlFor="register-last-name"
+                validateStatus={fieldState.error ? "error" : undefined}
+                help={fieldState.error?.message}
+              >
+                <Input
+                  {...field}
+                  id="register-last-name"
+                  placeholder="Ali"
+                  autoComplete="family-name"
+                />
+              </FormField>
+            )}
+          />
+          <Controller
+            control={form.control}
             name="email"
-            rules={[
-              { required: true, message: "Email is required" },
-              { type: "email", message: "Enter a valid email" },
-            ]}
-          >
-            <Input placeholder="maya@example.com" autoComplete="email" />
-          </FormField>
+            render={({ field, fieldState }) => (
+              <FormField
+                $compact
+                $fullWidth
+                label="Email address"
+                htmlFor="register-email"
+                validateStatus={fieldState.error ? "error" : undefined}
+                help={fieldState.error?.message}
+              >
+                <Input
+                  {...field}
+                  id="register-email"
+                  type="email"
+                  placeholder="maya@example.com"
+                  autoComplete="email"
+                />
+              </FormField>
+            )}
+          />
 
-          <FormField $compact label="Gender" name="gender">
-            <Select
-              placeholder="Select gender (optional)"
-              allowClear
-              options={[
-                { label: "Male", value: "MALE" },
-                { label: "Female", value: "FEMALE" },
-              ]}
-            />
-          </FormField>
+          <Controller
+            control={form.control}
+            name="gender"
+            render={({ field, fieldState }) => (
+              <FormField
+                $compact
+                label="Gender"
+                htmlFor="gender"
+                required={false}
+                validateStatus={fieldState.error ? "error" : undefined}
+                help={fieldState.error?.message}
+              >
+                <Select
+                  id="gender"
+                  value={field.value}
+                  placeholder="Select gender (optional)"
+                  allowClear
+                  options={[
+                    { label: "Male", value: "MALE" },
+                    { label: "Female", value: "FEMALE" },
+                  ]}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                />
+              </FormField>
+            )}
+          />
 
-          <FormField
-            $compact
-            label="Date of birth"
+          <Controller
+            control={form.control}
             name="dateOfBirth"
-            rules={[{ required: true, message: "Date of birth is required" }]}
-          >
-            <DatePicker style={{ width: "100%" }} placeholder="dd/MM/yyyy" format="DD/MM/YYYY" />
-          </FormField>
+            render={({ field, fieldState }) => (
+              <FormField
+                $compact
+                label="Date of birth"
+                htmlFor="dateOfBirth"
+                required
+                validateStatus={fieldState.error ? "error" : undefined}
+                help={fieldState.error?.message}
+              >
+                <DatePicker
+                  id="dateOfBirth"
+                  style={{ width: "100%" }}
+                  placeholder="dd/MM/yyyy"
+                  format="DD/MM/YYYY"
+                  value={field.value ? dayjs(`${field.value.slice(6)}-${field.value.slice(3, 5)}-${field.value.slice(0, 2)}`) : null}
+                  onChange={(date) => field.onChange(date?.format("DD/MM/YYYY") ?? "")}
+                  onBlur={field.onBlur}
+                />
+              </FormField>
+            )}
+          />
 
-          <FormField
-            $compact
-            label="Password"
+          <Controller
+            control={form.control}
             name="password"
-            rules={[
-              { required: true, message: "Password is required" },
-              { min: 5, message: "Password must be at least 5 characters" },
-              {
-                pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\-+_=<>?]).{5,}$/,
-                message: "Must include uppercase, lowercase, and a special character",
-              },
-            ]}
-          >
-            <Input.Password placeholder="Create a password" autoComplete="new-password" />
-          </FormField>
-
-          <FormField
-            $compact
-            label="Confirm password"
+            render={({ field, fieldState }) => (
+              <FormField
+                $compact
+                label="Password"
+                htmlFor="register-password"
+                validateStatus={fieldState.error ? "error" : undefined}
+                help={fieldState.error?.message}
+              >
+                <Input.Password
+                  {...field}
+                  id="register-password"
+                  placeholder="Create a password"
+                  autoComplete="new-password"
+                />
+              </FormField>
+            )}
+          />
+          <Controller
+            control={form.control}
             name="confirmPassword"
-            dependencies={["password"]}
-            rules={[
-              { required: true, message: "Please confirm your password" },
-              ({ getFieldValue }) => ({
-                validator(_, value: string | undefined) {
-                  if (!value || getFieldValue("password") === value) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject(new Error("Passwords do not match"));
-                },
-              }),
-            ]}
-          >
-            <Input.Password placeholder="Confirm your password" autoComplete="new-password" />
-          </FormField>
+            render={({ field, fieldState }) => (
+              <FormField
+                $compact
+                label="Confirm password"
+                htmlFor="register-confirm-password"
+                validateStatus={fieldState.error ? "error" : undefined}
+                help={fieldState.error?.message}
+              >
+                <Input.Password
+                  {...field}
+                  id="register-confirm-password"
+                  placeholder="Confirm your password"
+                  autoComplete="new-password"
+                />
+              </FormField>
+            )}
+          />
 
-          <FormField
-            $fullWidth
-            label="Phone number"
+          <Controller
+            control={form.control}
             name="phone"
-            rules={[
-              { required: true, message: "Phone number is required" },
-              { pattern: /^\+?[0-9]{7,20}$/, message: "Enter a valid phone number" },
-            ]}
-          >
-            <PhoneInput />
-          </FormField>
+            render={({ field, fieldState }) => (
+              <FormField
+                $fullWidth
+                label="Phone number"
+                htmlFor="phone"
+                required
+                validateStatus={fieldState.error ? "error" : undefined}
+                help={fieldState.error?.message}
+              >
+                <PhoneInput
+                  id="phone"
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                />
+              </FormField>
+            )}
+          />
 
           {accountType === "doctor" ? (
             <>
-              <FormField
-                $compact
-                label="Specialization ID"
+              <Controller
+                control={form.control}
                 name="specializationId"
-                preserve={false}
-                rules={[{ required: true, message: "Specialization ID is required" }]}
-              >
-                <InputNumber style={{ width: "100%" }} min={1} placeholder="1" controls={false} />
-              </FormField>
+                render={({ field, fieldState }) => (
+                  <FormField
+                    $compact
+                    label="Specialization ID"
+                    htmlFor="specializationId"
+                    required
+                    validateStatus={fieldState.error ? "error" : undefined}
+                    help={fieldState.error?.message}
+                  >
+                    <InputNumber
+                      id="specializationId"
+                      style={{ width: "100%" }}
+                      min={1}
+                      placeholder="1"
+                      controls={false}
+                      value={field.value ?? null}
+                      onChange={(value) => field.onChange(value ?? undefined)}
+                      onBlur={field.onBlur}
+                    />
+                  </FormField>
+                )}
+              />
 
-              <FormField
-                $compact
-                label="Medical license number"
+              <Controller
+                control={form.control}
                 name="licenseNumber"
-                preserve={false}
-                rules={[{ required: true, message: "License number is required" }]}
-              >
-                <Input placeholder="BHP-12345" />
-              </FormField>
+                render={({ field, fieldState }) => (
+                  <FormField
+                    $compact
+                    label="Medical license number"
+                    htmlFor="register-license-number"
+                    validateStatus={fieldState.error ? "error" : undefined}
+                    help={fieldState.error?.message}
+                  >
+                    <Input
+                      {...field}
+                      id="register-license-number"
+                      placeholder="BHP-12345"
+                      autoComplete="off"
+                    />
+                  </FormField>
+                )}
+              />
             </>
           ) : null}
         </RegisterFieldsGrid>
 
         <AuthFormFooter>
-          <Button type="primary" htmlType="submit" block>
+          <Button
+            type="primary"
+            htmlType="submit"
+            block
+            loading={isSubmitting || form.formState.isSubmitting}
+          >
             Create account
           </Button>
-          <AuthFormLink as={Link} to="/login">
+          <AuthFormLink as={Link} to={ROUTES.login}>
             Already have an account? Sign in
           </AuthFormLink>
         </AuthFormFooter>
-      </Form>
+      </AuthFormElement>
     </AuthFormCard>
   );
 }
