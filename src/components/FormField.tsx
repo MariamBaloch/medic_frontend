@@ -7,7 +7,7 @@ interface FormFieldProps {
   $compact?: boolean;
 }
 
-export const FormField = styled(Form.Item)<FormFieldProps>`
+export const FormField = styled(Form.Item).attrs({ layout: "vertical" })<FormFieldProps>`
   && {
     margin-bottom: ${({ $compact }) => ($compact ? "10px" : "24px")};
     grid-column: ${({ $fullWidth }) => ($fullWidth ? "1 / -1" : "auto")};

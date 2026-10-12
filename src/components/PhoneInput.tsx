@@ -1,4 +1,4 @@
-import { Input, Select } from "antd";
+import { Input, Select, Space } from "antd";
 import { useMemo } from "react";
 import { countryCallingCodes } from "@utils/countryCallingCodes";
 
@@ -9,8 +9,10 @@ const countryCodeOptions = countryCallingCodes.map(({ country, code, iso }) => (
 }));
 
 interface PhoneInputProps {
+  id?: string;
   value?: string;
   onChange?: (value: string) => void;
+  onBlur?: () => void;
   placeholder?: string;
 }
 
@@ -30,7 +32,7 @@ function splitPhoneValue(value?: string) {
   };
 }
 
-export function PhoneInput({ value, onChange, placeholder = "12345678" }: PhoneInputProps) {
+export function PhoneInput({ id, value, onChange, onBlur, placeholder = "12345678" }: PhoneInputProps) {
   const { countryCode, phoneNumber } = useMemo(() => splitPhoneValue(value), [value]);
 
   const updateValue = (nextCountryCode: string, nextPhoneNumber: string) => {
@@ -38,23 +40,26 @@ export function PhoneInput({ value, onChange, placeholder = "12345678" }: PhoneI
   };
 
   return (
-    <Input
-      addonBefore={
-        <Select
-          value={countryCode}
-          options={countryCodeOptions}
-          showSearch
-          optionFilterProp="title"
-          popupMatchSelectWidth={false}
-          onChange={(nextCountryCode) => updateValue(nextCountryCode, phoneNumber)}
-          style={{ width: 116 }}
-        />
-      }
-      value={phoneNumber}
-      inputMode="numeric"
-      placeholder={placeholder}
-      autoComplete="tel-national"
-      onChange={(event) => updateValue(countryCode, event.target.value)}
-    />
+    <Space.Compact block>
+      <Select
+        aria-label="Country calling code"
+        value={countryCode}
+        options={countryCodeOptions}
+        showSearch
+        optionFilterProp="title"
+        popupMatchSelectWidth={false}
+        onChange={(nextCountryCode) => updateValue(nextCountryCode, phoneNumber)}
+        style={{ width: 116 }}
+      />
+      <Input
+        value={phoneNumber}
+        id={id}
+        inputMode="numeric"
+        placeholder={placeholder}
+        autoComplete="tel-national"
+        onChange={(event) => updateValue(countryCode, event.target.value)}
+        onBlur={onBlur}
+      />
+    </Space.Compact>
   );
 }
