@@ -4,9 +4,9 @@ import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
 import { Link, useNavigate } from "react-router-dom";
-import { FormField } from "@components/FormField";
+import { FormField } from "@components/FormField/FormField";
 import { ROUTES } from "@constants/routes";
-import { PhoneInput } from "@components/PhoneInput";
+import { PhoneInput } from "@components/PhoneInput/PhoneInput";
 import { getApiErrorMessage } from "@services/api/errors";
 import {
   useRegisterDoctorMutation,

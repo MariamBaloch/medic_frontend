@@ -4,7 +4,7 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
 import { Link } from "react-router-dom";
-import { FormField } from "@components/FormField";
+import { FormField } from "@components/FormField/FormField";
 import { ROUTES } from "@constants/routes";
 import { useForgotPasswordMutation } from "@features/auth/api/authQueries";
 import { getApiErrorMessage } from "@services/api/errors";

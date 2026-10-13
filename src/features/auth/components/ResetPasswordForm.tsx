@@ -3,7 +3,7 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { FormField } from "@components/FormField";
+import { FormField } from "@components/FormField/FormField";
 import { ROUTES } from "@constants/routes";
 import { useResetPasswordMutation } from "@features/auth/api/authQueries";
 import { getApiErrorMessage } from "@services/api/errors";

@@ -13,7 +13,7 @@ import type { MenuProps } from "antd";
 import type { ReactNode } from "react";
 import { useEffect, useMemo } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { AppBrandIcon } from "@components/AppBrandIcon";
+import { AppBrandIcon } from "@components/AppBrandIcon/AppBrandIcon";
 import { getAppRoute, ROUTES, ROUTE_SEGMENTS } from "@constants/routes";
 import { useCurrentUserQuery, useLogoutMutation } from "@features/auth/api/authQueries";
 import { useAuthStore } from "@stores/authStore";
