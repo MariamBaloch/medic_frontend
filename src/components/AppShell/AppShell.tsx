@@ -24,7 +24,6 @@ import {
   HeaderActions,
   PageHeading,
   AppContent,
-  AppFooter,
   AppHeader,
   AppLayout,
   AppSider,
