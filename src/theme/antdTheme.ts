@@ -12,6 +12,9 @@ export const antdTheme: ThemeConfig = {
     borderRadius: 14,
     controlHeight: 48,
     controlHeightLG: 54,
+    colorLink: colors.primary,
+    colorLinkHover: colors.textSecondary,
+    colorLinkActive: colors.primary,
     fontFamily: "Inter, sans-serif",
   },
   components: {
