@@ -2,9 +2,12 @@ import { Typography } from "antd";
 import type {
   Appointment,
   AppointmentStatusOption,
-} from "@features/patient/api/appointment.schemas";
+} from "@features/appointment/api/appointment.schemas";
 import { getAppointmentStatusLabel, isUpcomingAppointment } from "@utils/formatters";
-import { AppointmentStatusPill, AppointmentStatusStack } from "./AppointmentStatusCell.styles";
+import {
+  AppointmentStatusPill,
+  AppointmentStatusStack,
+} from "./AppointmentStatusCell/AppointmentStatusCell.styles";
 
 interface AppointmentStatusCellProps {
   appointment: Appointment;

@@ -1,15 +1,8 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import {
-  ForgotPasswordPage,
-  LoginPage,
-  RegisterPage,
-  ResetPasswordPage,
-} from "@features/auth";
+import { ForgotPasswordPage, LoginPage, RegisterPage, ResetPasswordPage } from "@features/auth";
 import { ROUTES, ROUTE_SEGMENTS } from "@constants/routes";
 import { RoleBasedAppShell } from "@routes/RoleBasedAppShell";
-import {
-  PatientAppointmentsPage
-} from "@features/patient/pages/PatientPages";
+import { PatientAppointmentsPage } from "@features/appointment/pages/AppointmentsPage";
 import { ProtectedRoute } from "@routes/ProtectedRoute";
 import { PublicRoute } from "@routes/PublicRoute";
 
@@ -29,7 +22,13 @@ export function AppRoutes() {
         <Route path={ROUTES.app} element={<RoleBasedAppShell />} />
         <Route
           path={ROUTES.patient}
-          element={<RoleBasedAppShell role="PATIENT" basePath={ROUTES.patient} portalLabel="Patient portal" />}
+          element={
+            <RoleBasedAppShell
+              role="PATIENT"
+              basePath={ROUTES.patient}
+              portalLabel="Patient portal"
+            />
+          }
         >
           <Route index element={<Navigate to={ROUTE_SEGMENTS.overview} replace />} />
           <Route path={ROUTE_SEGMENTS.overview} element={null} />
@@ -37,14 +36,18 @@ export function AppRoutes() {
         </Route>
         <Route
           path={ROUTES.doctor}
-          element={<RoleBasedAppShell role="DOCTOR" basePath={ROUTES.doctor} portalLabel="Doctor portal" />}
+          element={
+            <RoleBasedAppShell role="DOCTOR" basePath={ROUTES.doctor} portalLabel="Doctor portal" />
+          }
         >
           <Route index element={<Navigate to={ROUTE_SEGMENTS.overview} replace />} />
           <Route path={ROUTE_SEGMENTS.overview} element={null} />
         </Route>
         <Route
           path={ROUTES.admin}
-          element={<RoleBasedAppShell role="ADMIN" basePath={ROUTES.admin} portalLabel="Admin portal" />}
+          element={
+            <RoleBasedAppShell role="ADMIN" basePath={ROUTES.admin} portalLabel="Admin portal" />
+          }
         >
           <Route index element={<Navigate to={ROUTE_SEGMENTS.overview} replace />} />
           <Route path={ROUTE_SEGMENTS.overview} element={null} />

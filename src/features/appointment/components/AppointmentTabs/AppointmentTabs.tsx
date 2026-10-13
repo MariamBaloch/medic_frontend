@@ -2,7 +2,7 @@ import type { DataTableTab } from "@components/DataTable/DataTable";
 import type {
   AppointmentStatus,
   AppointmentStatusOption,
-} from "@features/patient/api/appointment.schemas";
+} from "@features/appointment/api/appointment.schemas";
 import { AppointmentTabCount, AppointmentTabLabel } from "./AppointmentTabs.styles";
 
 interface AppointmentStatusCounts {

@@ -4,7 +4,7 @@ import type { TableColumnsType } from "antd";
 import type {
   Appointment,
   AppointmentStatusOption,
-} from "@features/patient/api/appointment.schemas";
+} from "@features/appointment/api/appointment.schemas";
 import {
   formatAppointmentDate,
   formatAppointmentTimeRange,

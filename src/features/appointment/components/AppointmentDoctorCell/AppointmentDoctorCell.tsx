@@ -1,7 +1,7 @@
 import { Space, Typography } from "antd";
 import { DoctorAvatar } from "./AppointmentDoctorCell.styles";
 import { getDoctorDisplayName, getDoctorInitials } from "@utils/formatters";
-import type { Appointment } from "@features/patient/api/appointment.schemas";
+import type { Appointment } from "@features/appointment/api/appointment.schemas";
 
 interface AppointmentDoctorCellProps {
   appointment: Appointment;

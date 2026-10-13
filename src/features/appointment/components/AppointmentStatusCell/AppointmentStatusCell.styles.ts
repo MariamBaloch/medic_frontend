@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import type { AppointmentStatus } from "@features/patient/api/appointment.schemas";
+import type { AppointmentStatus } from "@features/appointment/api/appointment.schemas";
 import { colors } from "@theme/tokens";
 
 const statusColor = (status: AppointmentStatus) => {

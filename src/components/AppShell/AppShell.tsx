@@ -99,7 +99,8 @@ export function AppShell({
   const displayName = profile
     ? [profile.firstName, profile.lastName].filter(Boolean).join(" ").trim() || profile.email
     : "Loading profile";
-  const title = activeNavigation.find((item) => item.path === location.pathname)?.title ?? portalLabel;
+  const title =
+    activeNavigation.find((item) => item.path === location.pathname)?.title ?? portalLabel;
   const navigationItems: MenuProps["items"] = activeNavigation.map((item) => ({
     key: item.key,
     icon: item.icon,
@@ -193,9 +194,6 @@ export function AppShell({
         <AppContent>
           <Outlet />
         </AppContent>
-        <AppFooter>
-          © {new Date().getFullYear()} Medic · {portalLabel}
-        </AppFooter>
       </AppLayout>
     </AppLayout>
   );
