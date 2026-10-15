@@ -13,6 +13,33 @@ export const PageHeaderRoot = styled.header`
   }
 `;
 
+export const PageHeaderLeading = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+`;
+
+export const PageHeaderIcon = styled.span`
+  display: inline-flex;
+  width: 60px;
+  height: 60px;
+  min-width: 60px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: ${colors.background};
+  color: ${colors.primary};
+  font-size: 25px;
+
+  @media (max-width: 767px) {
+    width: 46px;
+    height: 46px;
+    min-width: 46px;
+    font-size: 20px;
+  }
+`;
+
 export const PageHeaderContent = styled.div`
   min-width: 0;
 

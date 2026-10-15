@@ -6,7 +6,7 @@ export const DataTableRoot = styled(Card)`
   overflow: hidden;
   border: 1px solid ${colors.border};
   border-radius: 18px;
-  box-shadow: 0 8px 24px rgba(23, 51, 47, 0.05);
+  box-shadow: 0 8px 24px color-mix(in srgb, ${colors.sidebar} 5%, transparent);
 
   .ant-card-body {
     padding: 0;
