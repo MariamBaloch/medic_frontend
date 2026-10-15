@@ -3,6 +3,7 @@ import {
   appointmentFiltersSchema,
   appointmentPageSchema,
   appointmentStatusesSchema,
+  appointmentDetailsSchema,
   specializationsSchema,
   type AppointmentFilters,
   type AppointmentPage,
@@ -29,6 +30,11 @@ export async function getPatientAppointments(filters: AppointmentFilters): Promi
 
   const { data } = await apiClient.get(`/patient/appointments?${params.toString()}`);
   return appointmentPageSchema.parse(data);
+}
+
+export async function getPatientAppointment(appointmentId: number) {
+  const { data } = await apiClient.get(`/patient/appointments/${appointmentId}`);
+  return appointmentDetailsSchema.parse(data);
 }
 
 export async function getSpecializations(): Promise<Specialization[]> {

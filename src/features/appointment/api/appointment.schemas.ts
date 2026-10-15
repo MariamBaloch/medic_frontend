@@ -19,6 +19,12 @@ export const appointmentSchema = z.object({
   doctorId: z.number(),
   doctorName: z.string(),
   doctorQualification: z.string().nullish(),
+  doctorYearsOfExperience: z.number().nullish(),
+  doctorHospitalAffiliation: z.string().nullish(),
+  doctorClinicAddress: z.string().nullish(),
+  doctorLicenseNumber: z.string().nullish(),
+  doctorImageUrl: z.string().nullish(),
+  doctorBio: z.string().nullish(),
   specialization: specializationSchema.nullish(),
   patientId: z.number(),
   patientName: z.string(),
@@ -29,6 +35,24 @@ export const appointmentSchema = z.object({
   reason: z.string().nullish(),
   bookingFee: z.number().nullish(),
   cancelledReason: z.string().nullish(),
+});
+
+export const appointmentDetailsSchema = z.object({
+  appointmentDate: z.string(),
+  startTime: z.string(),
+  endTime: z.string(),
+  bookingFee: z.number().nullish(),
+  status: appointmentStatusSchema,
+  reason: z.string().nullish(),
+  doctorName: z.string(),
+  doctorImageUrl: z.string().nullish(),
+  doctorQualification: z.string().nullish(),
+  specialization: specializationSchema.nullish(),
+  doctorYearsOfExperience: z.number().nullish(),
+  doctorHospitalAffiliation: z.string().nullish(),
+  doctorClinicAddress: z.string().nullish(),
+  doctorLicenseNumber: z.string().nullish(),
+  doctorBio: z.string().nullish(),
 });
 
 export const appointmentPageSchema = z.object({
@@ -57,6 +81,7 @@ export const appointmentFiltersSchema = z.object({
 export const specializationsSchema = z.array(specializationSchema);
 
 export type Appointment = z.infer<typeof appointmentSchema>;
+export type AppointmentDetails = z.infer<typeof appointmentDetailsSchema>;
 export type AppointmentStatus = z.infer<typeof appointmentStatusSchema>;
 export type AppointmentStatusOption = z.infer<typeof appointmentStatusOptionSchema>;
 export type AppointmentPage = z.infer<typeof appointmentPageSchema>;

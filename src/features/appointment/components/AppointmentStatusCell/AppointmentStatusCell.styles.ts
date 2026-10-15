@@ -7,7 +7,7 @@ const statusColor = (status: AppointmentStatus) => {
     case "BOOKED":
       return colors.success;
     case "COMPLETED":
-      return colors.textSecondary;
+      return colors.completed;
     case "NO_SHOW":
       return colors.warning;
     case "CANCELLED":

@@ -1,11 +1,17 @@
 import { useQueries, useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "@stores/authStore";
 import type { AppointmentFilters, AppointmentStatus } from "./appointment.schemas";
-import { getAppointmentStatuses, getPatientAppointments, getSpecializations } from "./appointmentsApi";
+import {
+  getAppointmentStatuses,
+  getPatientAppointment,
+  getPatientAppointments,
+  getSpecializations,
+} from "./appointmentsApi";
 
 export const appointmentKeys = {
   all: ["patient", "appointments"] as const,
   list: (filters: AppointmentFilters) => [...appointmentKeys.all, filters] as const,
+  detail: (appointmentId: number) => [...appointmentKeys.all, "detail", appointmentId] as const,
   specializations: ["specializations"] as const,
   statuses: ["appointment-statuses"] as const,
 };
@@ -18,6 +24,16 @@ export function usePatientAppointmentsQuery(filters: AppointmentFilters) {
     queryFn: () => getPatientAppointments(filters),
     enabled: isAuthenticated,
     placeholderData: (previousData) => previousData,
+  });
+}
+
+export function usePatientAppointmentQuery(appointmentId: number | null) {
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+
+  return useQuery({
+    queryKey: appointmentKeys.detail(appointmentId ?? 0),
+    queryFn: () => getPatientAppointment(appointmentId ?? 0),
+    enabled: isAuthenticated && appointmentId !== null,
   });
 }
 
