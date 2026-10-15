@@ -44,14 +44,14 @@ export const PageHeaderContent = styled.div`
   min-width: 0;
 
   h2 {
-    margin: 0;
     color: ${colors.text};
     font-family: "Lora", Georgia, "Times New Roman", serif;
     margin-bottom: 10px !important;
-    font-size: clamp(28px, 2.8vw, 32px);
     font-weight: 500;
-    letter-spacing: -0.02em;
-    line-height: 1.12;
+  }
+
+  h3 {
+    
   }
 
   .ant-typography-secondary {

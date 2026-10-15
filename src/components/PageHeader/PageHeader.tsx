@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { Space, Typography } from "antd";
 import {
   PageHeaderActions,
@@ -13,11 +13,12 @@ interface PageHeaderProps {
   description?: string;
   action?: ReactNode;
   icon?: ReactNode;
+  style?: CSSProperties;
 }
 
-export function PageHeader({ title, description, action, icon }: PageHeaderProps) {
+export function PageHeader({ title, description, action, icon, style }: PageHeaderProps) {
   return (
-    <PageHeaderRoot>
+    <PageHeaderRoot style={style}>
       <PageHeaderLeading>
         {icon ? <PageHeaderIcon>{icon}</PageHeaderIcon> : null}
         <PageHeaderContent>
