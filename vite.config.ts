@@ -19,4 +19,9 @@ export default defineConfig({
       "@utils": fileURLToPath(new URL("./src/utils", import.meta.url)),
     },
   },
+  server: {
+    proxy: {
+      "/uploads": "http://localhost:8080",
+    },
+  },
 });

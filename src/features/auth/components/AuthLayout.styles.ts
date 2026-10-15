@@ -25,8 +25,17 @@ export const LoginPageShell = styled.main`
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(420px, 0.95fr);
   background:
-    radial-gradient(circle at 12% 18%, rgba(168, 200, 193, 0.45), transparent 26rem),
-    linear-gradient(135deg, #f8fbfa 0%, ${colors.background} 48%, #edf4f2 100%);
+    radial-gradient(
+      circle at 12% 18%,
+      color-mix(in srgb, ${colors.tealLight} 45%, transparent),
+      transparent 26rem
+    ),
+    linear-gradient(
+      135deg,
+      ${colors.backgroundSoft} 0%,
+      ${colors.background} 48%,
+      ${colors.backgroundTint} 100%
+    );
 
   @media (max-width: 980px) {
     grid-template-columns: 1fr;
@@ -75,7 +84,7 @@ export const SecurePill = styled.div`
   border: 1px solid ${colors.border};
   border-radius: 999px;
   color: ${colors.primary};
-  background: rgba(255, 255, 255, 0.72);
+  background: color-mix(in srgb, ${colors.surface} 72%, transparent);
   padding: 10px 14px;
   font-size: 13px;
   font-weight: 700;
@@ -97,9 +106,13 @@ export const HeroPanel = styled.div`
   align-content: center;
   gap: 36px;
   background:
-    linear-gradient(140deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.68)),
+    linear-gradient(
+      140deg,
+      color-mix(in srgb, ${colors.surface} 92%, transparent),
+      color-mix(in srgb, ${colors.surface} 68%, transparent)
+    ),
     ${colors.surface};
-  box-shadow: 0 28px 70px rgba(23, 51, 47, 0.09);
+  box-shadow: 0 28px 70px color-mix(in srgb, ${colors.sidebar} 9%, transparent);
 `;
 
 export const AmbientCircle = styled.div<{ $position: "top" | "bottom" }>`
@@ -165,7 +178,7 @@ export const FeatureCard = styled.div`
   border-radius: 18px;
   padding: 18px;
   color: ${colors.text};
-  background: rgba(255, 255, 255, 0.72);
+  background: color-mix(in srgb, ${colors.surface} 72%, transparent);
   font-size: 14px;
   font-weight: 700;
   line-height: 1.45;
@@ -197,7 +210,7 @@ export const FormPanel = styled.aside`
     content: "";
     position: absolute;
     inset: 24px;
-    border: 1px solid rgba(168, 200, 193, 0.16);
+    border: 1px solid color-mix(in srgb, ${colors.tealLight} 16%, transparent);
     border-radius: 32px;
     pointer-events: none;
   }
@@ -210,6 +223,6 @@ export const FormPanel = styled.aside`
     right: -120px;
     bottom: -120px;
     border-radius: 999px;
-    background: rgba(81, 144, 132, 0.18);
+    background: color-mix(in srgb, ${colors.teal} 18%, transparent);
   }
 `;

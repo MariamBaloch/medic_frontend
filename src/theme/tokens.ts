@@ -7,6 +7,8 @@ export const colors = {
   sidebarActive: "#2D4643",
 
   background: "#F4F7F6",
+  backgroundSoft: "#F8FBFA",
+  backgroundTint: "#EDF4F2",
   surface: "#FFFFFF",
   border: "#E0E9E6",
 
@@ -18,6 +20,9 @@ export const colors = {
   tealLight: "#A8C8C1",
 
   success: "#176B5B",
+  completed: "#6495ED",
   warning: "#F59E0B",
   error: "#DC2626",
+  errorSurface: "#FFF2F0",
+  errorBorder: "#FFCCC7",
 } as const;

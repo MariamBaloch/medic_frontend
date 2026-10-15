@@ -9,11 +9,11 @@ export const AuthFormCard = styled.section<AuthFormCardProps>`
   width: min(100%, ${({ $wide }) => ($wide ? "600px" : "450px")});
   position: relative;
   z-index: 1;
-  border: 1px solid rgba(224, 233, 230, 0.18);
+  border: 1px solid color-mix(in srgb, ${colors.border} 18%, transparent);
   border-radius: 28px;
   padding: ${({ $wide }) => ($wide ? "clamp(28px, 4vw, 42px)" : "38px")};
-  background: #f5f6f6;
-  box-shadow: 0 30px 80px rgba(4, 22, 19, 0.34);
+  background: ${colors.background};
+  box-shadow: 0 30px 80px color-mix(in srgb, ${colors.sidebar} 34%, transparent);
 `;
 
 export const AuthFormElement = styled.form`
