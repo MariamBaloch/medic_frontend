@@ -31,6 +31,7 @@ export function PatientAppointmentsPage() {
     sort: ["appointmentDate,DESC", "startTime,DESC"],
   });
   const [searchText, setSearchText] = useState("");
+  const [selectedAppointmentId, setSelectedAppointmentId] = useState<number | null>(null);
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
 
   const appointmentsQuery = usePatientAppointmentsQuery(queryFilters);
@@ -125,7 +126,13 @@ export function PatientAppointmentsPage() {
   };
 
   const columns = useMemo(
-    () => AppointmentColumns({ statuses, onViewDetails: setSelectedAppointment }),
+    () => AppointmentColumns({
+      statuses,
+      onViewDetails: (appointment) => {
+        setSelectedAppointment(appointment);
+        setSelectedAppointmentId(appointment.id);
+      },
+    }),
     [statuses],
   );
   const tabs = AppointmentTabs(statuses, statusCounts, queryFilters.status ?? "all");
@@ -214,8 +221,12 @@ export function PatientAppointmentsPage() {
 
       <AppointmentDetailsModal
         appointment={selectedAppointment}
+        appointmentId={selectedAppointmentId}
         statuses={statuses}
-        onClose={() => setSelectedAppointment(null)}
+        onClose={() => {
+          setSelectedAppointmentId(null);
+          setSelectedAppointment(null);
+        }}
       />
     </>
   );
