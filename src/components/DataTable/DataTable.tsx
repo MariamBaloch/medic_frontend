@@ -12,6 +12,7 @@ import {
   DataTableFilterCell,
   DataTableFilterGrid,
   DataTableFilterHeader,
+  DataTablePlainRoot,
   DataTableRoot,
   DataTableSearch,
   DataTableSection,
@@ -54,13 +55,20 @@ interface DataTableProps<T extends object> {
   onTabChange?: (key: string) => void;
   pagination?: DataTablePagination;
   onPageChange?: (page: number, size: number) => void;
+  paginationLabel?: string;
   searchText?: string;
   onSearchTextChange?: (value: string) => void;
   searchPlaceholder?: string;
+  searchColumnRatio?: number;
   searchAccessor?: (record: T) => string;
   rowKey: string | ((record: T) => string);
   rowClassName?: (record: T, index: number) => string;
-  title?: string;
+  isRowSelected?: (record: T) => boolean;
+  onRowClick?: (record: T) => void;
+  withCard?: boolean;
+  filterTableSpacing?: boolean;
+  showClearFilters?: boolean;
+  title?: ReactNode;
 }
 
 function asDateRange(value: DataTableFilterValue): [Dayjs, Dayjs] | null {
@@ -81,12 +89,19 @@ export function DataTable<T extends object>({
   onTabChange,
   pagination,
   onPageChange,
+  paginationLabel = "appointments",
   searchText = "",
   onSearchTextChange,
   searchPlaceholder = "Search",
+  searchColumnRatio = 1,
   searchAccessor,
   rowKey,
   rowClassName,
+  isRowSelected,
+  onRowClick,
+  withCard = true,
+  filterTableSpacing = false,
+  showClearFilters = true,
   title = "Find an appointment",
 }: DataTableProps<T>) {
   const displayedRows = useMemo(() => {
@@ -153,26 +168,33 @@ export function DataTable<T extends object>({
     (value) => value !== undefined && value !== "",
   );
 
-  return (
-    <DataTableRoot variant="borderless">
+  const content = (
+    <>
       <DataTableSection>
-        <DataTableFilterHeader>
-          <Typography.Text strong>{title}</Typography.Text>
-          <Button
-            type="link"
-            icon={<UndoOutlined />}
-            className="clear-filters-button"
-            onClick={() => {
-              onSearchTextChange?.("");
-              onClearFilters?.();
-            }}
-            disabled={!activeFilters && !searchText}
-          >
-            Clear filters
-          </Button>
-        </DataTableFilterHeader>
+        {title || showClearFilters ? (
+          <DataTableFilterHeader>
+            {title ? <Typography.Text strong>{title}</Typography.Text> : null}
+            {showClearFilters ? (
+              <Button
+                type="link"
+                icon={<UndoOutlined />}
+                className="clear-filters-button"
+                onClick={() => {
+                  onSearchTextChange?.("");
+                  onClearFilters?.();
+                }}
+                disabled={!activeFilters && !searchText}
+              >
+                Clear filters
+              </Button>
+            ) : null}
+          </DataTableFilterHeader>
+        ) : null}
 
-        <DataTableFilterGrid $columns={filters.length + (onSearchTextChange ? 1 : 0)}>
+        <DataTableFilterGrid
+          $columns={filters.length + (onSearchTextChange ? 1 : 0)}
+          $searchColumnRatio={onSearchTextChange ? searchColumnRatio : 1}
+        >
           {onSearchTextChange ? (
             <DataTableFilterCell>
               <Typography.Text>Search</Typography.Text>
@@ -208,7 +230,20 @@ export function DataTable<T extends object>({
         columns={columns}
         dataSource={displayedRows}
         rowKey={rowKey}
-        rowClassName={rowClassName}
+        rowClassName={(record, index) =>
+          [
+            rowClassName?.(record, index),
+            isRowSelected?.(record) ? "data-table-row-selected" : undefined,
+            onRowClick ? "data-table-row-clickable" : undefined,
+          ]
+            .filter(Boolean)
+            .join(" ")
+        }
+        onRow={
+          onRowClick
+            ? (record) => ({ onClick: () => onRowClick(record) })
+            : undefined
+        }
         loading={loading}
         size="large"
         pagination={
@@ -220,12 +255,21 @@ export function DataTable<T extends object>({
                 showSizeChanger: true,
                 pageSizeOptions: [10, 20, 50],
                 size: "small",
-                showTotal: (total, range) => `${range[0]}–${range[1]} of ${total} appointments`,
+                showTotal: (total, range) =>
+                  `${range[0]}–${range[1]} of ${total} ${paginationLabel}`,
                 onChange: (current, pageSize) => onPageChange?.(current - 1, pageSize),
               }
             : false
         }
       />
-    </DataTableRoot>
+    </>
+  );
+
+  return withCard ? (
+    <DataTableRoot variant="borderless">{content}</DataTableRoot>
+  ) : (
+    <DataTablePlainRoot className={filterTableSpacing ? "data-table-filter-table-spacing" : undefined}>
+      {content}
+    </DataTablePlainRoot>
   );
 }

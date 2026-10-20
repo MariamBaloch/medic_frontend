@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
-import { Space, Typography } from "antd";
+import { Typography } from "antd";
 import {
   PageHeaderActions,
   PageHeaderContent,

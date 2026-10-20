@@ -11,14 +11,24 @@ import { VisitReasonStep } from "@features/booking/components/VisitReasonStep";
 import { ReviewAppointmentStep } from "@features/booking/components/ReviewAppointmentStep";
 import { BookingStepsCard } from "./BookingLayout.styles";
 import { AppCard } from "@components/Card";
+import type { Doctor } from "@features/booking/api/doctor.schemas";
 
 const { Text } = Typography;
 
 export function BookingLayout() {
   const [currentStep, setCurrentStep] = useState(0);
+  const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const navigate = useNavigate();
   const steps = [
-    { title: "Choose doctor", content: <ChooseDoctorStep /> },
+    {
+      title: "Choose doctor",
+      content: (
+        <ChooseDoctorStep
+          selectedDoctorId={selectedDoctor?.userId ?? null}
+          onSelectDoctor={setSelectedDoctor}
+        />
+      ),
+    },
     { title: "Choose time", content: <ChooseTimeStep /> },
     { title: "Visit reason", content: <VisitReasonStep /> },
     { title: "Review appointment", content: <ReviewAppointmentStep /> },
@@ -103,6 +113,7 @@ export function BookingLayout() {
             icon={<ArrowRightOutlined />}
             iconPlacement="end"
             type="primary"
+            disabled={currentStep === 0 && selectedDoctor === null}
             onClick={() => setCurrentStep((step) => step + 1)}
           >
             Continue to {nextStep.title.toLowerCase()}

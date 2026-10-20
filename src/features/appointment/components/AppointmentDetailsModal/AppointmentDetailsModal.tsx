@@ -1,11 +1,11 @@
 import { CalendarOutlined } from "@ant-design/icons";
-import { Alert, Button, Modal, Spin } from "antd";
+import { Button, Modal, Spin } from "antd";
+import { AppAlert } from "@components/AppAlert";
 import type {
   Appointment,
   AppointmentStatusOption,
 } from "@features/appointment/api/appointment.schemas";
 import { usePatientAppointmentQuery } from "@features/appointment/api/appointmentsQueries";
-import { getApiErrorMessage } from "@services/api/errors";
 import { PageHeader } from "@components/PageHeader";
 import { AppointmentDoctorDetails } from "../AppointmentDoctorDetails";
 import { AppointmentInformation } from "../AppointmentInformation";
@@ -49,12 +49,11 @@ export function AppointmentDetailsModal({
       {appointmentQuery.isLoading ? (
         <Spin />
       ) : appointmentQuery.isError ? (
-        <Alert
+        <AppAlert
           type="error"
-          showIcon
           title="Could not load appointment details"
-          description={getApiErrorMessage(appointmentQuery.error)}
-          action={<Button onClick={() => void appointmentQuery.refetch()}>Retry</Button>}
+          error={appointmentQuery.error}
+          onRetry={() => appointmentQuery.refetch()}
         />
       ) : fullAppointment ? (
         <>

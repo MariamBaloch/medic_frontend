@@ -1,8 +1,9 @@
-import { Alert, Button, Input, Typography, message } from "antd";
+import { Button, Input, Typography, message } from "antd";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { AppAlert } from "@components/AppAlert";
 import { FormField } from "@components/FormField/FormField";
 import { ROUTES } from "@constants/routes";
 import { useResetPasswordMutation } from "@features/auth/api/authQueries";
@@ -51,9 +52,8 @@ export function ResetPasswordForm() {
         </AuthFormHeader>
 
         {!token ? (
-          <Alert
+          <AppAlert
             type="warning"
-            showIcon
             message="Reset link is missing or invalid"
             description="Request a new password reset link to continue."
             style={{ marginBottom: 20 }}

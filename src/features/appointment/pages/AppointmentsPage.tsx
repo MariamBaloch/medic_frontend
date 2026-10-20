@@ -1,6 +1,7 @@
 import { CalendarOutlined } from "@ant-design/icons";
-import { Alert, Button, message } from "antd";
+import { Button } from "antd";
 import { useMemo, useState } from "react";
+import { AppAlert } from "@components/AppAlert";
 import { DataTable } from "@components/DataTable/DataTable";
 import type {
   DataTableFilterConfig,
@@ -8,7 +9,6 @@ import type {
   DataTableFilterValues,
 } from "@components/DataTable/DataTable";
 import { PageHeader } from "@components/PageHeader/PageHeader";
-import { getApiErrorMessage } from "@services/api/errors";
 import {
   appointmentStatusSchema,
   type Appointment,
@@ -157,32 +157,29 @@ export function PatientAppointmentsPage() {
       />
 
       {appointmentsQuery.isError ? (
-        <Alert
+        <AppAlert
           type="error"
-          showIcon
           title="Could not load appointments"
-          description={getApiErrorMessage(appointmentsQuery.error)}
-          action={<Button onClick={() => void appointmentsQuery.refetch()}>Retry</Button>}
+          error={appointmentsQuery.error}
+          onRetry={() => appointmentsQuery.refetch()}
           style={{ marginBottom: 16 }}
         />
       ) : null}
 
       {specializationsQuery.isError ? (
-        <Alert
+        <AppAlert
           type="warning"
-          showIcon
           title="Specializations unavailable"
-          description={getApiErrorMessage(specializationsQuery.error)}
+          error={specializationsQuery.error}
           style={{ marginBottom: 16 }}
         />
       ) : null}
 
       {statusesQuery.isError ? (
-        <Alert
+        <AppAlert
           type="warning"
-          showIcon
           title="Appointment statuses unavailable"
-          description={getApiErrorMessage(statusesQuery.error)}
+          error={statusesQuery.error}
           style={{ marginBottom: 16 }}
         />
       ) : null}

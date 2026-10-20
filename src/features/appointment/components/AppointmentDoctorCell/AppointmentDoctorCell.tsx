@@ -1,6 +1,6 @@
 import { Space, Typography } from "antd";
 import { apiClient } from "@services/api/axios";
-import { DoctorAvatar } from "./AppointmentDoctorCell.styles";
+import { DoctorAvatar } from "@components/DoctorAvatar";
 import { getDoctorDisplayName, getDoctorInitials } from "@utils/formatters";
 import type { Appointment } from "@features/appointment/api/appointment.schemas";
 

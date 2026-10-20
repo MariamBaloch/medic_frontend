@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Alert, Button, Input, Typography, message } from "antd";
+import { Button, Input, Typography, message } from "antd";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
 import { Link } from "react-router-dom";
+import { AppAlert } from "@components/AppAlert";
 import { FormField } from "@components/FormField/FormField";
 import { ROUTES } from "@constants/routes";
 import { useForgotPasswordMutation } from "@features/auth/api/authQueries";
@@ -49,9 +50,8 @@ export function ForgotPasswordForm() {
         </AuthFormHeader>
 
         {requestedEmail ? (
-          <Alert
+          <AppAlert
             type="success"
-            showIcon
             title="Check your email"
             description={`You’ll receive a password reset link shortly.`}
             style={{ marginBottom: 20 }}
