@@ -23,8 +23,11 @@ import {
 import { AppointmentDetailsModal } from "@features/appointment/components/AppointmentDetailsModal";
 import { AppointmentTabs } from "@features/appointment/components/AppointmentTabs";
 import { AppointmentColumns } from "@features/appointment/components/AppointmentTableColumns";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@constants/routes";
 
 export function PatientAppointmentsPage() {
+   const navigate = useNavigate();
   const [queryFilters, setQueryFilters] = useState<AppointmentFilters>({
     page: 0,
     size: 10,
@@ -146,7 +149,7 @@ export function PatientAppointmentsPage() {
           <Button
             type="primary"
             icon={<CalendarOutlined />}
-            onClick={() => message.info("Booking flow coming soon.")}
+            onClick={() => navigate(ROUTES.patientBookAppointment)}
           >
             Book an appointment
           </Button>

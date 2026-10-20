@@ -148,7 +148,11 @@ export function AppShell({
           theme="dark"
           mode="inline"
           selectedKeys={activeNavigation
-            .filter((item) => item.path === location.pathname)
+            .filter(
+              (item) =>
+                item.path === location.pathname ||
+                (item.path !== undefined && location.pathname.startsWith(`${item.path}/`)),
+            )
             .map((item) => item.key)}
           items={navigationItems}
           onClick={handleMenuClick}

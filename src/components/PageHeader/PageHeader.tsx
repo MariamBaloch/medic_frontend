@@ -30,7 +30,7 @@ export function PageHeader({ title, description, action, icon, style }: PageHead
       </PageHeaderLeading>
       {action ? (
         <PageHeaderActions>
-          <Space>{action}</Space>
+          <>{action}</>
         </PageHeaderActions>
       ) : null}
     </PageHeaderRoot>

@@ -1,8 +1,9 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { ForgotPasswordPage, LoginPage, RegisterPage, ResetPasswordPage } from "@features/auth";
 import { ROUTES, ROUTE_SEGMENTS } from "@constants/routes";
 import { RoleBasedAppShell } from "@routes/RoleBasedAppShell";
 import { PatientAppointmentsPage } from "@features/appointment/pages/AppointmentsPage";
+import { BookingPage } from "@features/booking/BookingPage";
 import { ProtectedRoute } from "@routes/ProtectedRoute";
 import { PublicRoute } from "@routes/PublicRoute";
 
@@ -32,7 +33,10 @@ export function AppRoutes() {
         >
           <Route index element={<Navigate to={ROUTE_SEGMENTS.overview} replace />} />
           <Route path={ROUTE_SEGMENTS.overview} element={null} />
-          <Route path={ROUTE_SEGMENTS.appointments} element={<PatientAppointmentsPage />} />
+          <Route path={ROUTE_SEGMENTS.appointments} element={<Outlet />}>
+            <Route index element={<PatientAppointmentsPage />} />
+            <Route path={ROUTE_SEGMENTS.bookAppointment} element={<BookingPage />} />
+          </Route>
         </Route>
         <Route
           path={ROUTES.doctor}
