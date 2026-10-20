@@ -15,10 +15,12 @@ export const GlobalStyle = createGlobalStyle`
     min-width: 320px;
     min-height: 100%;
     margin: 0;
+    font-size: 13px;
   }
 
   body {
     min-height: 100vh;
+    font-size: 1rem;
     color: ${colors.text};
     font-family: Inter, ui-sans-serif, system-ui, -apple-system,
       BlinkMacSystemFont, "Segoe UI", sans-serif;

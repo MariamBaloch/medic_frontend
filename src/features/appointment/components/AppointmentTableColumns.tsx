@@ -26,7 +26,7 @@ export function AppointmentColumns({
     {
       key: "doctor",
       title: "Doctor / specialization",
-      width: "16%",
+      width: "20%",
       render: (_value, appointment) => <AppointmentDoctorCell appointment={appointment} />,
     },
     {
@@ -63,7 +63,7 @@ export function AppointmentColumns({
       key: "bookingFee",
       title: "Fee (USD)",
       dataIndex: "bookingFee",
-      width: "16%",
+      width: "7%",
       render: (fee: number | null | undefined) => (
         <Typography.Text strong>{formatBookingFee(fee)}</Typography.Text>
       ),
