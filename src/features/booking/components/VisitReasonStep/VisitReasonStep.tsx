@@ -1,3 +1,12 @@
+import { StepTitle } from "../StepTitle";
+
 export function VisitReasonStep() {
-  return <div>Visit reason</div>;
+  return (
+    <div>
+      <StepTitle
+        title="What brings you in?"
+        description="Help your doctor prepare for your visit by sharing what you'd like to discuss."
+      />
+    </div>
+  );
 }

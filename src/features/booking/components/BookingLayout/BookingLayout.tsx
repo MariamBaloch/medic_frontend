@@ -31,7 +31,7 @@ export function BookingLayout() {
   return (
     <>
       <Breadcrumb
-        style={{ marginBottom: 20 }}
+        style={{ marginBottom: 10 }}
         separator=">"
         items={[
           {
@@ -93,9 +93,7 @@ export function BookingLayout() {
         <Button
           icon={<ArrowLeftOutlined />}
           onClick={() =>
-            isFirstStep
-              ? navigate(ROUTES.patientAppointments)
-              : setCurrentStep((step) => step - 1)
+            isFirstStep ? navigate(ROUTES.patientAppointments) : setCurrentStep((step) => step - 1)
           }
         >
           {isFirstStep ? "Back to appointments" : `Back to ${previousStep?.title.toLowerCase()}`}

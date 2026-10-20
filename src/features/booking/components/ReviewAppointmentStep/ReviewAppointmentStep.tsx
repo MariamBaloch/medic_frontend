@@ -1,3 +1,12 @@
+import { StepTitle } from "../StepTitle";
+
 export function ReviewAppointmentStep() {
-  return <div>Review appointment</div>;
+  return (
+    <div>
+      <StepTitle
+        title="Review your appointment"
+        description="Make sure everything looks right, then confirm your new visit."
+      />
+    </div>
+  );
 }
