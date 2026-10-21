@@ -11,6 +11,7 @@ import { VisitReasonStep } from "@features/booking/components/VisitReasonStep";
 import { ReviewAppointmentStep } from "@features/booking/components/ReviewAppointmentStep";
 import { BookingStepsCard } from "./BookingLayout.styles";
 import { AppCard } from "@components/Card";
+import type { SelectedAppointmentTime } from "@components/WeekAvailability";
 import type { Doctor } from "@features/booking/api/doctor.schemas";
 
 const { Text } = Typography;
@@ -18,6 +19,7 @@ const { Text } = Typography;
 export function BookingLayout() {
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
+  const [selectedTime, setSelectedTime] = useState<SelectedAppointmentTime | null>(null);
   const navigate = useNavigate();
   const steps = [
     {
@@ -25,11 +27,23 @@ export function BookingLayout() {
       content: (
         <ChooseDoctorStep
           selectedDoctorId={selectedDoctor?.userId ?? null}
-          onSelectDoctor={setSelectedDoctor}
+          onSelectDoctor={(doctor) => {
+            setSelectedDoctor(doctor);
+            setSelectedTime(null);
+          }}
         />
       ),
     },
-    { title: "Choose time", content: <ChooseTimeStep /> },
+    {
+      title: "Choose time",
+      content: (
+        <ChooseTimeStep
+          doctorId={selectedDoctor?.doctor.doctorProfileId ?? null}
+          selectedTime={selectedTime}
+          onSelectTime={setSelectedTime}
+        />
+      ),
+    },
     { title: "Visit reason", content: <VisitReasonStep /> },
     { title: "Review appointment", content: <ReviewAppointmentStep /> },
   ];
@@ -113,7 +127,10 @@ export function BookingLayout() {
             icon={<ArrowRightOutlined />}
             iconPlacement="end"
             type="primary"
-            disabled={currentStep === 0 && selectedDoctor === null}
+            disabled={
+              (currentStep === 0 && selectedDoctor === null) ||
+              (currentStep === 1 && selectedTime === null)
+            }
             onClick={() => setCurrentStep((step) => step + 1)}
           >
             Continue to {nextStep.title.toLowerCase()}
