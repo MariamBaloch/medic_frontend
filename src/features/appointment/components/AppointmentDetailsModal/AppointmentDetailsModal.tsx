@@ -9,7 +9,11 @@ import { PageHeader } from "@components/PageHeader";
 import { AppointmentDoctorDetails } from "../AppointmentDoctorDetails";
 import { AppointmentInformation } from "../AppointmentInformation";
 import { AppointmentReasonPanel } from "../AppointmentReasonPanel";
-import { ContentGrid, InformationColumn } from "./AppointmentDetailsModal.styles";
+import {
+  ContentGrid,
+  InformationColumn,
+  LoadingContainer,
+} from "./AppointmentDetailsModal.styles";
 
 interface AppointmentDetailsModalProps {
   appointment: Appointment | null;
@@ -46,7 +50,9 @@ export function AppointmentDetailsModal({
       ]}
     >
       {appointmentQuery.isLoading ? (
-        <Spin />
+        <LoadingContainer>
+          <Spin />
+        </LoadingContainer>
       ) : fullAppointment ? (
         <>
           <PageHeader

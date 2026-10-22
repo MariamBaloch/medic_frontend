@@ -23,3 +23,9 @@ export const InformationColumn = styled.section`
     gap: 12px;
   }
 `;
+
+export const LoadingContainer = styled.div`
+  display: grid;
+  min-height: 240px;
+  place-items: center;
+`;
