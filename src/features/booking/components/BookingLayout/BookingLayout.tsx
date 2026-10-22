@@ -20,6 +20,7 @@ export function BookingLayout() {
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [selectedTime, setSelectedTime] = useState<SelectedAppointmentTime | null>(null);
+  const [visitReason, setVisitReason] = useState("");
   const navigate = useNavigate();
   const steps = [
     {
@@ -44,7 +45,10 @@ export function BookingLayout() {
         />
       ),
     },
-    { title: "Visit reason", content: <VisitReasonStep /> },
+    {
+      title: "Visit reason",
+      content: <VisitReasonStep reason={visitReason} onReasonChange={setVisitReason} />,
+    },
     { title: "Review appointment", content: <ReviewAppointmentStep /> },
   ];
   const isFirstStep = currentStep === 0;
@@ -129,7 +133,8 @@ export function BookingLayout() {
             type="primary"
             disabled={
               (currentStep === 0 && selectedDoctor === null) ||
-              (currentStep === 1 && selectedTime === null)
+              (currentStep === 1 && selectedTime === null) ||
+              (currentStep === 2 && visitReason.trim().length === 0)
             }
             onClick={() => setCurrentStep((step) => step + 1)}
           >
