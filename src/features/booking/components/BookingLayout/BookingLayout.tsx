@@ -37,6 +37,10 @@ export function BookingLayout() {
   const [visitReason, setVisitReason] = useState("");
   const bookingMutation = useBookPatientAppointmentMutation();
   const navigate = useNavigate();
+  const canVisitStep = (step: number) =>
+    (step <= 0 || selectedDoctor !== null) &&
+    (step <= 1 || selectedTime !== null) &&
+    (step <= 2 || visitReason.trim().length > 0);
 
   const confirmAppointment = async () => {
     if (!selectedDoctor || !selectedTime || !visitReason.trim()) return;
@@ -154,8 +158,11 @@ export function BookingLayout() {
           current={currentStep}
           size="small"
           titlePlacement="horizontal"
-          onChange={setCurrentStep}
+          onChange={(step) => {
+            if (canVisitStep(step)) setCurrentStep(step);
+          }}
           items={steps.map((step, index) => ({
+            disabled: index > currentStep && !canVisitStep(index),
             title:
               index === currentStep ? (
                 <Text strong style={{ color: colors.primary }}>
@@ -194,11 +201,7 @@ export function BookingLayout() {
             icon={<ArrowRightOutlined />}
             iconPlacement="end"
             type="primary"
-            disabled={
-              (currentStep === 0 && selectedDoctor === null) ||
-              (currentStep === 1 && selectedTime === null) ||
-              (currentStep === 2 && visitReason.trim().length === 0)
-            }
+            disabled={!canVisitStep(currentStep + 1)}
             onClick={() => setCurrentStep((step) => step + 1)}
           >
             Continue to {nextStep.title.toLowerCase()}
