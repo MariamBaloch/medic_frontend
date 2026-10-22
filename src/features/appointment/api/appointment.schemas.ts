@@ -16,6 +16,7 @@ export const specializationSchema = z.object({
 
 export const appointmentSchema = z.object({
   id: z.number(),
+  version: z.number().int().nonnegative(),
   doctorId: z.number(),
   doctorName: z.string(),
   doctorQualification: z.string().nullish(),
@@ -38,6 +39,7 @@ export const appointmentSchema = z.object({
 });
 
 export const appointmentDetailsSchema = z.object({
+  version: z.number().int().nonnegative(),
   appointmentDate: z.string(),
   startTime: z.string(),
   endTime: z.string(),
@@ -78,6 +80,12 @@ export const appointmentCancellationRequestSchema = z.object({
   reason: z.string().trim().min(1, "Enter a cancellation reason"),
 });
 
+export const appointmentRescheduleRequestSchema = z.object({
+  date: z.string().regex(/^\d{2}\/\d{2}\/\d{4}$/, "Date must use DD/MM/YYYY"),
+  startTime: z.string().regex(/^\d{2}:\d{2}$/, "Time must use HH:mm"),
+  expectedVersion: z.number().int().nonnegative(),
+});
+
 export const appointmentFiltersSchema = z.object({
   doctorId: z.number().int().positive().optional(),
   dateFrom: isoDateSchema.optional(),
@@ -100,3 +108,4 @@ export type AppointmentFilters = z.input<typeof appointmentFiltersSchema>;
 export type Specialization = z.infer<typeof specializationSchema>;
 export type AppointmentBookingRequest = z.infer<typeof appointmentBookingRequestSchema>;
 export type AppointmentCancellationRequest = z.infer<typeof appointmentCancellationRequestSchema>;
+export type AppointmentRescheduleRequest = z.infer<typeof appointmentRescheduleRequestSchema>;

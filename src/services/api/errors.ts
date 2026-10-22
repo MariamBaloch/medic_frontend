@@ -50,3 +50,33 @@ export function getApiErrorMessage(
 
   return fallback;
 }
+
+export function getApiProvidedErrorMessage(error: unknown): string | undefined {
+  if (!isAxiosError(error) || !error.response) {
+    return undefined;
+  }
+
+  const response = error.response.data as ApiErrorResponse | string | undefined;
+  if (typeof response === "string" && response.trim()) {
+    return response;
+  }
+
+  if (!response || typeof response !== "object") {
+    return undefined;
+  }
+
+  const status = response.status ?? error.response.status;
+  const message = response.message ?? response.error;
+  const fieldErrors = Object.entries(response.fieldErrors ?? {}).filter(
+    ([, fieldMessage]) => typeof fieldMessage === "string" && fieldMessage.trim(),
+  );
+  const details = [
+    `Status: ${status}`,
+    message ? `Message: ${message}` : undefined,
+    fieldErrors.length
+      ? `Field errors: ${fieldErrors.map(([field, fieldMessage]) => `${field}: ${fieldMessage}`).join("; ")}`
+      : undefined,
+  ].filter(Boolean);
+
+  return details.length ? details.join(" | ") : undefined;
+}

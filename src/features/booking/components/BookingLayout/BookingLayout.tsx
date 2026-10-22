@@ -21,7 +21,7 @@ import type { SelectedAppointmentTime } from "@components/WeekAvailability";
 import type { Doctor } from "@features/booking/api/doctor.schemas";
 import { useBookPatientAppointmentMutation } from "@features/appointment/api/appointmentsQueries";
 import { notifyApp } from "@services/api/appNotifications";
-import { getApiErrorMessage } from "@services/api/errors";
+import { getApiProvidedErrorMessage } from "@services/api/errors";
 import {
   formatAppointmentDate,
   formatAppointmentTimeRange,
@@ -72,11 +72,8 @@ export function BookingLayout() {
       });
       navigate(ROUTES.patientAppointments);
     } catch (error) {
-      notifyApp({
-        type: "error",
-        message: "Could not confirm appointment",
-        description: getApiErrorMessage(error),
-      });
+      const message = getApiProvidedErrorMessage(error);
+      if (message) notifyApp({ type: "error", message });
     }
   };
   const steps = [

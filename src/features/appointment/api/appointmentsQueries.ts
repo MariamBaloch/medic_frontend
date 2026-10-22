@@ -4,11 +4,13 @@ import type {
   AppointmentBookingRequest,
   AppointmentCancellationRequest,
   AppointmentFilters,
+  AppointmentRescheduleRequest,
   AppointmentStatus,
 } from "./appointment.schemas";
 import {
   bookPatientAppointment,
   cancelPatientAppointment,
+  reschedulePatientAppointment,
   getAppointmentStatuses,
   getPatientAppointment,
   getPatientAppointments,
@@ -42,14 +44,24 @@ export function useCancelPatientAppointmentMutation(appointmentId: number) {
   });
 }
 
-export function usePatientAppointmentsQuery(filters: AppointmentFilters) {
+export function useReschedulePatientAppointmentMutation(appointmentId: number) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (request: AppointmentRescheduleRequest) =>
+      reschedulePatientAppointment(appointmentId, request),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: appointmentKeys.all }),
+  });
+}
+
+export function usePatientAppointmentsQuery(filters: AppointmentFilters, enabled = true) {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   return useQuery({
     queryKey: appointmentKeys.list(filters),
     queryFn: () => getPatientAppointments(filters),
     meta: { notificationTitle: "Could not load appointments" },
-    enabled: isAuthenticated,
+    enabled: isAuthenticated && enabled,
     placeholderData: (previousData) => previousData,
   });
 }

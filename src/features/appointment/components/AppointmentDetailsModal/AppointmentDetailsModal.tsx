@@ -10,11 +10,12 @@ import {
   usePatientAppointmentQuery,
 } from "@features/appointment/api/appointmentsQueries";
 import { notifyApp } from "@services/api/appNotifications";
-import { getApiErrorMessage } from "@services/api/errors";
+import { getApiProvidedErrorMessage } from "@services/api/errors";
 import { PageHeader } from "@components/PageHeader";
 import { AppointmentDoctorDetails } from "../AppointmentDoctorDetails";
 import { AppointmentInformation } from "../AppointmentInformation";
 import { AppointmentReasonPanel } from "../AppointmentReasonPanel";
+import { RescheduleAppointmentDialog } from "./RescheduleAppointmentDialog";
 import {
   ContentGrid,
   InformationColumn,
@@ -32,6 +33,23 @@ function hasValue(value: string | null | undefined): value is string {
   return value !== null && value !== undefined && value.trim() !== "";
 }
 
+function isFutureAppointment(date: string, time: string): boolean {
+  const dateMatch = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(date);
+  const timeMatch = /^(\d{2}):(\d{2})$/.exec(time);
+  if (!dateMatch || !timeMatch) return false;
+
+  const [, day, month, year] = dateMatch;
+  const [, hours, minutes] = timeMatch;
+  const appointmentTime = new Date(
+    Number(year),
+    Number(month) - 1,
+    Number(day),
+    Number(hours),
+    Number(minutes),
+  );
+  return !Number.isNaN(appointmentTime.getTime()) && appointmentTime.getTime() > Date.now();
+}
+
 export function AppointmentDetailsModal({
   appointment,
   appointmentId,
@@ -40,10 +58,16 @@ export function AppointmentDetailsModal({
 }: AppointmentDetailsModalProps) {
   const [cancelForm] = Form.useForm<{ reason: string }>();
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
+  const [isRescheduleDialogOpen, setIsRescheduleDialogOpen] = useState(false);
   const cancelMutation = useCancelPatientAppointmentMutation(appointmentId ?? 0);
   const appointmentQuery = usePatientAppointmentQuery(appointmentId);
   const details = appointmentQuery.data;
   const fullAppointment = appointment && details ? { ...appointment, ...details } : null;
+
+  const closeDetails = () => {
+    setIsRescheduleDialogOpen(false);
+    onClose();
+  };
 
   const closeCancelDialog = () => {
     setIsCancelDialogOpen(false);
@@ -61,23 +85,28 @@ export function AppointmentDetailsModal({
             message: "Appointment cancelled",
             description: `Your appointment with ${cancelledAppointment.doctorName} on ${cancelledAppointment.appointmentDate} at ${cancelledAppointment.startTime} has been cancelled. Reason: ${cancelledAppointment.cancelledReason || reason}`,
           });
-          onClose();
+          closeDetails();
         },
         onError: (error) => {
-          notifyApp({
-            type: "error",
-            message: "Could not cancel appointment",
-            description: getApiErrorMessage(error),
-          });
+          const message = getApiProvidedErrorMessage(error);
+          if (message) notifyApp({ type: "error", message });
         },
       },
     );
   };
 
+  const canReschedule =
+    fullAppointment?.status === "BOOKED" &&
+    isFutureAppointment(fullAppointment.appointmentDate, fullAppointment.startTime);
   const modalFooter = fullAppointment?.status === "BOOKED" ? (
-    <Button danger onClick={() => setIsCancelDialogOpen(true)}>
-      Cancel appointment
-    </Button>
+    <Space>
+      {canReschedule ? (
+        <Button onClick={() => setIsRescheduleDialogOpen(true)}>Reschedule appointment</Button>
+      ) : null}
+      <Button danger onClick={() => setIsCancelDialogOpen(true)}>
+        Cancel appointment
+      </Button>
+    </Space>
   ) : null;
 
   return (
@@ -85,7 +114,7 @@ export function AppointmentDetailsModal({
       <Modal
         title={null}
         open={appointmentId !== null}
-        onCancel={onClose}
+        onCancel={closeDetails}
         centered
         width="min(1100px, calc(100vw - 24px))"
         footer={modalFooter}
@@ -149,6 +178,13 @@ export function AppointmentDetailsModal({
           </Space>
         </Form>
       </Modal>
+
+      <RescheduleAppointmentDialog
+        appointment={fullAppointment}
+        open={isRescheduleDialogOpen}
+        onClose={() => setIsRescheduleDialogOpen(false)}
+        onRescheduled={closeDetails}
+      />
     </>
   );
 }
