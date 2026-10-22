@@ -5,11 +5,14 @@ import { getApiErrorMessage } from "@services/api/errors";
 export const queryClient = new QueryClient({
   queryCache: new QueryCache({
     onError: (error, query) => {
+      const notificationTitle = query.meta?.notificationTitle;
+      const notificationKey = query.meta?.notificationKey;
       notifyApp({
         type: "error",
-        message: "Request failed",
+        message:
+          typeof notificationTitle === "string" ? notificationTitle : "Request failed",
         description: getApiErrorMessage(error),
-        key: query.queryHash,
+        key: typeof notificationKey === "string" ? notificationKey : query.queryHash,
       });
     },
   }),

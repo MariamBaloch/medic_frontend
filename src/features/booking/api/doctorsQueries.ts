@@ -18,6 +18,7 @@ export function useDoctorsQuery(filters: DoctorSearchFilters) {
   return useQuery({
     queryKey: doctorKeys.list(filters),
     queryFn: () => getDoctors(filters),
+    meta: { notificationTitle: "Could not load doctors" },
     enabled: isAuthenticated,
     placeholderData: (previousData) => previousData,
   });

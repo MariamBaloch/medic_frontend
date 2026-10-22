@@ -13,6 +13,7 @@ export function useDoctorAvailabilityQuery(doctorId: number | null, from: string
 
   return useQuery({
     queryKey: doctorAvailabilityKeys.list(doctorId, from, to),
+    meta: { notificationTitle: "Could not load doctor availability" },
     queryFn: () => {
       if (doctorId === null) {
         throw new Error("A doctor must be selected to load availability.");

@@ -32,6 +32,7 @@ export function useCurrentUserQuery() {
   return useQuery({
     queryKey: authKeys.currentUser(),
     queryFn: getCurrentUser,
+    meta: { notificationTitle: "Could not load your account" },
     enabled: isAuthenticated,
     staleTime: 5 * 60 * 1000,
   });

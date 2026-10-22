@@ -32,6 +32,7 @@ export function usePatientAppointmentsQuery(filters: AppointmentFilters) {
   return useQuery({
     queryKey: appointmentKeys.list(filters),
     queryFn: () => getPatientAppointments(filters),
+    meta: { notificationTitle: "Could not load appointments" },
     enabled: isAuthenticated,
     placeholderData: (previousData) => previousData,
   });
@@ -43,6 +44,7 @@ export function usePatientAppointmentQuery(appointmentId: number | null) {
   return useQuery({
     queryKey: appointmentKeys.detail(appointmentId ?? 0),
     queryFn: () => getPatientAppointment(appointmentId ?? 0),
+    meta: { notificationTitle: "Could not load appointment details" },
     enabled: isAuthenticated && appointmentId !== null,
   });
 }
@@ -51,6 +53,7 @@ export function useSpecializationsQuery() {
   return useQuery({
     queryKey: appointmentKeys.specializations,
     queryFn: getSpecializations,
+    meta: { notificationTitle: "Could not load specializations" },
     staleTime: 30 * 60 * 1000,
   });
 }
@@ -59,6 +62,7 @@ export function useAppointmentStatusesQuery() {
   return useQuery({
     queryKey: appointmentKeys.statuses,
     queryFn: getAppointmentStatuses,
+    meta: { notificationTitle: "Could not load appointment statuses" },
     staleTime: 30 * 60 * 1000,
   });
 }
@@ -81,6 +85,10 @@ export function useAppointmentStatusCounts(filters: AppointmentFilters, statuses
       queryKey: [...appointmentKeys.all, "status-count", commonFilters, key],
       queryFn: () =>
         getPatientAppointments({ ...commonFilters, status, page: 0, size: 1 }),
+      meta: {
+        notificationTitle: "Could not load appointment counts",
+        notificationKey: "appointment-status-counts",
+      },
       enabled: isAuthenticated,
       staleTime: 30_000,
     })),
