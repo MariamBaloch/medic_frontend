@@ -6,29 +6,24 @@ import {
   MedicineBoxOutlined,
   SafetyCertificateOutlined,
   StarOutlined,
-  UserOutlined,
 } from "@ant-design/icons";
 import type { ReactNode } from "react";
+import { DoctorSummary } from "@components/DoctorSummary";
 import type {
   Appointment,
   AppointmentDetails,
 } from "@features/appointment/api/appointment.schemas";
-import { getDoctorDisplayName } from "@utils/formatters";
 import {
   BioHeading,
   BioText,
   BioTitle,
-  DoctorAvatar,
   DoctorBio,
   DoctorCard,
   DoctorDetailContent,
   DoctorDetailIcon,
   DoctorDetailRow,
   DoctorDetailsList,
-  DoctorHeader,
-  DoctorIdentity,
-  DoctorName,
-  DoctorSpecialization,
+  DoctorSummaryHeader,
   DetailLabel,
   DetailValue,
   SectionTitle,
@@ -94,24 +89,18 @@ export function AppointmentDoctorDetails({ appointment }: AppointmentDoctorDetai
     },
     { icon: <IdcardOutlined />, label: "License number", value: appointment.doctorLicenseNumber },
   ];
-  const doctorName = getDoctorDisplayName(appointment.doctorName, appointment.doctorQualification);
-
   return (
     <DoctorCard>
       <SectionTitle level={4}>Doctor details</SectionTitle>
-      <DoctorHeader>
-        <DoctorAvatar
+      <DoctorSummaryHeader>
+        <DoctorSummary
+          name={appointment.doctorName}
+          qualification={appointment.doctorQualification}
+          specialization={appointment.specialization?.name}
+          imageUrl={appointment.doctorImageUrl || undefined}
           size={60}
-          src={appointment.doctorImageUrl || undefined}
-          icon={<UserOutlined />}
         />
-        <DoctorIdentity>
-          <DoctorName level={5}>{doctorName}</DoctorName>
-          <DoctorSpecialization type="secondary">
-            {appointment.specialization?.name ?? "Specialization unavailable"}
-          </DoctorSpecialization>
-        </DoctorIdentity>
-      </DoctorHeader>
+      </DoctorSummaryHeader>
       <DoctorDetailsList>
         {doctorDetails.map((detail) => (
           <DoctorDetailItem key={detail.label} {...detail} />

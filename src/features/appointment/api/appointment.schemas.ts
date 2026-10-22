@@ -67,6 +67,13 @@ export const appointmentPageSchema = z.object({
 
 const isoDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Date must use YYYY-MM-DD");
 
+export const appointmentBookingRequestSchema = z.object({
+  doctorId: z.number().int().positive(),
+  date: z.string().regex(/^\d{2}\/\d{2}\/\d{4}$/, "Date must use DD/MM/YYYY"),
+  startTime: z.string().regex(/^\d{2}:\d{2}$/, "Time must use HH:mm"),
+  reason: z.string().max(1000),
+});
+
 export const appointmentFiltersSchema = z.object({
   doctorId: z.number().int().positive().optional(),
   dateFrom: isoDateSchema.optional(),
@@ -87,3 +94,4 @@ export type AppointmentStatusOption = z.infer<typeof appointmentStatusOptionSche
 export type AppointmentPage = z.infer<typeof appointmentPageSchema>;
 export type AppointmentFilters = z.input<typeof appointmentFiltersSchema>;
 export type Specialization = z.infer<typeof specializationSchema>;
+export type AppointmentBookingRequest = z.infer<typeof appointmentBookingRequestSchema>;

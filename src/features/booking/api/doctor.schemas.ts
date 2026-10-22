@@ -11,6 +11,7 @@ export const doctorSchema = z.object({
   gender: z.string(),
   role: z.literal("DOCTOR"),
   status: z.string(),
+  imageUrl: z.string().nullish(),
   doctor: z.object({
     doctorProfileId: z.number().int(),
     specialization: specializationSchema.nullish(),

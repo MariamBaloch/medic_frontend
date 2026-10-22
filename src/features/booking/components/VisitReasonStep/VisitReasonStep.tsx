@@ -43,8 +43,6 @@ export function VisitReasonStep({ reason, onReasonChange }: VisitReasonStepProps
           onChange={(event) => onReasonChange(event.target.value)}
           maxLength={MAX_REASON_LENGTH}
           autoSize={{ minRows: 4, maxRows: 4 }}
-          aria-required="true"
-          aria-describedby="visit-reason-help"
         />
         <ReasonFooter justify="space-between" align="center">
           <Typography.Text id="visit-reason-help" type="secondary">

@@ -1,4 +1,4 @@
-import { Avatar, Typography } from "antd";
+import { Typography } from "antd";
 import styled from "styled-components";
 import { colors } from "@theme/tokens";
 
@@ -23,43 +23,8 @@ export const SectionTitle = styled(Title)`
     line-height: 1.35;
   }
 `;
-export const DoctorHeader = styled.header`
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  min-width: 0;
+export const DoctorSummaryHeader = styled.div`
   margin-top: 18px;
-  @media (max-width: 480px) {
-    align-items: flex-start;
-    gap: 12px;
-  }
-`;
-export const DoctorAvatar = styled(Avatar)`
-  && {
-    flex-shrink: 0;
-    background: ${colors.background};
-    color: ${colors.primary};
-    img {
-      object-fit: contain;
-    }
-  }
-`;
-export const DoctorIdentity = styled.section`
-  min-width: 0;
-`;
-export const DoctorName = styled(Title)`
-  && {
-    margin: 0 0 4px;
-    font-size: 17px;
-    font-weight: 600;
-    line-height: 1.4;
-    overflow-wrap: anywhere;
-  }
-`;
-export const DoctorSpecialization = styled(Text)`
-  && {
-    font-size: 14px;
-  }
 `;
 export const DoctorDetailsList = styled.section`
   display: grid;

@@ -25,6 +25,8 @@ const { Text } = Typography;
 export interface SelectedAppointmentTime {
   date: string;
   time: string;
+  endTime: string;
+  durationMinutes: number;
 }
 
 export interface DoctorAvailabilitySlot {
@@ -247,6 +249,8 @@ export function WeekAvailability({
                           onSelectTime?.({
                             date: dateKey,
                             time: slot.startTime,
+                            endTime: slot.endTime,
+                            durationMinutes: slot.slotMinutes,
                           })
                         }
                       >

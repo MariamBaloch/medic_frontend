@@ -1,5 +1,5 @@
 import { CheckOutlined } from "@ant-design/icons";
-import { Space, Typography } from "antd";
+import { Typography } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { DataTable } from "@components/DataTable";
 import type {
@@ -7,8 +7,8 @@ import type {
   DataTableFilterValue,
   DataTableFilterValues,
 } from "@components/DataTable";
-import { DoctorAvatar } from "@components/DoctorAvatar";
-import { formatBookingFee, getDoctorDisplayName, getDoctorInitials } from "@utils/formatters";
+import { DoctorSummary } from "@components/DoctorSummary";
+import { formatBookingFee } from "@utils/formatters";
 import { StepTitle } from "../StepTitle";
 import { useDoctorsQuery } from "@features/booking/api/doctorsQueries";
 import type { Doctor } from "@features/booking/api/doctor.schemas";
@@ -71,22 +71,14 @@ export function ChooseDoctorStep({ selectedDoctorId, onSelectDoctor }: ChooseDoc
       {
         key: "doctor",
         title: "Doctor",
-        render: (_value, doctor) => {
-          const name = `${doctor.firstName} ${doctor.lastName}`;
-          return (
-            <Space size={10}>
-              <DoctorAvatar size={40} $hasImage={false}>
-                {getDoctorInitials(name)}
-              </DoctorAvatar>
-              <Space orientation="vertical" size={0}>
-                <Typography.Text strong>
-                  {getDoctorDisplayName(name, doctor.doctor.qualification)}
-                </Typography.Text>
-                {doctor.doctor.specialization?.name ?? "—"}
-              </Space>
-            </Space>
-          );
-        },
+        render: (_value, doctor) => (
+          <DoctorSummary
+            name={`${doctor.firstName} ${doctor.lastName}`}
+            qualification={doctor.doctor.qualification}
+            specialization={doctor.doctor.specialization?.name}
+            imageUrl={doctor.imageUrl ?? undefined}
+          />
+        ),
       },
       {
         key: "experience",

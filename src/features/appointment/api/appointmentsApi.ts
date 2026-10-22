@@ -4,11 +4,20 @@ import {
   appointmentPageSchema,
   appointmentStatusesSchema,
   appointmentDetailsSchema,
+  appointmentBookingRequestSchema,
+  appointmentSchema,
   specializationsSchema,
+  type AppointmentBookingRequest,
   type AppointmentFilters,
   type AppointmentPage,
   type Specialization,
 } from "./appointment.schemas";
+
+export async function bookPatientAppointment(request: AppointmentBookingRequest) {
+  const validatedRequest = appointmentBookingRequestSchema.parse(request);
+  const { data } = await apiClient.post("/patient/appointments", validatedRequest);
+  return appointmentSchema.parse(data);
+}
 
 export async function getPatientAppointments(filters: AppointmentFilters): Promise<AppointmentPage> {
   const validatedFilters = appointmentFiltersSchema.parse(filters);
