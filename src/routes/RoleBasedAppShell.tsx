@@ -1,6 +1,6 @@
 import { Button, Flex, Result, Spin } from "antd";
 import { Navigate } from "react-router-dom";
-import { AppShell } from "@components/AppShell";
+import { AppShell } from "@components/AppShell/AppShell";
 import { ROLE_OVERVIEW_ROUTES, ROUTES } from "@constants/routes";
 import { useCurrentUserQuery } from "@features/auth/api/authQueries";
 import { useAuthStore } from "@stores/authStore";

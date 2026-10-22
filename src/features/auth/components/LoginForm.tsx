@@ -1,13 +1,14 @@
-import { Button, Input, Typography, message } from "antd";
+import { Button, Input, Typography } from "antd";
 import { Controller, useForm } from "react-hook-form";
 import type { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
-import { FormField } from "@components/FormField";
+import { FormField } from "@components/FormField/FormField";
 import { ROUTES } from "@constants/routes";
 import { useLoginMutation } from "@features/auth/api/authQueries";
 import { loginRequestSchema } from "@features/auth/schemas/auth.schemas";
 import { getApiErrorMessage } from "@services/api/errors";
+import { notifyApp } from "@services/api/appNotifications";
 import {
   AuthFormCard,
   AuthFormActions,
@@ -34,7 +35,7 @@ export function LoginForm() {
       await loginMutation.mutateAsync({ email, password });
       navigate(ROUTES.app, { replace: true });
     } catch (error) {
-      message.error(getApiErrorMessage(error));
+      notifyApp({ type: "error", message: "Could not sign in", description: getApiErrorMessage(error) });
     }
   };
 

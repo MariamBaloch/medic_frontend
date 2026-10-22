@@ -10,7 +10,7 @@ export const AppBrandIconRoot = styled.div<{ $compact: boolean }>`
   place-items: center;
   color: ${colors.surface};
   background: ${colors.primary};
-  box-shadow: 0 18px 36px rgba(23, 107, 91, 0.24);
+  box-shadow: 0 18px 36px color-mix(in srgb, ${colors.primary} 24%, transparent);
   font-size: ${({ $compact }) => ($compact ? "19px" : "22px")};
   font-weight: 800;
 `;

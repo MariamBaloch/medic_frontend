@@ -23,7 +23,7 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: "medic-auth",
-      storage: createJSONStorage(() => sessionStorage),
+      storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         token: state.token,
         user: state.user,
@@ -32,3 +32,26 @@ export const useAuthStore = create<AuthState>()(
     },
   ),
 );
+
+
+if (typeof window !== "undefined") {
+  window.addEventListener("storage", (event) => {
+    if (event.key !== "medic-auth") return;
+
+    if (!event.newValue) {
+      useAuthStore.getState().clearSession();
+      return;
+    }
+
+    try {
+      const persisted = JSON.parse(event.newValue) as {
+        state?: Pick<AuthState, "token" | "user" | "isAuthenticated">;
+      };
+      if (persisted.state) {
+        useAuthStore.setState(persisted.state);
+      }
+    } catch {
+      useAuthStore.getState().clearSession();
+    }
+  });
+}

@@ -8,6 +8,7 @@ export const ROUTES = {
   patient: "/patient",
   patientOverview: "/patient/overview",
   patientAppointments: "/patient/appointments",
+  patientBookAppointment: "/patient/appointments/book",
   doctor: "/doctor",
   doctorOverview: "/doctor/overview",
   admin: "/admin",
@@ -18,6 +19,8 @@ export const ROUTES = {
 export const ROUTE_SEGMENTS = {
   overview: "overview",
   appointments: "appointments",
+  profile: "profile",
+  bookAppointment: "book",
 } as const;
 
 export const ROLE_OVERVIEW_ROUTES = {

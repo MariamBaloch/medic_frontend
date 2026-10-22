@@ -19,7 +19,7 @@ import {
   SecurePill,
   TopBar,
 } from "./AuthLayout.styles";
-import { AppBrandIcon } from "@components/AppBrandIcon";
+import { AppBrandIcon } from "@components/AppBrandIcon/AppBrandIcon";
 
 const features = [
   "Book appointments in minutes",

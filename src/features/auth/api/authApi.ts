@@ -20,6 +20,27 @@ import {
   type UserProfile,
 } from "../schemas/auth.schemas";
 
+export interface PatientProfileUpdate {
+  address?: string;
+  city?: string;
+  country?: string;
+  bloodType?: string;
+  heightCm?: number;
+  weightKg?: number;
+  allergies?: string;
+  chronicConditions?: string;
+}
+
+export interface DoctorProfileUpdate {
+  specializationId?: number;
+  qualification?: string;
+  yearsOfExperience?: number;
+  consultationFee?: number;
+  hospitalAffiliation?: string;
+  clinicAddress?: string;
+  bio?: string;
+}
+
 export async function login(input: LoginRequest): Promise<LoginResponse> {
   const payload = loginRequestSchema.parse(input);
   const { data } = await apiClient.post("/auth/users/login", payload);
@@ -33,6 +54,22 @@ export async function logout(): Promise<void> {
 export async function getCurrentUser(): Promise<UserProfile> {
   const { data } = await apiClient.get("/user");
   return userProfileSchema.parse(data);
+}
+
+export async function updatePatientProfile(input: PatientProfileUpdate): Promise<void> {
+  await apiClient.patch("/profile/patient", input);
+}
+
+export async function updateDoctorProfile(input: DoctorProfileUpdate): Promise<void> {
+  await apiClient.patch("/profile/doctor", input);
+}
+
+export async function uploadProfilePicture(file: File): Promise<void> {
+  const formData = new FormData();
+  formData.append("file", file);
+  await apiClient.patch("/user/avatar", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
 }
 
 export async function registerPatient(input: PatientRegistrationRequest): Promise<void> {

@@ -12,15 +12,15 @@ export const antdTheme: ThemeConfig = {
     borderRadius: 14,
     controlHeight: 48,
     controlHeightLG: 54,
+    fontSize: 13,
+    fontSizeSM: 11,
+    fontSizeLG: 14,
+    colorLink: colors.primary,
+    colorLinkHover: colors.textSecondary,
+    colorLinkActive: colors.primary,
     fontFamily: "Inter, sans-serif",
   },
   components: {
-    Button: {
-      borderRadius: 14,
-      controlHeight: 48,
-      fontWeight: 800,
-      primaryShadow: "0 16px 30px rgba(23, 107, 91, 0.24)",
-    },
     DatePicker: {
       borderRadius: 14,
       cellWidth: 36,
@@ -39,19 +39,16 @@ export const antdTheme: ThemeConfig = {
       borderRadius: 14,
       paddingBlock: 12,
       paddingInline: 16,
-      activeShadow: "0 0 0 4px rgba(23, 107, 91, 0.12)",
     },
     InputNumber: {
       borderRadius: 14,
       paddingBlock: 12,
       paddingInline: 16,
-      activeShadow: "0 0 0 4px rgba(23, 107, 91, 0.12)",
     },
     Menu: {
       darkItemBg: colors.sidebar,
       darkItemSelectedBg: colors.sidebarActive,
       darkItemHoverBg: colors.sidebarActive,
-      darkItemColor: "rgba(255, 255, 255, 0.72)",
       darkItemSelectedColor: colors.surface,
     },
     Segmented: {
