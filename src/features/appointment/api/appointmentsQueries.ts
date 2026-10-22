@@ -1,8 +1,14 @@
 import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "@stores/authStore";
-import type { AppointmentBookingRequest, AppointmentFilters, AppointmentStatus } from "./appointment.schemas";
+import type {
+  AppointmentBookingRequest,
+  AppointmentCancellationRequest,
+  AppointmentFilters,
+  AppointmentStatus,
+} from "./appointment.schemas";
 import {
   bookPatientAppointment,
+  cancelPatientAppointment,
   getAppointmentStatuses,
   getPatientAppointment,
   getPatientAppointments,
@@ -22,6 +28,16 @@ export function useBookPatientAppointmentMutation() {
 
   return useMutation({
     mutationFn: (request: AppointmentBookingRequest) => bookPatientAppointment(request),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: appointmentKeys.all }),
+  });
+}
+
+export function useCancelPatientAppointmentMutation(appointmentId: number) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (request: AppointmentCancellationRequest) =>
+      cancelPatientAppointment(appointmentId, request),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: appointmentKeys.all }),
   });
 }

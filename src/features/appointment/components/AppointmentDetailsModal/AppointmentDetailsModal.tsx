@@ -1,10 +1,16 @@
 import { CalendarOutlined } from "@ant-design/icons";
-import { Button, Modal, Spin } from "antd";
+import { Button, Form, Input, Modal, Space, Spin, Typography } from "antd";
+import { useState } from "react";
 import type {
   Appointment,
   AppointmentStatusOption,
 } from "@features/appointment/api/appointment.schemas";
-import { usePatientAppointmentQuery } from "@features/appointment/api/appointmentsQueries";
+import {
+  useCancelPatientAppointmentMutation,
+  usePatientAppointmentQuery,
+} from "@features/appointment/api/appointmentsQueries";
+import { notifyApp } from "@services/api/appNotifications";
+import { getApiErrorMessage } from "@services/api/errors";
 import { PageHeader } from "@components/PageHeader";
 import { AppointmentDoctorDetails } from "../AppointmentDoctorDetails";
 import { AppointmentInformation } from "../AppointmentInformation";
@@ -32,54 +38,117 @@ export function AppointmentDetailsModal({
   statuses,
   onClose,
 }: AppointmentDetailsModalProps) {
+  const [cancelForm] = Form.useForm<{ reason: string }>();
+  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
+  const cancelMutation = useCancelPatientAppointmentMutation(appointmentId ?? 0);
   const appointmentQuery = usePatientAppointmentQuery(appointmentId);
   const details = appointmentQuery.data;
   const fullAppointment = appointment && details ? { ...appointment, ...details } : null;
 
+  const closeCancelDialog = () => {
+    setIsCancelDialogOpen(false);
+    cancelForm.resetFields();
+  };
+
+  const handleCancel = ({ reason }: { reason: string }) => {
+    cancelMutation.mutate(
+      { reason },
+      {
+        onSuccess: (cancelledAppointment) => {
+          closeCancelDialog();
+          notifyApp({
+            type: "success",
+            message: "Appointment cancelled",
+            description: `Your appointment with ${cancelledAppointment.doctorName} on ${cancelledAppointment.appointmentDate} at ${cancelledAppointment.startTime} has been cancelled. Reason: ${cancelledAppointment.cancelledReason || reason}`,
+          });
+          onClose();
+        },
+        onError: (error) => {
+          notifyApp({
+            type: "error",
+            message: "Could not cancel appointment",
+            description: getApiErrorMessage(error),
+          });
+        },
+      },
+    );
+  };
+
+  const modalFooter = fullAppointment?.status === "BOOKED" ? (
+    <Button danger onClick={() => setIsCancelDialogOpen(true)}>
+      Cancel appointment
+    </Button>
+  ) : null;
+
   return (
-    <Modal
-      title={null}
-      open={appointmentId !== null}
-      onCancel={onClose}
-      centered
-      width="min(1100px, calc(100vw - 24px))"
-      footer={[
-        <Button key="close" onClick={onClose}>
-          Close
-        </Button>,
-      ]}
-    >
-      {appointmentQuery.isLoading ? (
-        <LoadingContainer>
-          <Spin />
-        </LoadingContainer>
-      ) : fullAppointment ? (
-        <>
-          <PageHeader
-            style={{ padding: "10px 0px" }}
-            icon={<CalendarOutlined />}
-            title="Appointment details"
-            description="View the full details of your appointment."
-          />
-          <ContentGrid>
-            <AppointmentDoctorDetails appointment={fullAppointment} />
-            <InformationColumn>
-              <AppointmentInformation appointment={fullAppointment} statuses={statuses} />
-              <AppointmentReasonPanel
-                title="Reason for visit"
-                value={fullAppointment.reason?.trim() || "No reason provided."}
-              />
-              {hasValue(fullAppointment.cancelledReason) ? (
+    <>
+      <Modal
+        title={null}
+        open={appointmentId !== null}
+        onCancel={onClose}
+        centered
+        width="min(1100px, calc(100vw - 24px))"
+        footer={modalFooter}
+      >
+        {appointmentQuery.isLoading ? (
+          <LoadingContainer>
+            <Spin />
+          </LoadingContainer>
+        ) : fullAppointment ? (
+          <>
+            <PageHeader
+              style={{ padding: "10px 0px" }}
+              icon={<CalendarOutlined />}
+              title="Appointment details"
+              description="View the full details of your appointment."
+            />
+            <ContentGrid>
+              <AppointmentDoctorDetails appointment={fullAppointment} />
+              <InformationColumn>
+                <AppointmentInformation appointment={fullAppointment} statuses={statuses} />
                 <AppointmentReasonPanel
-                  title="Cancellation reason"
-                  value={fullAppointment.cancelledReason.trim()}
-                  variant="danger"
+                  title="Reason for visit"
+                  value={fullAppointment.reason?.trim() || "No reason provided."}
                 />
-              ) : null}
-            </InformationColumn>
-          </ContentGrid>
-        </>
-      ) : null}
-    </Modal>
+                {hasValue(fullAppointment.cancelledReason) ? (
+                  <AppointmentReasonPanel
+                    title="Cancellation reason"
+                    value={fullAppointment.cancelledReason.trim()}
+                    variant="danger"
+                  />
+                ) : null}
+              </InformationColumn>
+            </ContentGrid>
+          </>
+        ) : null}
+      </Modal>
+
+      <Modal
+        title="Cancel appointment"
+        open={isCancelDialogOpen}
+        onCancel={closeCancelDialog}
+        footer={null}
+        destroyOnHidden
+      >
+        <Typography.Paragraph>
+          Please provide a reason for cancelling this appointment.
+        </Typography.Paragraph>
+        <Form form={cancelForm} layout="vertical" onFinish={handleCancel}>
+          <Form.Item
+            name="reason"
+            label="Cancellation reason"
+            rules={[{ required: true, whitespace: true, message: "Enter a cancellation reason" }]}
+          >
+            <Input.TextArea rows={4} maxLength={1000} showCount />
+          </Form.Item>
+          <Space>
+            <Button onClick={closeCancelDialog}>Keep appointment</Button>
+            <Button danger type="primary" htmlType="submit" loading={cancelMutation.isPending}>
+              Confirm cancellation
+            </Button>
+          </Space>
+        </Form>
+      </Modal>
+    </>
   );
 }

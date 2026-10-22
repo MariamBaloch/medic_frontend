@@ -74,6 +74,10 @@ export const appointmentBookingRequestSchema = z.object({
   reason: z.string().max(1000),
 });
 
+export const appointmentCancellationRequestSchema = z.object({
+  reason: z.string().trim().min(1, "Enter a cancellation reason"),
+});
+
 export const appointmentFiltersSchema = z.object({
   doctorId: z.number().int().positive().optional(),
   dateFrom: isoDateSchema.optional(),
@@ -95,3 +99,4 @@ export type AppointmentPage = z.infer<typeof appointmentPageSchema>;
 export type AppointmentFilters = z.input<typeof appointmentFiltersSchema>;
 export type Specialization = z.infer<typeof specializationSchema>;
 export type AppointmentBookingRequest = z.infer<typeof appointmentBookingRequestSchema>;
+export type AppointmentCancellationRequest = z.infer<typeof appointmentCancellationRequestSchema>;

@@ -5,9 +5,11 @@ import {
   appointmentStatusesSchema,
   appointmentDetailsSchema,
   appointmentBookingRequestSchema,
+  appointmentCancellationRequestSchema,
   appointmentSchema,
   specializationsSchema,
   type AppointmentBookingRequest,
+  type AppointmentCancellationRequest,
   type AppointmentFilters,
   type AppointmentPage,
   type Specialization,
@@ -16,6 +18,18 @@ import {
 export async function bookPatientAppointment(request: AppointmentBookingRequest) {
   const validatedRequest = appointmentBookingRequestSchema.parse(request);
   const { data } = await apiClient.post("/patient/appointments", validatedRequest);
+  return appointmentSchema.parse(data);
+}
+
+export async function cancelPatientAppointment(
+  appointmentId: number,
+  request: AppointmentCancellationRequest,
+) {
+  const validatedRequest = appointmentCancellationRequestSchema.parse(request);
+  const { data } = await apiClient.put(
+    `/patient/appointments/${appointmentId}/cancel`,
+    validatedRequest,
+  );
   return appointmentSchema.parse(data);
 }
 
