@@ -19,6 +19,7 @@ export const ROUTES = {
 export const ROUTE_SEGMENTS = {
   overview: "overview",
   appointments: "appointments",
+  profile: "profile",
   bookAppointment: "book",
 } as const;
 

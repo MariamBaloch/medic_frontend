@@ -80,6 +80,9 @@ const patientProfileSchema = z
 const doctorProfileSchema = z
   .object({
     specializationId: z.number().nullish(),
+    specialization: z
+      .object({ id: z.number(), name: z.string(), description: z.string().nullish() })
+      .nullish(),
     qualification: z.string().nullish(),
     yearsOfExperience: z.number().nullish(),
     consultationFee: z.number().nullish(),

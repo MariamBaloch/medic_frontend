@@ -1,6 +1,7 @@
 import {
   AppstoreOutlined,
   CalendarOutlined,
+  IdcardOutlined,
   LogoutOutlined,
   BellOutlined,
   DownOutlined,
@@ -99,7 +100,9 @@ export function AppShell({
     ? [profile.firstName, profile.lastName].filter(Boolean).join(" ").trim() || profile.email
     : "Loading profile";
   const title =
-    activeNavigation.find((item) => item.path === location.pathname)?.title ?? portalLabel;
+    location.pathname === getAppRoute(basePath, ROUTE_SEGMENTS.profile)
+      ? "Profile"
+      : activeNavigation.find((item) => item.path === location.pathname)?.title ?? portalLabel;
   const navigationItems: MenuProps["items"] = activeNavigation.map((item) => ({
     key: item.key,
     icon: item.icon,
@@ -127,7 +130,9 @@ export function AppShell({
     if (selectedItem?.path) navigate(selectedItem.path);
   };
   const handleUserMenuClick: MenuProps["onClick"] = ({ key }) => {
-    if (key === "sign-out") {
+    if (key === "profile") {
+      navigate(getAppRoute(basePath, ROUTE_SEGMENTS.profile));
+    } else if (key === "sign-out") {
       logoutMutation.mutate(undefined, {
         onSettled: () => navigate(ROUTES.login, { replace: true }),
       });
@@ -179,14 +184,23 @@ export function AppShell({
             </Tooltip>
             <Dropdown
               menu={{
-                items: [{ key: "sign-out", label: "Sign out", icon: <LogoutOutlined /> }],
+                items: [
+                  { key: "profile", label: "Profile", icon: <IdcardOutlined /> },
+                  { type: "divider" },
+                  { key: "sign-out", label: "Sign out", icon: <LogoutOutlined /> },
+                ],
                 onClick: handleUserMenuClick,
               }}
               placement="bottomRight"
               trigger={["click"]}
             >
               <UserMenuTrigger type="button" aria-label="Open user menu">
-                <Avatar size={34} icon={<UserOutlined />} style={{ background: colors.teal }} />
+                <Avatar
+                  size={34}
+                  src={profile?.imageUrl || undefined}
+                  icon={<UserOutlined />}
+                  style={{ background: colors.teal }}
+                />
                 <Typography.Text>{displayName}</Typography.Text>
                 <DownOutlined style={{ fontSize: 10, color: colors.textSecondary }} />
               </UserMenuTrigger>

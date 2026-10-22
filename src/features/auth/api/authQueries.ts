@@ -10,6 +10,9 @@ import type {
 } from "../schemas/auth.schemas";
 import {
   changePassword,
+  updateDoctorProfile,
+  updatePatientProfile,
+  uploadProfilePicture,
   forgotPassword,
   getCurrentUser,
   login,
@@ -20,6 +23,7 @@ import {
   resetPassword,
   verifyEmail,
 } from "./authApi";
+import type { DoctorProfileUpdate, PatientProfileUpdate } from "./authApi";
 
 export const authKeys = {
   all: ["auth"] as const,
@@ -82,6 +86,30 @@ export function useResetPasswordMutation() {
 
 export function useChangePasswordMutation() {
   return useMutation({ mutationFn: (input: ChangePasswordRequest) => changePassword(input) });
+}
+
+export function useUpdatePatientProfileMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (input: PatientProfileUpdate) => updatePatientProfile(input),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: authKeys.currentUser() }),
+  });
+}
+
+export function useUpdateDoctorProfileMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (input: DoctorProfileUpdate) => updateDoctorProfile(input),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: authKeys.currentUser() }),
+  });
+}
+
+export function useUploadProfilePictureMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (file: File) => uploadProfilePicture(file),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: authKeys.currentUser() }),
+  });
 }
 
 export function useVerifyEmailMutation() {
