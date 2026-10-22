@@ -1,7 +1,6 @@
 import { CalendarOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { useMemo, useState } from "react";
-import { AppAlert } from "@components/AppAlert";
 import { DataTable } from "@components/DataTable/DataTable";
 import type {
   DataTableFilterConfig,
@@ -155,34 +154,6 @@ export function PatientAppointmentsPage() {
           </Button>
         }
       />
-
-      {appointmentsQuery.isError ? (
-        <AppAlert
-          type="error"
-          title="Could not load appointments"
-          error={appointmentsQuery.error}
-          onRetry={() => appointmentsQuery.refetch()}
-          style={{ marginBottom: 16 }}
-        />
-      ) : null}
-
-      {specializationsQuery.isError ? (
-        <AppAlert
-          type="warning"
-          title="Specializations unavailable"
-          error={specializationsQuery.error}
-          style={{ marginBottom: 16 }}
-        />
-      ) : null}
-
-      {statusesQuery.isError ? (
-        <AppAlert
-          type="warning"
-          title="Appointment statuses unavailable"
-          error={statusesQuery.error}
-          style={{ marginBottom: 16 }}
-        />
-      ) : null}
 
       <DataTable<Appointment>
         title="Find an appointment"

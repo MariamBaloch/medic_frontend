@@ -1,14 +1,13 @@
-import { useState } from "react";
-import { Button, Input, Typography, message } from "antd";
+import { Button, Input, Typography } from "antd";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
 import { Link } from "react-router-dom";
-import { AppAlert } from "@components/AppAlert";
 import { FormField } from "@components/FormField/FormField";
 import { ROUTES } from "@constants/routes";
 import { useForgotPasswordMutation } from "@features/auth/api/authQueries";
 import { getApiErrorMessage } from "@services/api/errors";
+import { notifyApp } from "@services/api/appNotifications";
 import {
   AuthFormCard,
   AuthFormElement,
@@ -22,7 +21,6 @@ import { forgotPasswordFormSchema } from "@features/auth/schemas/auth.schemas";
 
 export function ForgotPasswordForm() {
   const mutation = useForgotPasswordMutation();
-  const [requestedEmail, setRequestedEmail] = useState<string | null>(null);
   type FormInput = z.input<typeof forgotPasswordFormSchema>;
   type FormOutput = z.output<typeof forgotPasswordFormSchema>;
   const form = useForm<FormInput, unknown, FormOutput>({
@@ -33,9 +31,13 @@ export function ForgotPasswordForm() {
   const handleSubmit = async ({ email }: FormOutput) => {
     try {
       await mutation.mutateAsync(email);
-      setRequestedEmail(email);
+      notifyApp({
+        type: "success",
+        message: "Check your email",
+        description: "You’ll receive a password reset link shortly.",
+      });
     } catch (error) {
-      message.error(getApiErrorMessage(error));
+      notifyApp({ type: "error", message: "Could not send reset link", description: getApiErrorMessage(error) });
     }
   };
 
@@ -48,15 +50,6 @@ export function ForgotPasswordForm() {
             Enter the email address associated with your account and we’ll send a reset link.
           </AuthFormSubtitle>
         </AuthFormHeader>
-
-        {requestedEmail ? (
-          <AppAlert
-            type="success"
-            title="Check your email"
-            description={`You’ll receive a password reset link shortly.`}
-            style={{ marginBottom: 20 }}
-          />
-        ) : null}
 
         <Controller
           control={form.control}

@@ -1,6 +1,5 @@
 import { CalendarOutlined } from "@ant-design/icons";
 import { Button, Modal, Spin } from "antd";
-import { AppAlert } from "@components/AppAlert";
 import type {
   Appointment,
   AppointmentStatusOption,
@@ -48,13 +47,6 @@ export function AppointmentDetailsModal({
     >
       {appointmentQuery.isLoading ? (
         <Spin />
-      ) : appointmentQuery.isError ? (
-        <AppAlert
-          type="error"
-          title="Could not load appointment details"
-          error={appointmentQuery.error}
-          onRetry={() => appointmentQuery.refetch()}
-        />
       ) : fullAppointment ? (
         <>
           <PageHeader

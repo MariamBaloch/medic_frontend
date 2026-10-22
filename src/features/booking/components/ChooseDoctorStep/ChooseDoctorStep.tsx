@@ -1,7 +1,6 @@
 import { CheckOutlined } from "@ant-design/icons";
 import { Space, Typography } from "antd";
 import { useEffect, useMemo, useState } from "react";
-import { AppAlert } from "@components/AppAlert";
 import { DataTable } from "@components/DataTable";
 import type {
   DataTableFilterConfig,
@@ -163,23 +162,6 @@ export function ChooseDoctorStep({ selectedDoctorId, onSelectDoctor }: ChooseDoc
         title="Who would you like to see?"
         description="Search by doctor name or browse by specialization, then select a doctor."
       />
-      {doctorsQuery.isError ? (
-        <AppAlert
-          type="error"
-          title="Could not load doctors"
-          error={doctorsQuery.error}
-          onRetry={() => doctorsQuery.refetch()}
-          style={{ marginTop: 20 }}
-        />
-      ) : null}
-      {specializationsQuery.isError ? (
-        <AppAlert
-          type="warning"
-          title="Specializations unavailable"
-          error={specializationsQuery.error}
-          style={{ marginTop: 12 }}
-        />
-      ) : null}
       <TableContainer>
         <DataTable<Doctor>
           title={null}

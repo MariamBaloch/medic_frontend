@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { Button, DatePicker, Input, InputNumber, Segmented, Select, message } from "antd";
+import { Button, DatePicker, Input, InputNumber, Segmented, Select } from "antd";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
@@ -8,6 +8,7 @@ import { FormField } from "@components/FormField/FormField";
 import { ROUTES } from "@constants/routes";
 import { PhoneInput } from "@components/PhoneInput/PhoneInput";
 import { getApiErrorMessage } from "@services/api/errors";
+import { notifyApp } from "@services/api/appNotifications";
 import {
   useRegisterDoctorMutation,
   useRegisterPatientMutation,
@@ -70,10 +71,14 @@ export function RegisterForm() {
         await registerPatient.mutateAsync(commonPayload);
       }
 
-      message.success("Registration successful. Check your email to verify your account.");
+      notifyApp({
+        type: "success",
+        message: "Registration successful",
+        description: "Check your email to verify your account.",
+      });
       navigate(ROUTES.login, { replace: true });
     } catch (error) {
-      message.error(getApiErrorMessage(error));
+      notifyApp({ type: "error", message: "Could not complete registration", description: getApiErrorMessage(error) });
     }
   };
 

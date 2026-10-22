@@ -1,7 +1,6 @@
 import { Flex, Spin } from "antd";
 import dayjs from "dayjs";
 import { useMemo, useState } from "react";
-import { AppAlert } from "@components/AppAlert";
 import { WeekAvailability } from "@components/WeekAvailability";
 import type { SelectedAppointmentTime } from "@components/WeekAvailability";
 import { usePatientAppointmentsQuery } from "@features/appointment/api/appointmentsQueries";
@@ -39,24 +38,6 @@ export function ChooseTimeStep({ doctorId, selectedTime, onSelectTime }: ChooseT
   return (
     <Flex vertical>
       <StepTitle title="Choose a date and time" description="Select an available time below." />
-      {availabilityQuery.isError ? (
-        <AppAlert
-          type="error"
-          title="Could not load doctor availability"
-          error={availabilityQuery.error}
-          onRetry={() => availabilityQuery.refetch()}
-          style={{ marginTop: 16 }}
-        />
-      ) : null}
-      {appointmentsQuery.isError ? (
-        <AppAlert
-          type="error"
-          title="Could not load your appointments"
-          error={appointmentsQuery.error}
-          onRetry={() => appointmentsQuery.refetch()}
-          style={{ marginTop: 16 }}
-        />
-      ) : null}
       <Spin spinning={availabilityQuery.isLoading || appointmentsQuery.isLoading}>
         <WeekAvailability
           allowPastWeeks={false}

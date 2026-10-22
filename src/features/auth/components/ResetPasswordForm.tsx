@@ -1,13 +1,14 @@
-import { Button, Input, Typography, message } from "antd";
+import { Button, Input, Typography } from "antd";
+import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { AppAlert } from "@components/AppAlert";
 import { FormField } from "@components/FormField/FormField";
 import { ROUTES } from "@constants/routes";
 import { useResetPasswordMutation } from "@features/auth/api/authQueries";
 import { getApiErrorMessage } from "@services/api/errors";
+import { notifyApp } from "@services/api/appNotifications";
 import {
   AuthFormCard,
   AuthFormElement,
@@ -24,6 +25,16 @@ export function ResetPasswordForm() {
   const navigate = useNavigate();
   const mutation = useResetPasswordMutation();
   const token = searchParams.get("token")?.trim();
+  useEffect(() => {
+    if (!token) {
+      notifyApp({
+        type: "warning",
+        message: "Reset link is missing or invalid",
+        description: "Request a new password reset link to continue.",
+        key: "invalid-reset-link",
+      });
+    }
+  }, [token]);
   type FormInput = z.input<typeof resetPasswordFormSchema>;
   type FormOutput = z.output<typeof resetPasswordFormSchema>;
   const form = useForm<FormInput, unknown, FormOutput>({
@@ -36,10 +47,10 @@ export function ResetPasswordForm() {
 
     try {
       await mutation.mutateAsync({ token, newPassword });
-      message.success("Your password has been reset. Sign in with your new password.");
+      notifyApp({ type: "success", message: "Your password has been reset", description: "Sign in with your new password." });
       navigate(ROUTES.login, { replace: true });
     } catch (error) {
-      message.error(getApiErrorMessage(error));
+      notifyApp({ type: "error", message: "Could not reset password", description: getApiErrorMessage(error) });
     }
   };
 
@@ -50,15 +61,6 @@ export function ResetPasswordForm() {
           <AuthFormTitle>Reset password</AuthFormTitle>
           <AuthFormSubtitle>Create a new password for your Medic account.</AuthFormSubtitle>
         </AuthFormHeader>
-
-        {!token ? (
-          <AppAlert
-            type="warning"
-            message="Reset link is missing or invalid"
-            description="Request a new password reset link to continue."
-            style={{ marginBottom: 20 }}
-          />
-        ) : null}
 
         <Controller
           control={form.control}
