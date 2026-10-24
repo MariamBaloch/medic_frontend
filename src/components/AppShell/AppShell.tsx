@@ -1,11 +1,11 @@
 import {
   AppstoreOutlined,
   CalendarOutlined,
+  ClockCircleOutlined,
   IdcardOutlined,
   LogoutOutlined,
   BellOutlined,
   DownOutlined,
-  MedicineBoxOutlined,
   SettingOutlined,
   UserOutlined,
   LeftOutlined,
@@ -85,10 +85,18 @@ export function AppShell({
       : role === "DOCTOR"
         ? [
             {
-              key: "doctor-tools",
-              icon: <MedicineBoxOutlined />,
-              label: "Doctor tools · TBD",
-              disabled: true,
+              key: getAppRoute(basePath, ROUTE_SEGMENTS.availability),
+              path: getAppRoute(basePath, ROUTE_SEGMENTS.availability),
+              icon: <ClockCircleOutlined />,
+              label: "Availability",
+              title: "Availability",
+            },
+            {
+              key: getAppRoute(basePath, ROUTE_SEGMENTS.timeOff),
+              path: getAppRoute(basePath, ROUTE_SEGMENTS.timeOff),
+              icon: <CalendarOutlined />,
+              label: "Time-off",
+              title: "Time-off",
             },
           ]
         : [

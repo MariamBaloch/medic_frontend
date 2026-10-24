@@ -11,6 +11,8 @@ export const ROUTES = {
   patientBookAppointment: "/patient/appointments/book",
   doctor: "/doctor",
   doctorOverview: "/doctor/overview",
+  doctorAvailability: "/doctor/availability",
+  doctorTimeOff: "/doctor/time-off",
   admin: "/admin",
   adminOverview: "/admin/overview",
   notFound: "*",
@@ -19,6 +21,8 @@ export const ROUTES = {
 export const ROUTE_SEGMENTS = {
   overview: "overview",
   appointments: "appointments",
+  availability: "availability",
+  timeOff: "time-off",
   profile: "profile",
   bookAppointment: "book",
 } as const;
