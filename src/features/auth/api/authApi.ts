@@ -31,6 +31,14 @@ export interface PatientProfileUpdate {
   chronicConditions?: string;
 }
 
+export interface UserAccountUpdate {
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  phone: string;
+  gender?: "MALE" | "FEMALE";
+}
+
 export interface DoctorProfileUpdate {
   specializationId?: number;
   qualification?: string;
@@ -54,6 +62,10 @@ export async function logout(): Promise<void> {
 export async function getCurrentUser(): Promise<UserProfile> {
   const { data } = await apiClient.get("/user");
   return userProfileSchema.parse(data);
+}
+
+export async function updateUserAccount(input: UserAccountUpdate): Promise<void> {
+  await apiClient.put("/user", input);
 }
 
 export async function updatePatientProfile(input: PatientProfileUpdate): Promise<void> {

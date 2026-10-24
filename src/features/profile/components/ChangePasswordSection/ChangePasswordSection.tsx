@@ -1,11 +1,12 @@
 import { LockOutlined } from "@ant-design/icons";
-import { Button, Card, Form, Input, message, Modal, Space, Typography } from "antd";
+import { Button, Flex, Form, Input, message, Modal, Space, Typography } from "antd";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { ROUTES } from "@constants/routes";
 import { useChangePasswordMutation } from "@features/auth/api/authQueries";
 import { useAuthStore } from "@stores/authStore";
+import { SecurityCard } from "./ChangePasswordSection.styles";
 
 interface PasswordFormValues {
   currentPassword: string;
@@ -43,14 +44,21 @@ export function ChangePasswordSection() {
 
   return (
     <>
-      <Card title="Security">
-        <Space orientation="vertical" size={12}>
-          <Typography.Text type="secondary">Update your password to keep your account secure.</Typography.Text>
-          <Button icon={<LockOutlined />} onClick={() => setIsModalOpen(true)}>
+      <SecurityCard title="Security">
+        <Flex justify="space-between" align="center" gap={16} style={{ width: "100%" }}>
+          <Typography.Text type="secondary">
+            Update your password to keep your account secure.
+          </Typography.Text>
+          <Button
+            color="primary"
+            variant="outlined"
+            icon={<LockOutlined />}
+            onClick={() => setIsModalOpen(true)}
+          >
             Change password
           </Button>
-        </Space>
-      </Card>
+        </Flex>
+      </SecurityCard>
 
       <Modal
         title="Change password"

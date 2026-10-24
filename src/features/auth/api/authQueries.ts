@@ -12,6 +12,7 @@ import {
   changePassword,
   updateDoctorProfile,
   updatePatientProfile,
+  updateUserAccount,
   uploadProfilePicture,
   forgotPassword,
   getCurrentUser,
@@ -23,7 +24,7 @@ import {
   resetPassword,
   verifyEmail,
 } from "./authApi";
-import type { DoctorProfileUpdate, PatientProfileUpdate } from "./authApi";
+import type { DoctorProfileUpdate, PatientProfileUpdate, UserAccountUpdate } from "./authApi";
 
 export const authKeys = {
   all: ["auth"] as const,
@@ -92,6 +93,14 @@ export function useUpdatePatientProfileMutation() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (input: PatientProfileUpdate) => updatePatientProfile(input),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: authKeys.currentUser() }),
+  });
+}
+
+export function useUpdateUserAccountMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (input: UserAccountUpdate) => updateUserAccount(input),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: authKeys.currentUser() }),
   });
 }

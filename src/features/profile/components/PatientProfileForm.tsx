@@ -1,5 +1,5 @@
 import { SaveOutlined } from "@ant-design/icons";
-import { Button, Col, Form, Input, InputNumber, Row, Select } from "antd";
+import { Button, Card, Col, Form, Input, InputNumber, Row, Select, Typography } from "antd";
 import { useEffect } from "react";
 import type { PatientProfileUpdate } from "@features/auth/api/authApi";
 import type { UserProfile } from "@features/auth/schemas/auth.schemas";
@@ -49,56 +49,69 @@ export function PatientProfileForm({ profile, onSave, loading }: PatientProfileF
 
   return (
     <ProfileForm form={form} layout="vertical" onFinish={handleFinish}>
-      <Row gutter={[32, 16]}>
-        <Col xs={24} md={8}>
-          <Form.Item name="country" label="Country">
-            <Select
-              showSearch
-              optionFilterProp="label"
-              options={countryCallingCodes.map(({ country }) => ({ value: country, label: country }))}
+      <Card title="Contact and address" style={{ marginBottom: 20 }}>
+        <Typography.Paragraph type="secondary">
+          Where we can reach you with updates about your care.
+        </Typography.Paragraph>
+        <Row gutter={[32, 16]}>
+          <Col xs={24} md={8}>
+            <Form.Item name="country" label="Country">
+              <Select
+                showSearch
+                optionFilterProp="label"
+                options={countryCallingCodes.map(({ country }) => ({ value: country, label: country }))}
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={8}>
+            <Form.Item name="city" label="City"><Input maxLength={35} /></Form.Item>
+          </Col>
+          <Col xs={24} md={8}>
+            <Form.Item name="address" label="Address"><Input maxLength={100} /></Form.Item>
+          </Col>
+        </Row>
+      </Card>
+
+      <Card title="Medical information" style={{ marginBottom: 20 }}>
+        <Typography.Paragraph type="secondary">
+          Share accurate health details to help your care team prepare.
+        </Typography.Paragraph>
+        <Row gutter={[32, 16]}>
+          <Col xs={24} md={8}>
+            <Form.Item name="bloodType" label="Blood type">
+              <Select allowClear options={bloodTypes.map((value) => ({ value, label: value }))} />
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={8}>
+            <Form.Item name="heightCm" label="Height">
+              <InputNumber min={0} precision={0} suffix="cm" style={{ width: "100%" }} />
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={8}>
+            <Form.Item name="weightKg" label="Weight">
+              <InputNumber min={0} precision={0} suffix="kg" style={{ width: "100%" }} />
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={12}>
+            <RepeatableTextFields
+              name="allergies"
+              label="Allergies"
+              placeholder="e.g. Peanuts"
+              addLabel="Add allergy"
+              removeLabel="Remove allergy"
             />
-          </Form.Item>
-        </Col>
-        <Col xs={24} md={8}>
-          <Form.Item name="city" label="City"><Input maxLength={35} /></Form.Item>
-        </Col>
-        <Col xs={24} md={8}>
-          <Form.Item name="address" label="Address"><Input maxLength={100} /></Form.Item>
-        </Col>
-        <Col xs={24} md={8}>
-          <Form.Item name="bloodType" label="Blood type">
-            <Select allowClear options={bloodTypes.map((value) => ({ value, label: value }))} />
-          </Form.Item>
-        </Col>
-        <Col xs={24} md={8}>
-          <Form.Item name="heightCm" label="Height">
-            <InputNumber min={0} precision={0} suffix="cm" style={{ width: "100%" }} />
-          </Form.Item>
-        </Col>
-        <Col xs={24} md={8}>
-          <Form.Item name="weightKg" label="Weight">
-            <InputNumber min={0} precision={0} suffix="kg" style={{ width: "100%" }} />
-          </Form.Item>
-        </Col>
-        <Col xs={24} md={12}>
-          <RepeatableTextFields
-            name="allergies"
-            label="Allergies"
-            placeholder="e.g. Peanuts"
-            addLabel="Add allergy"
-            removeLabel="Remove allergy"
-          />
-        </Col>
-        <Col xs={24} md={12}>
-          <RepeatableTextFields
-            name="chronicConditions"
-            label="Chronic conditions"
-            placeholder="e.g. Asthma"
-            addLabel="Add condition"
-            removeLabel="Remove chronic condition"
-          />
-        </Col>
-      </Row>
+          </Col>
+          <Col xs={24} md={12}>
+            <RepeatableTextFields
+              name="chronicConditions"
+              label="Chronic conditions"
+              placeholder="e.g. Asthma"
+              addLabel="Add condition"
+              removeLabel="Remove chronic condition"
+            />
+          </Col>
+        </Row>
+      </Card>
       <Button type="primary" htmlType="submit" icon={<SaveOutlined />} loading={loading} style={{ marginTop: 8 }}>
         Save profile
       </Button>

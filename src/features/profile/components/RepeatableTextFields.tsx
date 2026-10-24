@@ -53,10 +53,11 @@ export function RepeatableTextFields({
             ))}
             <FieldRow>
               <Button
-                type="dashed"
+                color="primary"
+                variant="dashed"
                 onClick={() => add()}
                 icon={<PlusOutlined />}
-                style={{ width: "90%" }}
+                style={{ width: "30%" }}
               >
                 {addLabel}
               </Button>

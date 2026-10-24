@@ -77,12 +77,13 @@ export function usePatientAppointmentQuery(appointmentId: number | null) {
   });
 }
 
-export function useSpecializationsQuery() {
+export function useSpecializationsQuery(enabled = true) {
   return useQuery({
     queryKey: appointmentKeys.specializations,
     queryFn: getSpecializations,
     meta: { notificationTitle: "Could not load specializations" },
     staleTime: 30 * 60 * 1000,
+    enabled,
   });
 }
 

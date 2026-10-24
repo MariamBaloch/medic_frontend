@@ -99,6 +99,13 @@ export function AppShell({
               disabled: true,
             },
           ]),
+    {
+      key: getAppRoute(basePath, ROUTE_SEGMENTS.profile),
+      path: getAppRoute(basePath, ROUTE_SEGMENTS.profile),
+      icon: <IdcardOutlined />,
+      label: "Profile",
+      title: "Profile",
+    },
   ];
   const activeNavigation = navigation ?? defaultNavigation;
   const displayName = profile

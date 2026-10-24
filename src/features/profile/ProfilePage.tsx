@@ -1,29 +1,23 @@
-import { CameraOutlined, UserOutlined } from "@ant-design/icons";
-import {
-  Avatar,
-  Button,
-  Card,
-  Descriptions,
-  Flex,
-  message,
-  Space,
-  Tag,
-  Typography,
-  Upload,
-} from "antd";
+import { CameraOutlined, SaveOutlined, UserOutlined } from "@ant-design/icons";
+import { Avatar, Button, Flex, message, Space, Tag, Typography, Upload } from "antd";
 import { useEffect } from "react";
+import { AppCard } from "@components/Card";
 import { PageHeader } from "@components/PageHeader";
 import {
   useCurrentUserQuery,
   useUpdateDoctorProfileMutation,
   useUpdatePatientProfileMutation,
+  useUpdateUserAccountMutation,
   useUploadProfilePictureMutation,
 } from "@features/auth/api/authQueries";
 import { useAuthStore } from "@stores/authStore";
-import type { DoctorProfileUpdate, PatientProfileUpdate } from "@features/auth/api/authApi";
-import { DoctorProfileForm } from "./components/DoctorProfileForm";
-import { PatientProfileForm } from "./components/PatientProfileForm";
-import { ChangePasswordSection } from "./components/ChangePasswordSection";
+import type {
+  DoctorProfileUpdate,
+  PatientProfileUpdate,
+  UserAccountUpdate,
+} from "@features/auth/api/authApi";
+import { ChangePasswordSection } from "./components/ChangePasswordSection/ChangePasswordSection";
+import { UserAccountForm } from "./components/UserAccountForm";
 
 export function ProfilePage() {
   const storedUser = useAuthStore((state) => state.user);
@@ -31,6 +25,7 @@ export function ProfilePage() {
   const currentUserQuery = useCurrentUserQuery();
   const patientUpdate = useUpdatePatientProfileMutation();
   const doctorUpdate = useUpdateDoctorProfileMutation();
+  const accountUpdate = useUpdateUserAccountMutation();
   const avatarUpload = useUploadProfilePictureMutation();
   const user = currentUserQuery.data ?? storedUser;
 
@@ -53,48 +48,54 @@ export function ProfilePage() {
     });
   };
 
-  const submitPatientProfile = (values: PatientProfileUpdate) => {
-    patientUpdate.mutate(values, {
-      onSuccess: () => message.success("Patient profile saved."),
-    });
-  };
-
-  const submitDoctorProfile = (values: DoctorProfileUpdate) => {
-    doctorUpdate.mutate(values, {
-      onSuccess: () => message.success("Doctor profile saved."),
-    });
+  const submitUserAccount = async (
+    account: UserAccountUpdate,
+    patient?: PatientProfileUpdate,
+    doctor?: DoctorProfileUpdate,
+  ) => {
+    await Promise.all([
+      accountUpdate.mutateAsync(account),
+      ...(patient ? [patientUpdate.mutateAsync(patient)] : []),
+      ...(doctor ? [doctorUpdate.mutateAsync(doctor)] : []),
+    ]);
+    message.success("Profile details saved.");
   };
 
   if (!user) {
     return (
-      <Card loading={currentUserQuery.isPending}>
+      <AppCard loading={currentUserQuery.isPending}>
         {!currentUserQuery.isPending && (
-          <Typography.Text type="secondary">Your account details could not be loaded.</Typography.Text>
+          <Typography.Text type="secondary">
+            Your account details could not be loaded.
+          </Typography.Text>
         )}
-      </Card>
+      </AppCard>
     );
   }
 
   const fullName = [user.firstName, user.lastName].filter(Boolean).join(" ");
-  const profileTitle = user.role === "ADMIN" ? "Administrator profile" : `${user.role.charAt(0)}${user.role.slice(1).toLowerCase()} profile`;
-
   return (
-    <Flex vertical gap={20} style={{ maxWidth: 1000 }}>
+    <Flex vertical gap={20} style={{ width: "100%", maxWidth: "min(100%, 1200px)" }}>
       <PageHeader
         title="Profile"
         description="View your account details and manage your profile."
       />
 
-      <Card>
+      <AppCard title="Account">
         <Flex align="center" gap={18}>
           <Avatar size={76} src={user.imageUrl || undefined} icon={<UserOutlined />} />
           <Flex vertical>
-            <Typography.Title level={4} style={{ margin: "0 0 4px" }}>{fullName || user.email}</Typography.Title>
+            <Typography.Title level={4} style={{ margin: "0 0" }}>
+              {fullName || user.email}
+            </Typography.Title>
+            <Typography.Text type="secondary">{user.email}</Typography.Text>
             <Space>
               <Tag color="blue">{user.role}</Tag>
-              <Tag color={user.status === "ACTIVE" ? "green" : "default"}>{user.status.replaceAll("_", " ")}</Tag>
+              <Tag color={user.status === "ACTIVE" ? "green" : "default"}>
+                {user.status.replaceAll("_", " ")}
+              </Tag>
             </Space>
-            <Flex align="center" gap={10} style={{ marginTop: 12 }}>
+            <Flex align="center" gap={10} style={{ marginTop:18 }}>
               <Upload
                 accept="image/*"
                 showUploadList={false}
@@ -111,44 +112,28 @@ export function ProfilePage() {
             </Flex>
           </Flex>
         </Flex>
-      </Card>
+      </AppCard>
 
-      <Card title="Account details">
-        <Descriptions column={{ xs: 1, sm: 2 }}>
-          <Descriptions.Item label="First name">{user.firstName || "—"}</Descriptions.Item>
-          <Descriptions.Item label="Last name">{user.lastName || "—"}</Descriptions.Item>
-          <Descriptions.Item label="Email">{user.email}</Descriptions.Item>
-          <Descriptions.Item label="Phone">{user.phone || "—"}</Descriptions.Item>
-          <Descriptions.Item label="Date of birth">{user.dateOfBirth || "—"}</Descriptions.Item>
-          <Descriptions.Item label="Gender">
-            {user.gender
-              ? `${user.gender.charAt(0)}${user.gender.slice(1).toLowerCase()}`
-              : "—"}
-          </Descriptions.Item>
-        </Descriptions>
-      </Card>
-
-      {user.role === "PATIENT" && (
-        <Card title={profileTitle}>
-          <PatientProfileForm
-            profile={user.patient}
-            onSave={submitPatientProfile}
-            loading={patientUpdate.isPending}
-          />
-        </Card>
-      )}
-
-      {user.role === "DOCTOR" && (
-        <Card title={profileTitle}>
-          <DoctorProfileForm
-            profile={user.doctor}
-            onSave={submitDoctorProfile}
-            loading={doctorUpdate.isPending}
-          />
-        </Card>
-      )}
+      <UserAccountForm
+        user={user}
+        patientProfile={user.role === "PATIENT" ? user.patient ?? {} : undefined}
+        doctorProfile={user.role === "DOCTOR" ? user.doctor ?? {} : undefined}
+        onSave={submitUserAccount}
+      />
 
       <ChangePasswordSection />
+
+      <Flex justify="flex-end">
+        <Button
+          type="primary"
+          htmlType="submit"
+          form="profile-details-form"
+          icon={<SaveOutlined />}
+          loading={accountUpdate.isPending || patientUpdate.isPending || doctorUpdate.isPending}
+        >
+          Save changes
+        </Button>
+      </Flex>
     </Flex>
   );
 }
