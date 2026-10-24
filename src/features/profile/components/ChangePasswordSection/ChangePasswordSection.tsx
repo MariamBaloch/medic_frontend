@@ -66,8 +66,16 @@ export function ChangePasswordSection() {
         title="Change password"
         open={isModalOpen}
         onCancel={closeModal}
-        footer={null}
         destroyOnHidden
+        okText="Update password"
+        cancelText="Cancel"
+        confirmLoading={passwordChange.isPending}
+        onOk={() => form.submit()}
+        styles={{
+          footer: {
+            marginTop: 24,
+          },
+        }}
       >
         <Form form={form} layout="vertical" onFinish={handleFinish} style={{ marginTop: 20 }}>
           <Form.Item
@@ -108,12 +116,6 @@ export function ChangePasswordSection() {
           >
             <Input.Password autoComplete="new-password" />
           </Form.Item>
-          <Space>
-            <Button onClick={closeModal}>Cancel</Button>
-            <Button type="primary" htmlType="submit" loading={passwordChange.isPending}>
-              Update password
-            </Button>
-          </Space>
         </Form>
       </Modal>
     </>
