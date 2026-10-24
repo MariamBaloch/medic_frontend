@@ -1,5 +1,14 @@
 import { apiClient } from "@services/api/axios";
-import { appointmentStatusesSchema, specializationsSchema } from "./appointment.schemas";
+import {
+  appointmentDetailsSchema,
+  appointmentStatusesSchema,
+  specializationsSchema,
+} from "./appointment.schemas";
+
+export async function getAppointment(appointmentId: number) {
+  const { data } = await apiClient.get(`/appointments/${appointmentId}`);
+  return appointmentDetailsSchema.parse(data);
+}
 
 export async function getSpecializations() {
   const { data } = await apiClient.get("/specializations");

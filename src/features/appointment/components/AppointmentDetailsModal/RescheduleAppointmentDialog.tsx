@@ -1,4 +1,4 @@
-import { Button, Flex, Modal, Space, Spin } from "antd";
+import { Button, Flex, Modal, Spin } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useMemo, useState } from "react";
 import type { Appointment } from "@features/appointment/api/appointment.schemas";
@@ -12,6 +12,7 @@ import type { DoctorAvailabilitySlot, SelectedAppointmentTime } from "@component
 import { notifyApp } from "@services/api/appNotifications";
 import { PageHeader } from "@components/PageHeader";
 import { ScheduleOutlined } from "@ant-design/icons";
+import { ModalActions } from "./AppointmentDetailsModal.styles";
 
 interface RescheduleAppointmentDialogProps {
   appointment: Appointment | null;
@@ -171,7 +172,7 @@ export function RescheduleAppointmentDialog({
       onCancel={onClose}
       width="min(1600px, calc(100vw - 24px))"
       footer={
-        <Space>
+        <ModalActions>
           <Button onClick={handleKeepCurrent}>Keep current appointment</Button>
           <Button
             type="primary"
@@ -181,7 +182,7 @@ export function RescheduleAppointmentDialog({
           >
             Confirm new time
           </Button>
-        </Space>
+        </ModalActions>
       }
       destroyOnHidden
     >

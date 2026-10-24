@@ -3,8 +3,10 @@ import {
   appointmentFiltersSchema,
   appointmentPageSchema,
   appointmentStatusCountsSchema,
+  doctorAppointmentStatusUpdateSchema,
   type AppointmentFilters,
   type AppointmentPage,
+  type DoctorAppointmentStatusUpdate,
 } from "@features/appointment/api/appointment.schemas";
 
 export async function getDoctorAppointments(filters: AppointmentFilters): Promise<AppointmentPage> {
@@ -40,4 +42,16 @@ export async function getDoctorAppointmentStatusCounts(filters: AppointmentFilte
 
   const { data } = await apiClient.get(`/doctors/appointments/status-counts?${params.toString()}`);
   return appointmentStatusCountsSchema.parse(data);
+}
+
+export async function updateDoctorAppointmentStatus(
+  appointmentId: number,
+  request: DoctorAppointmentStatusUpdate,
+) {
+  const validatedRequest = doctorAppointmentStatusUpdateSchema.parse(request);
+  const { data } = await apiClient.patch(
+    `/doctors/appointments/${appointmentId}/status`,
+    validatedRequest,
+  );
+  return data;
 }

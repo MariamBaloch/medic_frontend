@@ -117,6 +117,17 @@ const normalizedAppointmentDetailsSchema = z.object({
   doctorClinicAddress: z.string().nullish(),
   doctorLicenseNumber: z.string().nullish(),
   doctorBio: z.string().nullish(),
+  patientId: z.number().optional(),
+  patientName: z.string().nullish(),
+  patientImageUrl: z.string().nullish(),
+  patientAddress: z.string().nullish(),
+  patientCity: z.string().nullish(),
+  patientCountry: z.string().nullish(),
+  patientBloodType: z.string().nullish(),
+  patientHeightCm: z.number().nullish(),
+  patientWeightKg: z.number().nullish(),
+  patientAllergies: z.string().nullish(),
+  patientChronicConditions: z.string().nullish(),
 });
 
 const nestedAppointmentDetailsSchema = z
@@ -196,6 +207,10 @@ export const appointmentRescheduleRequestSchema = z.object({
   expectedVersion: z.number().int().nonnegative(),
 });
 
+export const doctorAppointmentStatusUpdateSchema = z.object({
+  status: z.enum(["COMPLETED", "NO_SHOW"]),
+});
+
 export const appointmentFiltersSchema = z.object({
   doctorName: z.string().trim().min(1).optional(),
   patientName: z.string().trim().min(1).optional(),
@@ -221,3 +236,4 @@ export type Specialization = z.infer<typeof specializationSchema>;
 export type AppointmentBookingRequest = z.infer<typeof appointmentBookingRequestSchema>;
 export type AppointmentCancellationRequest = z.infer<typeof appointmentCancellationRequestSchema>;
 export type AppointmentRescheduleRequest = z.infer<typeof appointmentRescheduleRequestSchema>;
+export type DoctorAppointmentStatusUpdate = z.infer<typeof doctorAppointmentStatusUpdateSchema>;

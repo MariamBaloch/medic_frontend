@@ -1,0 +1,97 @@
+import {
+  EnvironmentOutlined,
+  IdcardOutlined,
+  MedicineBoxOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import type { ReactNode } from "react";
+import type {
+  Appointment,
+  AppointmentDetails,
+} from "@features/appointment/api/appointment.schemas";
+import { apiClient } from "@services/api/axios";
+import { getDoctorInitials } from "@utils/formatters";
+import {
+  PatientCard,
+  PatientDetailContent,
+  PatientDetailIcon,
+  PatientDetailLabel,
+  PatientDetailsList,
+  PatientDetailRow,
+  PatientDetailValue,
+  PatientName,
+  PatientProfileAvatar,
+  PatientSectionTitle,
+  PatientSummaryHeader,
+} from "./AppointmentPatientDetails.styles";
+
+interface PatientField {
+  icon: ReactNode;
+  label: string;
+  value: string | number | null | undefined;
+}
+
+function PatientField({ icon, label, value }: PatientField) {
+  if (value === null || value === undefined || String(value).trim() === "") return null;
+
+  return (
+    <PatientDetailRow>
+      <PatientDetailIcon>{icon}</PatientDetailIcon>
+      <PatientDetailContent>
+        <PatientDetailLabel type="secondary">{label}</PatientDetailLabel>
+        <PatientDetailValue>{value}</PatientDetailValue>
+      </PatientDetailContent>
+    </PatientDetailRow>
+  );
+}
+
+interface AppointmentPatientDetailsProps {
+  appointment: Appointment & Partial<AppointmentDetails>;
+}
+
+export function AppointmentPatientDetails({ appointment }: AppointmentPatientDetailsProps) {
+  const address = [appointment.patientAddress, appointment.patientCity, appointment.patientCountry]
+    .filter((part) => part?.trim())
+    .join(", ");
+  const imageUrl = appointment.patientImageUrl
+    ? new URL(appointment.patientImageUrl, apiClient.defaults.baseURL).toString()
+    : undefined;
+  const fields: PatientField[] = [
+    { icon: <IdcardOutlined />, label: "Patient ID", value: appointment.patientId },
+    { icon: <EnvironmentOutlined />, label: "Address", value: address },
+    { icon: <MedicineBoxOutlined />, label: "Blood type", value: appointment.patientBloodType },
+    {
+      icon: <UserOutlined />,
+      label: "Height",
+      value: appointment.patientHeightCm != null ? `${appointment.patientHeightCm} cm` : null,
+    },
+    {
+      icon: <UserOutlined />,
+      label: "Weight",
+      value: appointment.patientWeightKg != null ? `${appointment.patientWeightKg} kg` : null,
+    },
+    { icon: <MedicineBoxOutlined />, label: "Allergies", value: appointment.patientAllergies },
+    {
+      icon: <MedicineBoxOutlined />,
+      label: "Chronic conditions",
+      value: appointment.patientChronicConditions,
+    },
+  ];
+
+  return (
+    <PatientCard>
+      <PatientSectionTitle level={4}>Patient details</PatientSectionTitle>
+      <PatientSummaryHeader>
+        <PatientProfileAvatar size={60} src={imageUrl} icon={<UserOutlined />}>
+          {getDoctorInitials(appointment.patientName)}
+        </PatientProfileAvatar>
+        <PatientName>{appointment.patientName}</PatientName>
+      </PatientSummaryHeader>
+      <PatientDetailsList>
+        {fields.map((field) => (
+          <PatientField key={field.label} {...field} />
+        ))}
+      </PatientDetailsList>
+    </PatientCard>
+  );
+}

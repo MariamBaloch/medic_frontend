@@ -6,10 +6,10 @@ import type {
   AppointmentFilters,
   AppointmentRescheduleRequest,
 } from "@features/appointment/api/appointment.schemas";
+import { getAppointment } from "@features/appointment/api/appointmentsApi";
 import {
   bookPatientAppointment,
   cancelPatientAppointment,
-  getPatientAppointment,
   getPatientAppointments,
   getPatientAppointmentStatusCounts,
   reschedulePatientAppointment,
@@ -63,7 +63,7 @@ export function usePatientAppointmentQuery(appointmentId: number | null) {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   return useQuery({
     queryKey: patientAppointmentKeys.detail(appointmentId ?? 0),
-    queryFn: () => getPatientAppointment(appointmentId ?? 0),
+    queryFn: () => getAppointment(appointmentId ?? 0),
     meta: { notificationTitle: "Could not load appointment details" },
     enabled: isAuthenticated && appointmentId !== null,
   });

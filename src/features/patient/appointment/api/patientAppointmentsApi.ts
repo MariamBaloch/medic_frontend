@@ -3,7 +3,6 @@ import {
   appointmentFiltersSchema,
   appointmentPageSchema,
   appointmentStatusCountsSchema,
-  appointmentDetailsSchema,
   appointmentBookingRequestSchema,
   appointmentCancellationRequestSchema,
   appointmentRescheduleRequestSchema,
@@ -65,11 +64,6 @@ export async function getPatientAppointments(
 
   const { data } = await apiClient.get(`/patient/appointments?${params.toString()}`);
   return appointmentPageSchema.parse(data);
-}
-
-export async function getPatientAppointment(appointmentId: number) {
-  const { data } = await apiClient.get(`/appointments/${appointmentId}`);
-  return appointmentDetailsSchema.parse(data);
 }
 
 export async function getPatientAppointmentStatusCounts(filters: AppointmentFilters) {

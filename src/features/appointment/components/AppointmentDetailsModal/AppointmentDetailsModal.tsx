@@ -1,5 +1,4 @@
-import { CalendarOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Modal, Space, Spin, Typography } from "antd";
+import { Button, Form, Input, Modal, Spin, Typography } from "antd";
 import { useState } from "react";
 import type {
   Appointment,
@@ -10,22 +9,15 @@ import {
   usePatientAppointmentQuery,
 } from "@features/patient/appointment/api/patientAppointmentsQueries";
 import { notifyApp } from "@services/api/appNotifications";
-import { PageHeader } from "@components/PageHeader";
-import { AppointmentDoctorDetails } from "../AppointmentDoctorDetails";
-import { AppointmentInformation } from "../AppointmentInformation";
-import { AppointmentReasonPanel } from "../AppointmentReasonPanel";
 import { RescheduleAppointmentDialog } from "./RescheduleAppointmentDialog";
-import { ContentGrid, InformationColumn, LoadingContainer } from "./AppointmentDetailsModal.styles";
+import { LoadingContainer, ModalActions } from "./AppointmentDetailsModal.styles";
+import { PatientAppointmentDetails } from "@features/patient/appointment/components";
 
 interface AppointmentDetailsModalProps {
   appointment: Appointment | null;
   appointmentId: number | null;
   statuses: AppointmentStatusOption[];
   onClose: () => void;
-}
-
-function hasValue(value: string | null | undefined): value is string {
-  return value !== null && value !== undefined && value.trim() !== "";
 }
 
 function isFutureAppointment(date: string, time: string): boolean {
@@ -57,7 +49,16 @@ export function AppointmentDetailsModal({
   const cancelMutation = useCancelPatientAppointmentMutation(appointmentId ?? 0);
   const appointmentQuery = usePatientAppointmentQuery(appointmentId);
   const details = appointmentQuery.data;
-  const fullAppointment = appointment && details ? { ...appointment, ...details } : null;
+  const fullAppointment =
+    appointment && details
+      ? {
+          ...appointment,
+          ...details,
+          patientName: details.patientName ?? appointment.patientName,
+          patientId: details.patientId ?? appointment.patientId,
+          patientImageUrl: details.patientImageUrl ?? appointment.patientImageUrl,
+        }
+      : null;
 
   const closeDetails = () => {
     setIsRescheduleDialogOpen(false);
@@ -91,7 +92,7 @@ export function AppointmentDetailsModal({
     isFutureAppointment(fullAppointment.appointmentDate, fullAppointment.startTime);
   const modalFooter =
     fullAppointment?.status === "BOOKED" ? (
-      <Space>
+      <ModalActions>
         {canReschedule ? (
           <Button
             color="primary"
@@ -104,7 +105,7 @@ export function AppointmentDetailsModal({
         <Button color="danger" variant="outlined" onClick={() => setIsCancelDialogOpen(true)}>
           Cancel appointment
         </Button>
-      </Space>
+      </ModalActions>
     ) : null;
 
   return (
@@ -123,29 +124,7 @@ export function AppointmentDetailsModal({
           </LoadingContainer>
         ) : fullAppointment ? (
           <>
-            <PageHeader
-              style={{ padding: "10px 0px" }}
-              icon={<CalendarOutlined />}
-              title="Appointment details"
-              description="View the full details of your appointment."
-            />
-            <ContentGrid>
-              <AppointmentDoctorDetails appointment={fullAppointment} />
-              <InformationColumn>
-                <AppointmentInformation appointment={fullAppointment} statuses={statuses} />
-                <AppointmentReasonPanel
-                  title="Reason for visit"
-                  value={fullAppointment.reason?.trim() || "No reason provided."}
-                />
-                {hasValue(fullAppointment.cancelledReason) ? (
-                  <AppointmentReasonPanel
-                    title="Cancellation reason"
-                    value={fullAppointment.cancelledReason.trim()}
-                    variant="danger"
-                  />
-                ) : null}
-              </InformationColumn>
-            </ContentGrid>
+            <PatientAppointmentDetails appointment={fullAppointment} statuses={statuses} />
           </>
         ) : null}
       </Modal>
@@ -154,13 +133,31 @@ export function AppointmentDetailsModal({
         title="Cancel appointment"
         open={isCancelDialogOpen}
         onCancel={closeCancelDialog}
-        footer={null}
+        footer={
+          <ModalActions>
+            <Button onClick={closeCancelDialog}>Keep appointment</Button>
+            <Button
+              danger
+              type="primary"
+              htmlType="submit"
+              form="patient-cancel-appointment-form"
+              loading={cancelMutation.isPending}
+            >
+              Confirm cancellation
+            </Button>
+          </ModalActions>
+        }
         destroyOnHidden
       >
         <Typography.Paragraph>
           Please provide a reason for cancelling this appointment.
         </Typography.Paragraph>
-        <Form form={cancelForm} layout="vertical" onFinish={handleCancel}>
+        <Form
+          id="patient-cancel-appointment-form"
+          form={cancelForm}
+          layout="vertical"
+          onFinish={handleCancel}
+        >
           <Form.Item
             name="reason"
             label="Cancellation reason"
@@ -168,12 +165,6 @@ export function AppointmentDetailsModal({
           >
             <Input.TextArea rows={4} maxLength={1000} showCount />
           </Form.Item>
-          <Space>
-            <Button onClick={closeCancelDialog}>Keep appointment</Button>
-            <Button danger type="primary" htmlType="submit" loading={cancelMutation.isPending}>
-              Confirm cancellation
-            </Button>
-          </Space>
         </Form>
       </Modal>
 
