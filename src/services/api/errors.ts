@@ -21,10 +21,6 @@ export function getApiErrorMessage(
     return "Unable to reach the server. Check your connection and try again.";
   }
 
-  if (error.response.status === 401) {
-    return "Invalid email or password.";
-  }
-
   const response = error.response.data as
     | ApiErrorResponse
     | string
@@ -35,18 +31,21 @@ export function getApiErrorMessage(
   }
 
   if (response && typeof response === "object") {
-    if (response.fieldErrors) {
-      const messages = Object.values(response.fieldErrors)
-        .filter((message) => typeof message === "string" && message.trim());
+    const fieldErrors = response.fieldErrors
+      ? Object.entries(response.fieldErrors)
+          .filter(([, message]) => typeof message === "string" && message.trim())
+          .map(([field, message]) => `${field}: ${message}`)
+      : [];
+    const messages = [
+      response.message,
+      response.error,
+      ...fieldErrors,
+    ].filter((message): message is string => Boolean(message?.trim()));
 
-      if (messages.length) {
-        return messages.join(", ");
-      }
-    }
-
-    if (response.message) return response.message;
-    if (response.error) return response.error;
+    if (messages.length) return [...new Set(messages)].join(" · ");
   }
+
+  if (error.response.status === 401) return "Unauthorized. Please sign in again.";
 
   return fallback;
 }
