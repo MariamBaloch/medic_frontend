@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button, Flex, Modal, Space, Tag, Typography } from "antd";
@@ -45,7 +46,27 @@ function displayDate(value: string | null | undefined) {
   return parsed.isValid() ? parsed.format("MMM D, YYYY") : value;
 }
 
-function showAvailabilitySuccess(message: string, affectedAppointments: unknown[] = []) {
+function getAvailabilitySummary(request: AvailabilityRuleRequest): ReactNode {
+  const days = request.daysOfWeek.map((day) => dayLabels[day]).join(", ");
+
+  return (
+    <Flex vertical gap={2}>
+      <Typography.Text strong>
+        {days} · {formatAppointmentTimeRange(request.startTime, request.endTime)}
+      </Typography.Text>
+      <Typography.Text>
+        {displayDate(request.startDate)} – {displayDate(request.endDate)}
+      </Typography.Text>
+      <Typography.Text>{request.slotMinutes}-minute appointment slots</Typography.Text>
+    </Flex>
+  );
+}
+
+function showAvailabilitySuccess(
+  message: string,
+  affectedAppointments: unknown[] = [],
+  summary?: ReactNode,
+) {
   const appointments = affectedAppointments.filter(
     (appointment): appointment is Record<string, unknown> =>
       typeof appointment === "object" && appointment !== null,
@@ -54,33 +75,38 @@ function showAvailabilitySuccess(message: string, affectedAppointments: unknown[
   notifyApp({
     type: "success",
     message,
-    description: appointments.length ? (
-      <Flex vertical gap={4}>
-        <Typography.Text strong>
-          Your availability changed, but these appointments were not canceled:
-        </Typography.Text>
-        {appointments.map((appointment, index) => {
-          const patientName =
-            typeof appointment.patientName === "string" ? appointment.patientName : "Patient";
-          const date =
-            typeof appointment.appointmentDate === "string"
-              ? displayDate(appointment.appointmentDate)
-              : "Date unavailable";
-          const startTime = typeof appointment.startTime === "string" ? appointment.startTime : "";
-          const endTime = typeof appointment.endTime === "string" ? appointment.endTime : "";
-          const time =
-            startTime && endTime
-              ? formatAppointmentTimeRange(startTime, endTime)
-              : "Time unavailable";
-
-          return (
-            <Typography.Text key={String(appointment.id ?? index)}>
-              {patientName} · {date} · {time}
+    description:
+      summary || appointments.length ? (
+        <Flex vertical gap={4}>
+          {summary}
+          {appointments.length ? (
+            <Typography.Text strong>
+              Your availability changed, but these appointments were not canceled:
             </Typography.Text>
-          );
-        })}
-      </Flex>
-    ) : undefined,
+          ) : null}
+          {appointments.map((appointment, index) => {
+            const patientName =
+              typeof appointment.patientName === "string" ? appointment.patientName : "Patient";
+            const date =
+              typeof appointment.appointmentDate === "string"
+                ? displayDate(appointment.appointmentDate)
+                : "Date unavailable";
+            const startTime =
+              typeof appointment.startTime === "string" ? appointment.startTime : "";
+            const endTime = typeof appointment.endTime === "string" ? appointment.endTime : "";
+            const time =
+              startTime && endTime
+                ? formatAppointmentTimeRange(startTime, endTime)
+                : "Time unavailable";
+
+            return (
+              <Typography.Text key={String(appointment.id ?? index)}>
+                {patientName} · {date} · {time}
+              </Typography.Text>
+            );
+          })}
+        </Flex>
+      ) : undefined,
   });
 }
 
@@ -102,10 +128,18 @@ export function DoctorAvailabilityPage() {
   const handleRuleSubmit = async (request: AvailabilityRuleRequest) => {
     if (editingRule) {
       const response = await updateRule.mutateAsync({ id: editingRule.id, request });
-      showAvailabilitySuccess("Availability successfully updated", response.affectedAppointments);
+      showAvailabilitySuccess(
+        "Availability successfully updated",
+        response.affectedAppointments,
+        getAvailabilitySummary(request),
+      );
     } else {
       await createRule.mutateAsync(request);
-      showAvailabilitySuccess("Availability succesfully added");
+      showAvailabilitySuccess(
+        "Availability successfully added",
+        [],
+        getAvailabilitySummary(request),
+      );
     }
     setRuleDialogOpen(false);
   };

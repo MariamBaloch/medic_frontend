@@ -7,6 +7,7 @@ import {
   deleteAvailabilityRule,
   getAvailabilityExceptions,
   getAvailabilityRules,
+  updateAvailabilityException,
   updateAvailabilityRule,
 } from "./availabilityApi";
 import type { AvailabilityExceptionRequest, AvailabilityRuleRequest } from "./availability.schemas";
@@ -66,6 +67,15 @@ export function useCreateAvailabilityExceptionMutation() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (request: AvailabilityExceptionRequest) => createAvailabilityException(request),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: availabilityKeys.exceptions() }),
+  });
+}
+
+export function useUpdateAvailabilityExceptionMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, request }: { id: number; request: AvailabilityExceptionRequest }) =>
+      updateAvailabilityException(id, request),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: availabilityKeys.exceptions() }),
   });
 }

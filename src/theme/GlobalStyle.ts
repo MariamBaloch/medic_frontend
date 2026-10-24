@@ -35,4 +35,17 @@ export const GlobalStyle = createGlobalStyle`
   .ant-btn:disabled {
     color: ${colors.textMuted};
   }
+    .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+    background-color: ${colors.backgroundSoft};
+    color: ${colors.text} !important;
+  }
+
+  .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover {
+    background-color: ${colors.backgroundSoft};
+    color: ${colors.text} !important;
+  }
+
+  .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)::before {
+    background-color: ${colors.backgroundSoft};
+  }
 `;

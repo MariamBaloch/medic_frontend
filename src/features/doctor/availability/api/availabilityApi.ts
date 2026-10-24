@@ -21,7 +21,9 @@ export async function getAvailabilityRules(): Promise<AvailabilityRule[]> {
   return availabilityRuleSchema.array().parse(data);
 }
 
-export async function createAvailabilityRule(request: AvailabilityRuleRequest): Promise<AvailabilityRuleChange> {
+export async function createAvailabilityRule(
+  request: AvailabilityRuleRequest,
+): Promise<AvailabilityRuleChange> {
   const { data } = await apiClient.post(
     "/doctors/availability/rules",
     availabilityRuleRequestSchema.parse(request),
@@ -29,7 +31,10 @@ export async function createAvailabilityRule(request: AvailabilityRuleRequest): 
   return availabilityRuleChangeSchema.parse(data);
 }
 
-export async function updateAvailabilityRule(id: number, request: AvailabilityRuleRequest): Promise<AvailabilityRuleChange> {
+export async function updateAvailabilityRule(
+  id: number,
+  request: AvailabilityRuleRequest,
+): Promise<AvailabilityRuleChange> {
   const { data } = await apiClient.put(
     `/doctors/availability/rules/${id}`,
     availabilityRuleRequestSchema.parse(request),
@@ -57,7 +62,20 @@ export async function createAvailabilityException(
   return availabilityExceptionSchema.parse(data);
 }
 
-export async function deleteAvailabilityException(id: number): Promise<AvailabilityExceptionDelete> {
+export async function updateAvailabilityException(
+  id: number,
+  request: AvailabilityExceptionRequest,
+): Promise<AvailabilityException> {
+  const { data } = await apiClient.put(
+    `/doctors/availability/exceptions/${id}`,
+    availabilityExceptionRequestSchema.parse(request),
+  );
+  return availabilityExceptionSchema.parse(data);
+}
+
+export async function deleteAvailabilityException(
+  id: number,
+): Promise<AvailabilityExceptionDelete> {
   const { data } = await apiClient.delete(`/doctors/availability/exceptions/${id}`);
   return availabilityExceptionDeleteSchema.parse(data);
 }

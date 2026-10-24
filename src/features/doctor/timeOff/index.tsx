@@ -1,7 +1,8 @@
 import { useCallback, useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Flex, message, Modal, Space, Tag, Typography } from "antd";
+import { Button, Flex, Modal, Space, Tag, Typography } from "antd";
 import type { TableColumnsType } from "antd";
 import dayjs from "dayjs";
 import { ActionCallout } from "@components/ActionCallout";
@@ -10,18 +11,108 @@ import { PageHeader } from "@components/PageHeader";
 import { ROUTES } from "@constants/routes";
 import { notifyApp } from "@services/api/appNotifications";
 import { formatAppointmentTimeRange } from "@utils/formatters";
-import type { AvailabilityException } from "@features/doctor/availability/api/availability.schemas";
+import type {
+  AvailabilityException,
+  AvailabilityExceptionRequest,
+} from "@features/doctor/availability/api/availability.schemas";
 import {
   useAvailabilityExceptionsQuery,
+  useCreateAvailabilityExceptionMutation,
   useDeleteAvailabilityExceptionMutation,
+  useUpdateAvailabilityExceptionMutation,
 } from "@features/doctor/availability/api/availabilityQueries";
 import { TimeOffDateBadge, TimeOffPageRoot, TimeOffTableCard } from "./DoctorTimeOffPage.styles";
+import { TimeOffDialog } from "./components/TimeOffDialog";
+
+function getTimeOffSummary(
+  request: AvailabilityExceptionRequest,
+  affectedAppointments: unknown,
+  affectedMessage?: string | null,
+): ReactNode {
+  const date = dayjs(request.exceptionDate, "DD/MM/YYYY", true);
+  const formattedDate = date.isValid() ? date.format("MMMM D, YYYY") : request.exceptionDate;
+  const time =
+    request.startTime && request.endTime
+      ? formatAppointmentTimeRange(request.startTime, request.endTime)
+      : "All day";
+  const appointments = Array.isArray(affectedAppointments)
+    ? affectedAppointments.filter(
+        (appointment): appointment is Record<string, unknown> =>
+          typeof appointment === "object" && appointment !== null,
+      )
+    : [];
+
+  return (
+    <Flex vertical gap={2}>
+      <Typography.Text strong>
+        {formattedDate} · {time}
+      </Typography.Text>
+      <Typography.Text>Reason: {request.reason || "No reason provided"}</Typography.Text>
+      {appointments.length ? (
+        <>
+          <Typography.Text strong>
+            {affectedMessage || "Your time off changed, but these appointments were not canceled:"}
+          </Typography.Text>
+          {appointments.map((appointment, index) => {
+            const patientName =
+              typeof appointment.patientName === "string" ? appointment.patientName : "Patient";
+            const appointmentDate =
+              typeof appointment.appointmentDate === "string"
+                ? dayjs(appointment.appointmentDate, "DD/MM/YYYY", true).format("MMM D, YYYY")
+                : "Date unavailable";
+            const startTime =
+              typeof appointment.startTime === "string" ? appointment.startTime : "";
+            const endTime = typeof appointment.endTime === "string" ? appointment.endTime : "";
+            const appointmentTime =
+              startTime && endTime
+                ? formatAppointmentTimeRange(startTime, endTime)
+                : "Time unavailable";
+
+            return (
+              <Typography.Text key={String(appointment.id ?? index)}>
+                {patientName}: {appointmentDate} at {appointmentTime}
+              </Typography.Text>
+            );
+          })}
+        </>
+      ) : null}
+    </Flex>
+  );
+}
 
 export function DoctorTimeOffPage() {
   const navigate = useNavigate();
   const exceptionsQuery = useAvailabilityExceptionsQuery();
+  const createException = useCreateAvailabilityExceptionMutation();
+  const updateException = useUpdateAvailabilityExceptionMutation();
   const deleteException = useDeleteAvailabilityExceptionMutation();
   const [exceptionToDelete, setExceptionToDelete] = useState<AvailabilityException>();
+  const [timeOffDialogOpen, setTimeOffDialogOpen] = useState(false);
+  const [editingException, setEditingException] = useState<AvailabilityException>();
+
+  const handleExceptionSubmit = async (request: AvailabilityExceptionRequest) => {
+    try {
+      if (editingException) {
+        const response = await updateException.mutateAsync({ id: editingException.id, request });
+        notifyApp({
+          type: "success",
+          message: "Time off updated",
+          description: getTimeOffSummary(request, response.affectedAppointments, response.message),
+        });
+      } else {
+        const response = await createException.mutateAsync(request);
+        notifyApp({
+          type: "success",
+          message: "Time off added",
+          description: getTimeOffSummary(request, response.affectedAppointments, response.message),
+        });
+      }
+      setTimeOffDialogOpen(false);
+      setEditingException(undefined);
+    } catch {
+      notifyApp({ type: "error", message: "Could not save time off" });
+    }
+  };
 
   const handleDelete = useCallback(
     async (exceptionId: number) => {
@@ -92,7 +183,10 @@ export function DoctorTimeOffPage() {
             <Button
               type="link"
               icon={<EditOutlined />}
-              onClick={() => message.info("Editing time off will be available soon.")}
+              onClick={() => {
+                setEditingException(exception);
+                setTimeOffDialogOpen(true);
+              }}
             >
               Edit
             </Button>
@@ -121,7 +215,10 @@ export function DoctorTimeOffPage() {
           <Button
             type="primary"
             icon={<PlusOutlined />}
-            onClick={() => message.info("Adding time off will be available soon.")}
+            onClick={() => {
+              setEditingException(undefined);
+              setTimeOffDialogOpen(true);
+            }}
           >
             Add time off
           </Button>
@@ -145,6 +242,17 @@ export function DoctorTimeOffPage() {
         description="Time off takes precedence over your recurring hours for that date. To change your regular weekly schedule instead, update an availability rule."
         actionLabel="Manage availability"
         onAction={() => navigate(ROUTES.doctorAvailability)}
+      />
+
+      <TimeOffDialog
+        open={timeOffDialogOpen}
+        exception={editingException}
+        loading={createException.isPending || updateException.isPending}
+        onClose={() => {
+          setTimeOffDialogOpen(false);
+          setEditingException(undefined);
+        }}
+        onSubmit={handleExceptionSubmit}
       />
 
       <Modal
