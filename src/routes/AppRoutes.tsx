@@ -8,6 +8,8 @@ import { ProtectedRoute } from "@routes/ProtectedRoute";
 import { PublicRoute } from "@routes/PublicRoute";
 import { ProfilePage } from "@features/profile/ProfilePage";
 import { PatientOverviewPage } from "@features/overview/patient/PatientOverviewPage";
+import { DoctorAvailabilityPage } from "@features/doctor/availability/DoctorAvailabilityPage";
+import { DoctorTimeOffPage } from "@features/doctor/timeOff";
 
 export function AppRoutes() {
   return (
@@ -49,6 +51,8 @@ export function AppRoutes() {
         >
           <Route index element={<Navigate to={ROUTE_SEGMENTS.overview} replace />} />
           <Route path={ROUTE_SEGMENTS.overview} element={null} />
+          <Route path={ROUTE_SEGMENTS.availability} element={<DoctorAvailabilityPage />} />
+          <Route path={ROUTE_SEGMENTS.timeOff} element={<DoctorTimeOffPage />} />
           <Route path={ROUTE_SEGMENTS.profile} element={<ProfilePage />} />
         </Route>
         <Route
