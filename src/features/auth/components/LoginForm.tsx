@@ -7,7 +7,6 @@ import { FormField } from "@components/FormField/FormField";
 import { ROUTES } from "@constants/routes";
 import { useLoginMutation } from "@features/auth/api/authQueries";
 import { loginRequestSchema } from "@features/auth/schemas/auth.schemas";
-import { getApiErrorMessage } from "@services/api/errors";
 import { notifyApp } from "@services/api/appNotifications";
 import {
   AuthFormCard,
@@ -34,8 +33,8 @@ export function LoginForm() {
     try {
       await loginMutation.mutateAsync({ email, password });
       navigate(ROUTES.app, { replace: true });
-    } catch (error) {
-      notifyApp({ type: "error", message: "Could not sign in", description: getApiErrorMessage(error) });
+    } catch {
+      return;
     }
   };
 

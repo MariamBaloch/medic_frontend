@@ -7,7 +7,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { FormField } from "@components/FormField/FormField";
 import { ROUTES } from "@constants/routes";
 import { PhoneInput } from "@components/PhoneInput/PhoneInput";
-import { getApiErrorMessage } from "@services/api/errors";
 import { notifyApp } from "@services/api/appNotifications";
 import {
   useRegisterDoctorMutation,
@@ -77,8 +76,8 @@ export function RegisterForm() {
         description: "Check your email to verify your account.",
       });
       navigate(ROUTES.login, { replace: true });
-    } catch (error) {
-      notifyApp({ type: "error", message: "Could not complete registration", description: getApiErrorMessage(error) });
+    } catch {
+      return;
     }
   };
 

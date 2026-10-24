@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 import { FormField } from "@components/FormField/FormField";
 import { ROUTES } from "@constants/routes";
 import { useForgotPasswordMutation } from "@features/auth/api/authQueries";
-import { getApiErrorMessage } from "@services/api/errors";
 import { notifyApp } from "@services/api/appNotifications";
 import {
   AuthFormCard,
@@ -36,8 +35,8 @@ export function ForgotPasswordForm() {
         message: "Check your email",
         description: "You’ll receive a password reset link shortly.",
       });
-    } catch (error) {
-      notifyApp({ type: "error", message: "Could not send reset link", description: getApiErrorMessage(error) });
+    } catch {
+      return;
     }
   };
 

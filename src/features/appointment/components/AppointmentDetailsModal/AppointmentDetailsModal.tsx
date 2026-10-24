@@ -10,7 +10,6 @@ import {
   usePatientAppointmentQuery,
 } from "@features/appointment/api/appointmentsQueries";
 import { notifyApp } from "@services/api/appNotifications";
-import { getApiProvidedErrorMessage } from "@services/api/errors";
 import { PageHeader } from "@components/PageHeader";
 import { AppointmentDoctorDetails } from "../AppointmentDoctorDetails";
 import { AppointmentInformation } from "../AppointmentInformation";
@@ -82,10 +81,6 @@ export function AppointmentDetailsModal({
             description: `Your appointment with ${cancelledAppointment.doctorName} on ${cancelledAppointment.appointmentDate} at ${cancelledAppointment.startTime} has been cancelled. Reason: ${cancelledAppointment.cancelledReason || reason}`,
           });
           closeDetails();
-        },
-        onError: (error) => {
-          const message = getApiProvidedErrorMessage(error);
-          if (message) notifyApp({ type: "error", message });
         },
       },
     );

@@ -7,7 +7,6 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { FormField } from "@components/FormField/FormField";
 import { ROUTES } from "@constants/routes";
 import { useResetPasswordMutation } from "@features/auth/api/authQueries";
-import { getApiErrorMessage } from "@services/api/errors";
 import { notifyApp } from "@services/api/appNotifications";
 import {
   AuthFormCard,
@@ -49,8 +48,8 @@ export function ResetPasswordForm() {
       await mutation.mutateAsync({ token, newPassword });
       notifyApp({ type: "success", message: "Your password has been reset", description: "Sign in with your new password." });
       navigate(ROUTES.login, { replace: true });
-    } catch (error) {
-      notifyApp({ type: "error", message: "Could not reset password", description: getApiErrorMessage(error) });
+    } catch {
+      return;
     }
   };
 

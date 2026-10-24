@@ -21,7 +21,6 @@ import type { SelectedAppointmentTime } from "@components/WeekAvailability";
 import type { Doctor } from "@features/booking/api/doctor.schemas";
 import { useBookPatientAppointmentMutation } from "@features/appointment/api/appointmentsQueries";
 import { notifyApp } from "@services/api/appNotifications";
-import { getApiProvidedErrorMessage } from "@services/api/errors";
 import {
   formatAppointmentDate,
   formatAppointmentTimeRange,
@@ -71,9 +70,8 @@ export function BookingLayout() {
         ),
       });
       navigate(ROUTES.patientAppointments);
-    } catch (error) {
-      const message = getApiProvidedErrorMessage(error);
-      if (message) notifyApp({ type: "error", message });
+    } catch {
+      return;
     }
   };
   const steps = [
