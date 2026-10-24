@@ -10,7 +10,6 @@ import { useDoctorAvailabilityQuery } from "@features/booking/api/doctorAvailabi
 import { WeekAvailability } from "@components/WeekAvailability";
 import type { DoctorAvailabilitySlot, SelectedAppointmentTime } from "@components/WeekAvailability";
 import { notifyApp } from "@services/api/appNotifications";
-import { getApiProvidedErrorMessage } from "@services/api/errors";
 import { PageHeader } from "@components/PageHeader";
 import { ScheduleOutlined } from "@ant-design/icons";
 
@@ -160,10 +159,6 @@ export function RescheduleAppointmentDialog({
             description: `Your appointment with ${updatedAppointment.doctorName} has been rescheduled to ${updatedAppointment.appointmentDate} at ${updatedAppointment.startTime}.`,
           });
           onRescheduled();
-        },
-        onError: (error) => {
-          const message = getApiProvidedErrorMessage(error);
-          if (message) notifyApp({ type: "error", message });
         },
       },
     );

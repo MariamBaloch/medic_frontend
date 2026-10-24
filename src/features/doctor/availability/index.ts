@@ -1,0 +1,1 @@
+export { DoctorAvailabilityPage } from "./DoctorAvailabilityPage";
