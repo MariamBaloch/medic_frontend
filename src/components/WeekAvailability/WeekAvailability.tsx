@@ -50,14 +50,20 @@ export interface ExistingPatientBooking {
   reason?: string | null;
 }
 
+type DoctorCalendarEntry =
+  | { type: "available"; slot: DoctorAvailabilitySlot }
+  | { type: "appointment"; booking: ExistingPatientBooking };
+
 export interface WeekAvailabilityProps {
   allowPastWeeks?: boolean;
+  mode?: "booking" | "doctor";
   availableSlots: DoctorAvailabilitySlot[];
   existingBookings: ExistingPatientBooking[];
   weekStartDate: string;
   onWeekChange: (weekStartDate: string) => void;
   selectedTime?: SelectedAppointmentTime | null;
   onSelectTime?: (selection: SelectedAppointmentTime) => void;
+  onAppointmentClick?: (appointmentId: number) => void;
 }
 
 function getSunday(date: Dayjs): Dayjs {
@@ -106,12 +112,14 @@ function getWeekLabel(start: Dayjs, end: Dayjs): string {
 
 export function WeekAvailability({
   allowPastWeeks = false,
+  mode = "booking",
   availableSlots,
   existingBookings,
   weekStartDate,
   onWeekChange,
   selectedTime = null,
   onSelectTime,
+  onAppointmentClick,
 }: WeekAvailabilityProps) {
   const currentWeek = useMemo(() => getSunday(dayjs()), []);
   const weekStart = useMemo(() => dayjs(weekStartDate), [weekStartDate]);
@@ -192,20 +200,108 @@ export function WeekAvailability({
           {weekDays.map((date) => {
             const dateKey = date.format("YYYY-MM-DD");
             const slots = slotsByDate.get(dateKey) ?? [];
-            const bookings = (bookingsByDate.get(dateKey) ?? []).filter(
-              (booking) => booking.status === "BOOKED",
-            );
+            const dayBookings = bookingsByDate.get(dateKey) ?? [];
+            const bookings =
+              mode === "doctor"
+                ? dayBookings
+                : dayBookings.filter((booking) => booking.status === "BOOKED");
+            const doctorEntries: DoctorCalendarEntry[] = [
+              ...slots
+                .filter((slot) => {
+                  const slotStart = getTimeInMinutes(slot.startTime);
+                  const slotEnd = getTimeInMinutes(slot.endTime);
+                  return !bookings.some((booking) => {
+                    const bookingStart = getTimeInMinutes(booking.startTime);
+                    const bookingEnd = getTimeInMinutes(booking.endTime);
+                    return (
+                      slotStart !== null &&
+                      slotEnd !== null &&
+                      bookingStart !== null &&
+                      bookingEnd !== null &&
+                      slotStart < bookingEnd &&
+                      bookingStart < slotEnd
+                    );
+                  });
+                })
+                .map((slot) => ({ type: "available" as const, slot })),
+              ...bookings.map((booking) => ({ type: "appointment" as const, booking })),
+            ].sort((left, right) => {
+              const leftTime =
+                left.type === "available" ? left.slot.startTime : left.booking.startTime;
+              const rightTime =
+                right.type === "available" ? right.slot.startTime : right.booking.startTime;
+              return leftTime.localeCompare(rightTime);
+            });
 
             return (
               <DayColumn key={dateKey}>
                 <DayHeader
                   $isToday={date.isSame(dayjs(), "day")}
-                  $isUnavailable={slots.length === 0}
+                  $isUnavailable={
+                    mode === "doctor"
+                      ? slots.length === 0 && bookings.length === 0
+                      : slots.length === 0
+                  }
                 >
                   <DayName>{date.format("ddd")}</DayName>
-                  <DayNumber $isUnavailable={slots.length === 0}>{date.format("D")}</DayNumber>
+                  <DayNumber
+                    $isUnavailable={
+                      mode === "doctor"
+                        ? slots.length === 0 && bookings.length === 0
+                        : slots.length === 0
+                    }
+                  >
+                    {date.format("D")}
+                  </DayNumber>
                 </DayHeader>
-                {slots.length === 0 ? (
+                {mode === "doctor" ? (
+                  doctorEntries.length === 0 ? (
+                    <NoAvailability vertical align="center" justify="center">
+                      <NoAvailabilityDash type="secondary">{"\u2014"}</NoAvailabilityDash>
+                      <Text type="secondary">No availability or appointments</Text>
+                    </NoAvailability>
+                  ) : (
+                    doctorEntries.map((entry) => {
+                      if (entry.type === "available") {
+                        const slot = entry.slot;
+                        return (
+                          <TimeSlot
+                            key={`available-${dateKey}-${slot.startTime}`}
+                            htmlType="button"
+                            $selected={false}
+                            $booked={false}
+                            $doctorMode
+                            aria-label={`Available from ${formatTime(slot.startTime)} to ${formatTime(slot.endTime)}`}
+                          >
+                            {formatTime(slot.startTime)}
+                          </TimeSlot>
+                        );
+                      }
+
+                      const booking = entry.booking;
+                      const timeLabel = formatTime(booking.startTime);
+                      return (
+                        <Tooltip
+                          key={`appointment-${booking.id}`}
+                          title={`Appointment with ${booking.patientName} · ${formatTime(booking.startTime)}–${formatTime(booking.endTime)}`}
+                        >
+                          <BookedSlotWrapper>
+                            <TimeSlot
+                              htmlType="button"
+                              $selected={false}
+                              $booked
+                              $doctorMode
+                              aria-label={`Appointment with ${booking.patientName} at ${timeLabel}`}
+                              onClick={() => onAppointmentClick?.(booking.id)}
+                            >
+                              {timeLabel}
+                            </TimeSlot>
+                          </BookedSlotWrapper>
+                        </Tooltip>
+                      );
+                    })
+                  )
+                ) : slots.length === 0 ? (
                   <NoAvailability vertical align="center" justify="center">
                     <NoAvailabilityDash type="secondary">—</NoAvailabilityDash>
                     <Text type="secondary">No available times</Text>
@@ -281,15 +377,28 @@ export function WeekAvailability({
       </CalendarScroller>
 
       <AvailabilityLegend aria-label="Availability legend">
-        <LegendItem>
-          <LegendDot /> Available
-        </LegendItem>
-        <LegendItem>
-          <LegendDot $booked /> Unavailable
-        </LegendItem>
-        <LegendItem>
-          <LegendDot $selected /> Selected
-        </LegendItem>
+        {mode === "doctor" ? (
+          <>
+            <LegendItem>
+              <LegendDot $doctorAvailable /> Available time
+            </LegendItem>
+            <LegendItem>
+              <LegendDot $appointment /> Appointment
+            </LegendItem>
+          </>
+        ) : (
+          <>
+            <LegendItem>
+              <LegendDot /> Available
+            </LegendItem>
+            <LegendItem>
+              <LegendDot $booked /> Unavailable
+            </LegendItem>
+            <LegendItem>
+              <LegendDot $selected /> Selected
+            </LegendItem>
+          </>
+        )}
       </AvailabilityLegend>
     </>
   );

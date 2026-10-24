@@ -12,6 +12,7 @@ export const ROUTES = {
   doctor: "/doctor",
   doctorOverview: "/doctor/overview",
   doctorAppointments: "/doctor/appointments",
+  doctorSchedule: "/doctor/schedule",
   doctorAvailability: "/doctor/availability",
   doctorTimeOff: "/doctor/time-off",
   admin: "/admin",
@@ -22,6 +23,7 @@ export const ROUTES = {
 export const ROUTE_SEGMENTS = {
   overview: "overview",
   appointments: "appointments",
+  schedule: "schedule",
   availability: "availability",
   timeOff: "time-off",
   profile: "profile",

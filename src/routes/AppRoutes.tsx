@@ -11,6 +11,7 @@ import { PatientOverviewPage } from "@features/overview/patient/PatientOverviewP
 import { DoctorAvailabilityPage } from "@features/doctor/availability/DoctorAvailabilityPage";
 import { DoctorTimeOffPage } from "@features/doctor/timeOff";
 import { DoctorAppointmentsPage } from "@features/doctor/appointment";
+import { DoctorSchedulePage } from "@features/doctor/schedule";
 
 export function AppRoutes() {
   return (
@@ -53,6 +54,7 @@ export function AppRoutes() {
           <Route index element={<Navigate to={ROUTE_SEGMENTS.overview} replace />} />
           <Route path={ROUTE_SEGMENTS.overview} element={null} />
           <Route path={ROUTE_SEGMENTS.appointments} element={<DoctorAppointmentsPage />} />
+          <Route path={ROUTE_SEGMENTS.schedule} element={<DoctorSchedulePage />} />
           <Route path={ROUTE_SEGMENTS.availability} element={<DoctorAvailabilityPage />} />
           <Route path={ROUTE_SEGMENTS.timeOff} element={<DoctorTimeOffPage />} />
           <Route path={ROUTE_SEGMENTS.profile} element={<ProfilePage />} />

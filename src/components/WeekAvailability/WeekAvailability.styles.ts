@@ -74,24 +74,50 @@ export const DayNumber = styled(Typography.Text)<{ $isUnavailable: boolean }>`
 export const TimeSlot = styled(Button)<{
   $selected: boolean;
   $booked: boolean;
+  $doctorMode?: boolean;
 }>`
   width: 100%;
   min-height: 40px;
   padding: 8px 4px;
   border-radius: 10px;
-  cursor: ${({ $booked }) => ($booked ? "not-allowed" : "pointer")};
+  cursor: ${({ $booked, $doctorMode }) =>
+    $doctorMode ? ($booked ? "pointer" : "default") : $booked ? "not-allowed" : "pointer"};
   font: inherit;
   font-size: 11px;
 
   && {
     border: 1px solid
-      ${({ $selected, $booked }) =>
-        $selected ? colors.primary : $booked ? "transparent" : colors.border};
-    background: ${({ $selected, $booked }) =>
-      $selected ? colors.primary : $booked ? colors.backgroundSoft : colors.surface};
-    color: ${({ $selected, $booked }) =>
-      $selected ? colors.surface : $booked ? "#A6B3B0" : colors.primary};
-    text-decoration: ${({ $booked }) => ($booked ? "line-through" : "none")};
+      ${({ $selected, $booked, $doctorMode }) =>
+        $selected
+          ? colors.primary
+          : $booked
+            ? $doctorMode
+              ? colors.primary
+              : "transparent"
+            : colors.border};
+    background: ${({ $selected, $booked, $doctorMode }) =>
+      $selected
+        ? colors.primary
+        : $doctorMode && $booked
+          ? colors.primary
+          : $doctorMode
+            ? "transparent"
+            : $booked
+              ? colors.backgroundSoft
+              : colors.surface};
+    color: ${({ $selected, $booked, $doctorMode }) =>
+      $selected
+        ? colors.surface
+        : $doctorMode && $booked
+          ? colors.surface
+          : $doctorMode
+            ? colors.primary
+            : $booked
+              ? "#A6B3B0"
+              : colors.primary};
+    font-weight: ${({ $booked, $doctorMode }) => ($booked && $doctorMode ? 600 : 400)};
+    text-decoration: ${({ $booked, $doctorMode }) =>
+      $booked && !$doctorMode ? "line-through" : "none"};
   }
 
   &&:disabled {
@@ -100,8 +126,11 @@ export const TimeSlot = styled(Button)<{
     color: ${({ $booked }) => ($booked ? "#A6B3B0" : colors.primary)};
   }
 
-  &:hover:not(:disabled) {
+  &&:hover:not(:disabled) {
     border-color: ${colors.primary};
+    background-color: ${({ $booked, $doctorMode }) =>
+      $doctorMode && $booked ? colors.primaryHover : undefined};
+    color: ${({ $booked, $doctorMode }) => ($doctorMode && $booked ? colors.surface : undefined)};
   }
 
   &:focus-visible {
@@ -141,14 +170,30 @@ export const LegendItem = styled.div`
   gap: 6px;
 `;
 
-export const LegendDot = styled.div<{ $booked?: boolean; $selected?: boolean }>`
+export const LegendDot = styled.div<{
+  $booked?: boolean;
+  $selected?: boolean;
+  $doctorAvailable?: boolean;
+  $appointment?: boolean;
+}>`
   width: 8px;
   height: 8px;
   border: 1px solid
-    ${({ $booked, $selected }) => ($booked || $selected ? "transparent" : colors.teal)};
+    ${({ $booked, $selected, $doctorAvailable, $appointment }) =>
+      $booked || $selected || $appointment
+        ? "transparent"
+        : $doctorAvailable
+          ? colors.textSecondary
+          : colors.teal};
   border-radius: 50%;
-  background: ${({ $booked, $selected }) =>
-    $booked ? "#A6B3B0" : $selected ? colors.primary : colors.surface};
+  background: ${({ $booked, $selected, $appointment }) =>
+    $booked
+      ? "#A6B3B0"
+      : $selected
+        ? colors.primary
+        : $appointment
+          ? colors.primary
+          : colors.surface};
 `;
 
 export const BookedSlotWrapper = styled.div`
