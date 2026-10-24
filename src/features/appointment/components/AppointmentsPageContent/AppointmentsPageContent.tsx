@@ -12,10 +12,8 @@ import {
   appointmentStatusSchema,
   type Appointment,
   type AppointmentFilters,
-  type AppointmentPage,
-  type AppointmentStatus,
-  type AppointmentStatusOption,
-  type Specialization,
+  type AppointmentPage, type AppointmentStatusOption,
+  type Specialization
 } from "@features/appointment/api/appointment.schemas";
 import { getApiErrorMessage } from "@services/api/errors";
 import { AppointmentColumns } from "../AppointmentTableColumns";

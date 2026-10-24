@@ -55,6 +55,7 @@ const normalizedAppointmentSchema = z.object({
   specialization: specializationSchema.nullish(),
   patientId: z.number(),
   patientName: z.string(),
+  patientImageUrl: z.string().nullish(),
   appointmentDate: z.string(),
   startTime: z.string(),
   endTime: z.string(),
