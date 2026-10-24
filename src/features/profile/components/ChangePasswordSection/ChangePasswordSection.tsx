@@ -45,18 +45,20 @@ export function ChangePasswordSection() {
   return (
     <>
       <SecurityCard title="Security">
-        <Flex justify="space-between" align="center" gap={16} style={{ width: "100%" }}>
+        <Flex vertical gap={12} style={{ width: "100%" }}>
           <Typography.Text type="secondary">
             Update your password to keep your account secure.
           </Typography.Text>
-          <Button
-            color="primary"
-            variant="outlined"
-            icon={<LockOutlined />}
-            onClick={() => setIsModalOpen(true)}
-          >
-            Change password
-          </Button>
+          <Flex justify="flex-start">
+            <Button
+              color="primary"
+              variant="outlined"
+              icon={<LockOutlined />}
+              onClick={() => setIsModalOpen(true)}
+            >
+              Change password
+            </Button>
+          </Flex>
         </Flex>
       </SecurityCard>
 
