@@ -16,11 +16,7 @@ import { AppointmentDoctorDetails } from "../AppointmentDoctorDetails";
 import { AppointmentInformation } from "../AppointmentInformation";
 import { AppointmentReasonPanel } from "../AppointmentReasonPanel";
 import { RescheduleAppointmentDialog } from "./RescheduleAppointmentDialog";
-import {
-  ContentGrid,
-  InformationColumn,
-  LoadingContainer,
-} from "./AppointmentDetailsModal.styles";
+import { ContentGrid, InformationColumn, LoadingContainer } from "./AppointmentDetailsModal.styles";
 
 interface AppointmentDetailsModalProps {
   appointment: Appointment | null;
@@ -98,16 +94,23 @@ export function AppointmentDetailsModal({
   const canReschedule =
     fullAppointment?.status === "BOOKED" &&
     isFutureAppointment(fullAppointment.appointmentDate, fullAppointment.startTime);
-  const modalFooter = fullAppointment?.status === "BOOKED" ? (
-    <Space>
-      {canReschedule ? (
-        <Button onClick={() => setIsRescheduleDialogOpen(true)}>Reschedule appointment</Button>
-      ) : null}
-      <Button danger onClick={() => setIsCancelDialogOpen(true)}>
-        Cancel appointment
-      </Button>
-    </Space>
-  ) : null;
+  const modalFooter =
+    fullAppointment?.status === "BOOKED" ? (
+      <Space>
+        {canReschedule ? (
+          <Button
+            color="primary"
+            variant="outlined"
+            onClick={() => setIsRescheduleDialogOpen(true)}
+          >
+            Reschedule appointment
+          </Button>
+        ) : null}
+        <Button color="danger" variant="outlined" onClick={() => setIsCancelDialogOpen(true)}>
+          Cancel appointment
+        </Button>
+      </Space>
+    ) : null;
 
   return (
     <>

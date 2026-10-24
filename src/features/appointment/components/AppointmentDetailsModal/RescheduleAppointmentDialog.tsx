@@ -1,4 +1,4 @@
-import { Button, Flex, Modal, Space, Spin, Typography } from "antd";
+import { Button, Flex, Modal, Space, Spin } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useMemo, useState } from "react";
 import type { Appointment } from "@features/appointment/api/appointment.schemas";
@@ -11,6 +11,8 @@ import { WeekAvailability } from "@components/WeekAvailability";
 import type { DoctorAvailabilitySlot, SelectedAppointmentTime } from "@components/WeekAvailability";
 import { notifyApp } from "@services/api/appNotifications";
 import { getApiProvidedErrorMessage } from "@services/api/errors";
+import { PageHeader } from "@components/PageHeader";
+import { ScheduleOutlined } from "@ant-design/icons";
 
 interface RescheduleAppointmentDialogProps {
   appointment: Appointment | null;
@@ -169,10 +171,10 @@ export function RescheduleAppointmentDialog({
 
   return (
     <Modal
-      title="Reschedule appointment"
+      title={null}
       open={open}
       onCancel={onClose}
-      width="min(1100px, calc(100vw - 24px))"
+      width="min(1600px, calc(100vw - 24px))"
       footer={
         <Space>
           <Button onClick={handleKeepCurrent}>Keep current appointment</Button>
@@ -188,16 +190,13 @@ export function RescheduleAppointmentDialog({
       }
       destroyOnHidden
     >
-      <Flex vertical gap={12}>
-        <Typography.Text>
-          Choose a new available time with {appointment?.doctorName ?? "your doctor"}.
-        </Typography.Text>
-        {selectedTime ? (
-          <Typography.Text strong>
-            {isCurrentSelection ? "Current appointment" : "New time"}:{" "}
-            {dayjs(selectedTime.date).format("dddd, MMMM D, YYYY")} at {selectedTime.time}
-          </Typography.Text>
-        ) : null}
+      <Flex vertical gap={0}>
+        <PageHeader
+          style={{ padding: "10px 0px", marginBottom: 0 }}
+          icon={<ScheduleOutlined />}
+          title="Reschedule your appointment"
+          description={`Choose a new available time with Dr. ${appointment?.doctorName}.`}
+        />
         <Spin spinning={availabilityQuery.isLoading || appointmentsQuery.isLoading}>
           <WeekAvailability
             availableSlots={availableSlots}
