@@ -7,6 +7,7 @@ import { BookingPage } from "@features/booking/BookingPage";
 import { ProtectedRoute } from "@routes/ProtectedRoute";
 import { PublicRoute } from "@routes/PublicRoute";
 import { ProfilePage } from "@features/profile/ProfilePage";
+import { PatientOverviewPage } from "@features/overview/patient/PatientOverviewPage";
 
 export function AppRoutes() {
   return (
@@ -33,7 +34,7 @@ export function AppRoutes() {
           }
         >
           <Route index element={<Navigate to={ROUTE_SEGMENTS.overview} replace />} />
-          <Route path={ROUTE_SEGMENTS.overview} element={null} />
+          <Route path={ROUTE_SEGMENTS.overview} element={<PatientOverviewPage />} />
           <Route path={ROUTE_SEGMENTS.profile} element={<ProfilePage />} />
           <Route path={ROUTE_SEGMENTS.appointments} element={<Outlet />}>
             <Route index element={<PatientAppointmentsPage />} />
@@ -66,3 +67,5 @@ export function AppRoutes() {
     </Routes>
   );
 }
+
+

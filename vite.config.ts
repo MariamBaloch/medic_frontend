@@ -8,6 +8,7 @@ export default defineConfig({
   plugins: [react(), babel({ presets: [reactCompilerPreset()] })],
   resolve: {
     alias: {
+      "@assets": fileURLToPath(new URL("./src/assets", import.meta.url)),
       "@components": fileURLToPath(new URL("./src/components", import.meta.url)),
       "@features": fileURLToPath(new URL("./src/features", import.meta.url)),
       "@routes": fileURLToPath(new URL("./src/routes", import.meta.url)),

@@ -1,8 +1,8 @@
-import { Card } from "antd";
 import styled from "styled-components";
+import { AppCard } from "@components/Card";
 import { colors } from "@theme/tokens";
 
-export const SecurityCard = styled(Card)`
+export const SecurityCard = styled(AppCard)`
   overflow: hidden;
   border: 1px solid ${colors.teal} !important;
   border-left: 4px solid ${colors.primary} !important;

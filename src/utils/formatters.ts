@@ -23,7 +23,7 @@ export function getDoctorInitials(name: string): string {
 }
 
 export function parseAppointmentDate(value: string) {
-  const parsed = dayjs(value, "DD/MM/YYYY", true);
+  const parsed = dayjs(value, ["DD/MM/YYYY", "YYYY-MM-DD"], true);
   return parsed.isValid() ? parsed : null;
 }
 

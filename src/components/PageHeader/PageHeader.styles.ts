@@ -1,11 +1,19 @@
 import styled from "styled-components";
 import { colors } from "@theme/tokens";
 
-export const PageHeaderRoot = styled.header`
+export const PageHeaderRoot = styled.header<{ $stacked: boolean }>`
   margin-bottom: 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  ${({ $stacked }) =>
+    $stacked &&
+    `
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    `}
 
   @media (max-width: 640px) {
     align-items: flex-start;
@@ -59,6 +67,18 @@ export const PageHeaderContent = styled.div`
     color: ${colors.textSecondary};
     font-size: 13px;
   }
+`;
+
+export const PageHeaderEyebrow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  color: ${colors.primary};
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 `;
 
 export const PageHeaderActions = styled.div`

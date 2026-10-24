@@ -3,6 +3,7 @@ import { Typography } from "antd";
 import {
   PageHeaderActions,
   PageHeaderContent,
+  PageHeaderEyebrow,
   PageHeaderIcon,
   PageHeaderLeading,
   PageHeaderRoot,
@@ -11,17 +12,20 @@ import {
 interface PageHeaderProps {
   title: string;
   description?: string;
+  eyebrow?: ReactNode;
   action?: ReactNode;
   icon?: ReactNode;
+  stacked?: boolean;
   style?: CSSProperties;
 }
 
-export function PageHeader({ title, description, action, icon, style }: PageHeaderProps) {
+export function PageHeader({ title, description, eyebrow, action, icon, stacked = false, style }: PageHeaderProps) {
   return (
-    <PageHeaderRoot style={style}>
+    <PageHeaderRoot $stacked={stacked} style={style}>
       <PageHeaderLeading>
         {icon ? <PageHeaderIcon>{icon}</PageHeaderIcon> : null}
         <PageHeaderContent>
+          {eyebrow ? <PageHeaderEyebrow>{eyebrow}</PageHeaderEyebrow> : null}
           <Typography.Title level={2}>{title}</Typography.Title>
           {description ? (
             <Typography.Paragraph type="secondary">{description}</Typography.Paragraph>

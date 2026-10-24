@@ -16,7 +16,7 @@ export const specializationSchema = z.object({
 
 export const appointmentSchema = z.object({
   id: z.number(),
-  version: z.number().int().nonnegative(),
+  version: z.number().int().nonnegative().default(0),
   doctorId: z.number(),
   doctorName: z.string(),
   doctorQualification: z.string().nullish(),
@@ -39,7 +39,7 @@ export const appointmentSchema = z.object({
 });
 
 export const appointmentDetailsSchema = z.object({
-  version: z.number().int().nonnegative(),
+  version: z.number().int().nonnegative().default(0),
   appointmentDate: z.string(),
   startTime: z.string(),
   endTime: z.string(),
