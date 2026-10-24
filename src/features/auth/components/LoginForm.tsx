@@ -7,7 +7,6 @@ import { FormField } from "@components/FormField/FormField";
 import { ROUTES } from "@constants/routes";
 import { useLoginMutation } from "@features/auth/api/authQueries";
 import { loginRequestSchema } from "@features/auth/schemas/auth.schemas";
-import { notifyApp } from "@services/api/appNotifications";
 import {
   AuthFormCard,
   AuthFormActions,

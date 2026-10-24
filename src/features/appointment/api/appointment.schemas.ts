@@ -13,8 +13,34 @@ export const specializationSchema = z.object({
   description: z.string().nullish(),
 });
 
+const appointmentDoctorSchema = z.object({
+  doctorId: z.number(),
+  doctorName: z.string(),
+  doctorImageUrl: z.string().nullish(),
+  doctorQualification: z.string().nullish(),
+  specialization: specializationSchema.nullish(),
+  doctorYearsOfExperience: z.number().nullish(),
+  doctorHospitalAffiliation: z.string().nullish(),
+  doctorClinicAddress: z.string().nullish(),
+  doctorLicenseNumber: z.string().nullish(),
+  doctorBio: z.string().nullish(),
+});
 
-export const appointmentSchema = z.object({
+const patientSummarySchema = z.object({
+  patientId: z.number(),
+  patientName: z.string(),
+  patientImageUrl: z.string().nullish(),
+  address: z.string().nullish(),
+  city: z.string().nullish(),
+  country: z.string().nullish(),
+  bloodType: z.string().nullish(),
+  heightCm: z.number().nullish(),
+  weightKg: z.number().nullish(),
+  allergies: z.string().nullish(),
+  chronicConditions: z.string().nullish(),
+});
+
+const normalizedAppointmentSchema = z.object({
   id: z.number(),
   version: z.number().int().nonnegative().default(0),
   doctorId: z.number(),
@@ -38,7 +64,40 @@ export const appointmentSchema = z.object({
   cancelledReason: z.string().nullish(),
 });
 
-export const appointmentDetailsSchema = z.object({
+const nestedAppointmentSchema = z
+  .object({
+    id: z.number(),
+    version: z.number().int().nonnegative().default(0),
+    doctor: appointmentDoctorSchema,
+    patient: patientSummarySchema,
+    appointmentDate: z.string(),
+    startTime: z.string(),
+    endTime: z.string(),
+    status: appointmentStatusSchema,
+    reason: z.string().nullish(),
+    bookingFee: z.number().nullish(),
+    cancelledReason: z.string().nullish(),
+  })
+  .transform(({ doctor, patient, ...appointment }) => ({
+    ...appointment,
+    doctorId: doctor.doctorId,
+    doctorName: doctor.doctorName,
+    doctorImageUrl: doctor.doctorImageUrl,
+    doctorQualification: doctor.doctorQualification,
+    doctorYearsOfExperience: doctor.doctorYearsOfExperience,
+    doctorHospitalAffiliation: doctor.doctorHospitalAffiliation,
+    doctorClinicAddress: doctor.doctorClinicAddress,
+    doctorLicenseNumber: doctor.doctorLicenseNumber,
+    doctorBio: doctor.doctorBio,
+    specialization: doctor.specialization,
+    patientId: patient.patientId,
+    patientName: patient.patientName,
+    patientImageUrl: patient.patientImageUrl,
+  }));
+
+export const appointmentSchema = z.union([nestedAppointmentSchema, normalizedAppointmentSchema]);
+
+const normalizedAppointmentDetailsSchema = z.object({
   version: z.number().int().nonnegative().default(0),
   appointmentDate: z.string(),
   startTime: z.string(),
@@ -46,7 +105,9 @@ export const appointmentDetailsSchema = z.object({
   bookingFee: z.number().nullish(),
   status: appointmentStatusSchema,
   reason: z.string().nullish(),
+  cancelledReason: z.string().nullish(),
   doctorName: z.string(),
+  doctorId: z.number().optional(),
   doctorImageUrl: z.string().nullish(),
   doctorQualification: z.string().nullish(),
   specialization: specializationSchema.nullish(),
@@ -56,6 +117,49 @@ export const appointmentDetailsSchema = z.object({
   doctorLicenseNumber: z.string().nullish(),
   doctorBio: z.string().nullish(),
 });
+
+const nestedAppointmentDetailsSchema = z
+  .object({
+    version: z.number().int().nonnegative().default(0),
+    appointmentDate: z.string(),
+    startTime: z.string(),
+    endTime: z.string(),
+    bookingFee: z.number().nullish(),
+    status: appointmentStatusSchema,
+    reason: z.string().nullish(),
+    cancelledReason: z.string().nullish(),
+    doctor: appointmentDoctorSchema,
+    patient: patientSummarySchema,
+  })
+  .transform(({ doctor, patient, ...appointment }) => ({
+    ...appointment,
+    doctorId: doctor.doctorId,
+    doctorName: doctor.doctorName,
+    doctorImageUrl: doctor.doctorImageUrl,
+    doctorQualification: doctor.doctorQualification,
+    specialization: doctor.specialization,
+    doctorYearsOfExperience: doctor.doctorYearsOfExperience,
+    doctorHospitalAffiliation: doctor.doctorHospitalAffiliation,
+    doctorClinicAddress: doctor.doctorClinicAddress,
+    doctorLicenseNumber: doctor.doctorLicenseNumber,
+    doctorBio: doctor.doctorBio,
+    patientId: patient.patientId,
+    patientName: patient.patientName,
+    patientImageUrl: patient.patientImageUrl,
+    patientAddress: patient.address,
+    patientCity: patient.city,
+    patientCountry: patient.country,
+    patientBloodType: patient.bloodType,
+    patientHeightCm: patient.heightCm,
+    patientWeightKg: patient.weightKg,
+    patientAllergies: patient.allergies,
+    patientChronicConditions: patient.chronicConditions,
+  }));
+
+export const appointmentDetailsSchema = z.union([
+  nestedAppointmentDetailsSchema,
+  normalizedAppointmentDetailsSchema,
+]);
 
 export const appointmentPageSchema = z.object({
   content: z.array(appointmentSchema),

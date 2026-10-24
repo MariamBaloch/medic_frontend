@@ -70,7 +70,7 @@ export async function getPatientAppointments(filters: AppointmentFilters): Promi
 }
 
 export async function getPatientAppointment(appointmentId: number) {
-  const { data } = await apiClient.get(`/patient/appointments/${appointmentId}`);
+  const { data } = await apiClient.get(`/appointments/${appointmentId}`);
   return appointmentDetailsSchema.parse(data);
 }
 
