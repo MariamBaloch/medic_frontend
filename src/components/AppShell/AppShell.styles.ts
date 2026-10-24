@@ -1,5 +1,6 @@
 import { Layout } from "antd";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 import { colors } from "@theme/tokens";
 
 export const AppLayout = styled(Layout)`
@@ -14,12 +15,14 @@ export const AppLayout = styled(Layout)`
 export const AppSider = styled(Layout.Sider)`
   height: 100dvh;
   min-height: 0;
-  overflow: hidden;
+  overflow: visible;
+  position: relative;
   background: ${colors.sidebar} !important;
 
   .ant-layout-sider-children {
     display: flex;
     flex-direction: column;
+    overflow: hidden;
   }
 
   .ant-menu {
@@ -27,20 +30,31 @@ export const AppSider = styled(Layout.Sider)`
     border-inline-end: 0;
     background: transparent;
   }
+
 `;
 
-export const BrandBlock = styled.div`
+export const BrandBlock = styled.div<{ $collapsed: boolean }>`
   min-height: 84px;
   padding: 20px 22px;
   display: flex;
   align-items: center;
   gap: 10px;
-  overflow: hidden;
+
+  ${({ $collapsed }) =>
+    $collapsed &&
+    `
+      min-height: 96px;
+      padding: 8px 0;
+      flex-direction: column;
+      justify-content: center;
+      gap: 25px;
+    `}
 `;
 
-export const BrandCopy = styled.div`
+export const BrandCopy = styled.div<{ $collapsed: boolean }>`
   min-width: 0;
   white-space: nowrap;
+  display: ${({ $collapsed }) => ($collapsed ? "none" : "block")};
 
   && > .ant-typography {
     display: block;
@@ -62,6 +76,46 @@ export const BrandCopy = styled.div`
     letter-spacing: 0.08em;
     text-transform: uppercase;
     line-height: 1.2;
+  }
+`;
+
+export const BrandLink = styled(Link)`
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  text-decoration: none;
+
+  &:focus-visible {
+    outline: 2px solid ${colors.tealLight};
+    outline-offset: 3px;
+  }
+`;
+
+export const SidebarToggle = styled.button<{ $collapsed: boolean }>`
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  margin-left: ${({ $collapsed }) => ($collapsed ? "0" : "auto")};
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: ${colors.surface};
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+
+  &:hover {
+    color: ${colors.tealLight};
+    background: ${colors.sidebarActive};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${colors.tealLight};
+    outline-offset: 2px;
   }
 `;
 

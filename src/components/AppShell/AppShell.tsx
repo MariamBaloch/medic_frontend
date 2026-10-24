@@ -8,11 +8,13 @@ import {
   MedicineBoxOutlined,
   SettingOutlined,
   UserOutlined,
+  LeftOutlined,
+  RightOutlined,
 } from "@ant-design/icons";
 import { Avatar, Badge, Button, Dropdown, Menu, Tooltip, Typography } from "antd";
 import type { MenuProps } from "antd";
 import type { ReactNode } from "react";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { AppBrandIcon } from "@components/AppBrandIcon/AppBrandIcon";
 import { getAppRoute, ROUTES, ROUTE_SEGMENTS } from "@constants/routes";
@@ -29,6 +31,8 @@ import {
   AppLayout,
   AppSider,
   UserMenuTrigger,
+  BrandLink,
+  SidebarToggle,
 } from "./AppShell.styles";
 
 export interface AppShellNavigationItem {
@@ -57,6 +61,7 @@ export function AppShell({
   const setUser = useAuthStore((state) => state.setUser);
   const currentUserQuery = useCurrentUserQuery();
   const logoutMutation = useLogoutMutation();
+  const [collapsed, setCollapsed] = useState(false);
   const profile = currentUserQuery.data ?? user;
   const role = profile?.role ?? "PATIENT";
   const defaultNavigation: AppShellNavigationItem[] = [
@@ -102,7 +107,7 @@ export function AppShell({
   const title =
     location.pathname === getAppRoute(basePath, ROUTE_SEGMENTS.profile)
       ? "Profile"
-      : activeNavigation.find((item) => item.path === location.pathname)?.title ?? portalLabel;
+      : (activeNavigation.find((item) => item.path === location.pathname)?.title ?? portalLabel);
   const navigationItems: MenuProps["items"] = activeNavigation.map((item) => ({
     key: item.key,
     icon: item.icon,
@@ -141,13 +146,32 @@ export function AppShell({
 
   return (
     <AppLayout hasSider>
-      <AppSider width={260} breakpoint="md" collapsedWidth={72} theme="dark">
-        <BrandBlock>
-          <AppBrandIcon compact />
-          <BrandCopy>
+      <AppSider
+        width={300}
+        breakpoint="md"
+        collapsedWidth={72}
+        collapsed={collapsed}
+        onCollapse={setCollapsed}
+        trigger={null}
+        theme="dark"
+      >
+        <BrandBlock $collapsed={collapsed}>
+          <BrandLink to={getAppRoute(basePath, ROUTE_SEGMENTS.overview)} aria-label="Go to home">
+            <AppBrandIcon compact />
+          </BrandLink>
+          <BrandCopy $collapsed={collapsed}>
             <Typography.Text strong>Medic</Typography.Text>
             <Typography.Text>{portalLabel}</Typography.Text>
           </BrandCopy>
+          <SidebarToggle
+            $collapsed={collapsed}
+            type="button"
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            onClick={() => setCollapsed((current) => !current)}
+          >
+            {collapsed ? <RightOutlined /> : <LeftOutlined />}
+          </SidebarToggle>
         </BrandBlock>
         <Menu
           theme="dark"
