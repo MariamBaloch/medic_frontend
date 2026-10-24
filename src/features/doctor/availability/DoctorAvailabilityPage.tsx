@@ -10,7 +10,11 @@ import { PageHeader } from "@components/PageHeader";
 import { ROUTES } from "@constants/routes";
 import { notifyApp } from "@services/api/appNotifications";
 import { formatAppointmentTimeRange } from "@utils/formatters";
-import type { AvailabilityDay, AvailabilityRule, AvailabilityRuleRequest } from "@features/doctor/availability/api/availability.schemas";
+import type {
+  AvailabilityDay,
+  AvailabilityRule,
+  AvailabilityRuleRequest,
+} from "@features/doctor/availability/api/availability.schemas";
 import {
   useAvailabilityRulesQuery,
   useCreateAvailabilityRuleMutation,
@@ -52,19 +56,28 @@ function showAvailabilitySuccess(message: string, affectedAppointments: unknown[
     message,
     description: appointments.length ? (
       <Flex vertical gap={4}>
-        <Typography.Text strong>Your availability changed, but these appointments were not canceled:</Typography.Text>
+        <Typography.Text strong>
+          Your availability changed, but these appointments were not canceled:
+        </Typography.Text>
         {appointments.map((appointment, index) => {
-          const patientName = typeof appointment.patientName === "string" ? appointment.patientName : "Patient";
-          const date = typeof appointment.appointmentDate === "string"
-            ? displayDate(appointment.appointmentDate)
-            : "Date unavailable";
+          const patientName =
+            typeof appointment.patientName === "string" ? appointment.patientName : "Patient";
+          const date =
+            typeof appointment.appointmentDate === "string"
+              ? displayDate(appointment.appointmentDate)
+              : "Date unavailable";
           const startTime = typeof appointment.startTime === "string" ? appointment.startTime : "";
           const endTime = typeof appointment.endTime === "string" ? appointment.endTime : "";
-          const time = startTime && endTime
-            ? formatAppointmentTimeRange(startTime, endTime)
-            : "Time unavailable";
+          const time =
+            startTime && endTime
+              ? formatAppointmentTimeRange(startTime, endTime)
+              : "Time unavailable";
 
-          return <Typography.Text key={String(appointment.id ?? index)}>{patientName} · {date} · {time}</Typography.Text>;
+          return (
+            <Typography.Text key={String(appointment.id ?? index)}>
+              {patientName} · {date} · {time}
+            </Typography.Text>
+          );
         })}
       </Flex>
     ) : undefined,
@@ -107,81 +120,99 @@ export function DoctorAvailabilityPage() {
     }
   };
 
-  const columns = useMemo<TableColumnsType<AvailabilityRule>>(() => [
-    {
-      title: "Days & hours",
-      key: "daysAndHours",
-      render: (_, rule) => (
-        <Flex vertical>
-          <Typography.Text strong>{rule.daysOfWeek.map((day) => dayLabels[day]).join(", ")}</Typography.Text>
-          <TableSecondaryText>{formatAppointmentTimeRange(rule.startTime, rule.endTime)}</TableSecondaryText>
-        </Flex>
-      ),
-    },
-    {
-      title: "Date range",
-      key: "dateRange",
-      render: (_, rule) => (
-        <Flex vertical>
-          <Typography.Text>{displayDate(rule.startDate)} – {displayDate(rule.endDate)}</Typography.Text>
-          <DateRangeHint>Repeats weekly</DateRangeHint>
-        </Flex>
-      ),
-    },
-    {
-      title: "Slot length",
-      key: "slotLength",
-      render: (_, rule) => {
-        const slotsPerDay = Math.floor(
-          (dayjs(`2000-01-01T${rule.endTime}`).diff(dayjs(`2000-01-01T${rule.startTime}`), "minute")) /
-            rule.slotMinutes,
-        );
-        return (
+  const columns = useMemo<TableColumnsType<AvailabilityRule>>(
+    () => [
+      {
+        title: "Days & hours",
+        key: "daysAndHours",
+        render: (_, rule) => (
           <Flex vertical>
-            <Typography.Text>{rule.slotMinutes} minutes</Typography.Text>
-            <TableSecondaryText>{slotsPerDay} slots per day</TableSecondaryText>
+            <Typography.Text strong>
+              {rule.daysOfWeek.map((day) => dayLabels[day]).join(", ")}
+            </Typography.Text>
+            <TableSecondaryText>
+              {formatAppointmentTimeRange(rule.startTime, rule.endTime)}
+            </TableSecondaryText>
           </Flex>
-        );
+        ),
       },
-    },
-    {
-      title: "",
-      key: "actions",
-      align: "right",
-      render: (_, rule) => (
-        <Space>
-          <Button
-            type="link"
-            icon={<EditOutlined />}
-            onClick={() => {
-              setEditingRule(rule);
-              setRuleDialogOpen(true);
-            }}
-          >
-            Edit
-          </Button>
-          <Button
-            type="link"
-            danger
-            icon={<DeleteOutlined />}
-            onClick={() => setRuleToDelete(rule)}
-          >
-            Delete
-          </Button>
-        </Space>
-      ),
-    },
-  ], [deleteRule]);
+      {
+        title: "Date range",
+        key: "dateRange",
+        render: (_, rule) => (
+          <Flex vertical>
+            <Typography.Text>
+              {displayDate(rule.startDate)} – {displayDate(rule.endDate)}
+            </Typography.Text>
+            <DateRangeHint>Repeats weekly</DateRangeHint>
+          </Flex>
+        ),
+      },
+      {
+        title: "Slot length",
+        key: "slotLength",
+        render: (_, rule) => {
+          const slotsPerDay = Math.floor(
+            dayjs(`2000-01-01T${rule.endTime}`).diff(
+              dayjs(`2000-01-01T${rule.startTime}`),
+              "minute",
+            ) / rule.slotMinutes,
+          );
+          return (
+            <Flex vertical>
+              <Typography.Text>{rule.slotMinutes} minutes</Typography.Text>
+              <TableSecondaryText>{slotsPerDay} slots per day</TableSecondaryText>
+            </Flex>
+          );
+        },
+      },
+      {
+        title: "",
+        key: "actions",
+        align: "right",
+        render: (_, rule) => (
+          <Space>
+            <Button
+              type="link"
+              icon={<EditOutlined />}
+              onClick={() => {
+                setEditingRule(rule);
+                setRuleDialogOpen(true);
+              }}
+            >
+              Edit
+            </Button>
+            <Button
+              type="link"
+              danger
+              icon={<DeleteOutlined />}
+              onClick={() => setRuleToDelete(rule)}
+            >
+              Delete
+            </Button>
+          </Space>
+        ),
+      },
+    ],
+    [deleteRule],
+  );
 
   return (
     <AvailabilityPageRoot>
       <PageHeader
         title="Make room for your patients"
         description="Set recurring hours. Medic turns each rule into bookable appointment slots."
-        action={<Button type="primary" icon={<PlusOutlined />} onClick={openCreateRule}>Add availability</Button>}
+        action={
+          <Button type="primary" icon={<PlusOutlined />} onClick={openCreateRule}>
+            Add availability
+          </Button>
+        }
       />
 
-      <AvailabilityTableCard title="Recurring rules" extra={<Tag color="green">{rulesQuery.data?.length ?? 0} active</Tag>}>
+      <AvailabilityTableCard
+        title="Availability"
+        extra={<Tag color="green">{rulesQuery.data?.length ?? 0} active</Tag>}
+      >
         <DataTable<AvailabilityRule>
           columns={columns}
           dataSource={rulesQuery.data ?? []}
@@ -212,7 +243,7 @@ export function DoctorAvailabilityPage() {
         open={Boolean(ruleToDelete)}
         onCancel={() => setRuleToDelete(undefined)}
         onOk={async () => {
-          if (ruleToDelete && await handleDeleteRule(ruleToDelete.id)) {
+          if (ruleToDelete && (await handleDeleteRule(ruleToDelete.id))) {
             setRuleToDelete(undefined);
           }
         }}

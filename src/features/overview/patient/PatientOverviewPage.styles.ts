@@ -92,29 +92,9 @@ export const SecondSectionGrid = styled.div`
   }
 `;
 
-export const UpcomingAppointmentCard = styled(AppCard)`
-  height: 100%;
-  border-color: ${colors.border};
-  border-radius: 18px;
-  box-shadow: 0 8px 28px rgb(23 51 47 / 6%);
-
-  .ant-card-head {
-    border-bottom: 0;
-    padding-bottom: 4px;
-  }
-
-  .ant-card-head-title {
-    font-size: 18px;
-    font-weight: 600;
-  }
-
+export const UpcomingAppointmentCard = styled(DashboardCard)`
   .ant-card-body {
     padding: 22px 24px;
-  }
-
-  .anticon {
-    flex: 0 0 auto;
-    color: ${colors.primary};
   }
 `;
 
