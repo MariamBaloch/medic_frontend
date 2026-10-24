@@ -15,6 +15,7 @@ import {
   LegendDot,
   LegendItem,
   NoAvailability,
+  NoAvailabilityDash,
   TimeSlot,
   WeekLabel,
   WeekSubLabel,
@@ -206,9 +207,7 @@ export function WeekAvailability({
                 </DayHeader>
                 {slots.length === 0 ? (
                   <NoAvailability vertical align="center" justify="center">
-                    <Text type="secondary" className="dash">
-                      —
-                    </Text>
+                    <NoAvailabilityDash type="secondary">—</NoAvailabilityDash>
                     <Text type="secondary">No available times</Text>
                   </NoAvailability>
                 ) : (

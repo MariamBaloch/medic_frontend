@@ -8,7 +8,7 @@ import type {
 import {
   useCancelPatientAppointmentMutation,
   usePatientAppointmentQuery,
-} from "@features/appointment/api/appointmentsQueries";
+} from "@features/patient/appointment/api/patientAppointmentsQueries";
 import { notifyApp } from "@services/api/appNotifications";
 import { PageHeader } from "@components/PageHeader";
 import { AppointmentDoctorDetails } from "../AppointmentDoctorDetails";

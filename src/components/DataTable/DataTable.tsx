@@ -1,10 +1,6 @@
 import { useMemo } from "react";
 import type { ReactNode } from "react";
-import {
-  CalendarOutlined,
-  SearchOutlined,
-  UndoOutlined,
-} from "@ant-design/icons";
+import { CalendarOutlined, SearchOutlined, UndoOutlined } from "@ant-design/icons";
 import { Button, DatePicker, InputNumber, Select, Table, Tabs, Typography } from "antd";
 import type { TableColumnsType } from "antd";
 import dayjs, { type Dayjs } from "dayjs";
@@ -12,6 +8,7 @@ import {
   DataTableFilterCell,
   DataTableFilterGrid,
   DataTableFilterHeader,
+  DataTableClearFiltersButton,
   DataTablePlainRoot,
   DataTableRoot,
   DataTableSearch,
@@ -59,10 +56,10 @@ interface DataTableProps<T extends object> {
   searchText?: string;
   onSearchTextChange?: (value: string) => void;
   searchPlaceholder?: string;
+  serverSearch?: boolean;
   searchColumnRatio?: number;
   searchAccessor?: (record: T) => string;
   rowKey: string | ((record: T) => string);
-  rowClassName?: (record: T, index: number) => string;
   isRowSelected?: (record: T) => boolean;
   onRowClick?: (record: T) => void;
   withCard?: boolean;
@@ -93,10 +90,10 @@ export function DataTable<T extends object>({
   searchText = "",
   onSearchTextChange,
   searchPlaceholder = "Search",
+  serverSearch = false,
   searchColumnRatio = 1,
   searchAccessor,
   rowKey,
-  rowClassName,
   isRowSelected,
   onRowClick,
   withCard = true,
@@ -105,13 +102,14 @@ export function DataTable<T extends object>({
   title = "Find an appointment",
 }: DataTableProps<T>) {
   const displayedRows = useMemo(() => {
+    if (serverSearch) return dataSource;
     const searchTerm = searchText.trim().toLocaleLowerCase();
     if (!searchTerm) return dataSource;
     return dataSource.filter((record) => {
       const searchableText = searchAccessor ? searchAccessor(record) : JSON.stringify(record);
       return searchableText.toLocaleLowerCase().includes(searchTerm);
     });
-  }, [dataSource, searchAccessor, searchText]);
+  }, [dataSource, searchAccessor, searchText, serverSearch]);
 
   const filterContent = (filter: DataTableFilterConfig) => {
     const value = filterValues[filter.key];
@@ -171,51 +169,50 @@ export function DataTable<T extends object>({
   const content = (
     <>
       {title || showClearFilters || filters.length > 0 || onSearchTextChange ? (
-      <DataTableSection>
-        {title || showClearFilters ? (
-          <DataTableFilterHeader>
-            {title ? <Typography.Text strong>{title}</Typography.Text> : null}
-            {showClearFilters ? (
-              <Button
-                type="link"
-                icon={<UndoOutlined />}
-                className="clear-filters-button"
-                onClick={() => {
-                  onSearchTextChange?.("");
-                  onClearFilters?.();
-                }}
-                disabled={!activeFilters && !searchText}
-              >
-                Clear filters
-              </Button>
-            ) : null}
-          </DataTableFilterHeader>
-        ) : null}
-
-        <DataTableFilterGrid
-          $columns={filters.length + (onSearchTextChange ? 1 : 0)}
-          $searchColumnRatio={onSearchTextChange ? searchColumnRatio : 1}
-        >
-          {onSearchTextChange ? (
-            <DataTableFilterCell>
-              <Typography.Text>Search</Typography.Text>
-              <DataTableSearch
-                prefix={<SearchOutlined />}
-                allowClear
-                value={searchText}
-                placeholder={searchPlaceholder}
-                onChange={(event) => onSearchTextChange(event.target.value)}
-              />
-            </DataTableFilterCell>
+        <DataTableSection>
+          {title || showClearFilters ? (
+            <DataTableFilterHeader>
+              {title ? <Typography.Text strong>{title}</Typography.Text> : null}
+              {showClearFilters ? (
+                <DataTableClearFiltersButton
+                  type="link"
+                  icon={<UndoOutlined />}
+                  onClick={() => {
+                    onSearchTextChange?.("");
+                    onClearFilters?.();
+                  }}
+                  disabled={!activeFilters && !searchText}
+                >
+                  Clear filters
+                </DataTableClearFiltersButton>
+              ) : null}
+            </DataTableFilterHeader>
           ) : null}
-          {filters.map((filter) => (
-            <DataTableFilterCell key={filter.key}>
-              <Typography.Text>{filter.label}</Typography.Text>
-              {filterContent(filter)}
-            </DataTableFilterCell>
-          ))}
-        </DataTableFilterGrid>
-      </DataTableSection>
+
+          <DataTableFilterGrid
+            $columns={filters.length + (onSearchTextChange ? 1 : 0)}
+            $searchColumnRatio={onSearchTextChange ? searchColumnRatio : 1}
+          >
+            {onSearchTextChange ? (
+              <DataTableFilterCell>
+                <Typography.Text>Search</Typography.Text>
+                <DataTableSearch
+                  prefix={<SearchOutlined />}
+                  allowClear
+                  value={searchText}
+                  placeholder={searchPlaceholder}
+                  onChange={(event) => onSearchTextChange(event.target.value)}
+                />
+              </DataTableFilterCell>
+            ) : null}
+            {filters.map((filter) => (
+              <DataTableFilterCell key={filter.key}>
+                <Typography.Text>{filter.label}</Typography.Text>
+                {filterContent(filter)}
+              </DataTableFilterCell>
+            ))}
+          </DataTableFilterGrid>
+        </DataTableSection>
       ) : null}
 
       {tabs?.length ? (
@@ -232,20 +229,11 @@ export function DataTable<T extends object>({
         columns={columns}
         dataSource={displayedRows}
         rowKey={rowKey}
-        rowClassName={(record, index) =>
-          [
-            rowClassName?.(record, index),
-            isRowSelected?.(record) ? "data-table-row-selected" : undefined,
-            onRowClick ? "data-table-row-clickable" : undefined,
-          ]
-            .filter(Boolean)
-            .join(" ")
-        }
-        onRow={
-          onRowClick
-            ? (record) => ({ onClick: () => onRowClick(record) })
-            : undefined
-        }
+        onRow={(record) => ({
+          "data-row-selected": isRowSelected?.(record) ? "true" : undefined,
+          "data-row-clickable": onRowClick ? "true" : undefined,
+          onClick: onRowClick ? () => onRowClick(record) : undefined,
+        })}
         loading={loading}
         size="large"
         pagination={
@@ -253,7 +241,7 @@ export function DataTable<T extends object>({
             ? {
                 current: pagination.page + 1,
                 pageSize: pagination.size,
-                total: searchText ? displayedRows.length : pagination.total,
+                total: !serverSearch && searchText ? displayedRows.length : pagination.total,
                 showSizeChanger: true,
                 pageSizeOptions: [10, 20, 50],
                 size: "small",
@@ -270,8 +258,6 @@ export function DataTable<T extends object>({
   return withCard ? (
     <DataTableRoot variant="borderless">{content}</DataTableRoot>
   ) : (
-    <DataTablePlainRoot className={filterTableSpacing ? "data-table-filter-table-spacing" : undefined}>
-      {content}
-    </DataTablePlainRoot>
+    <DataTablePlainRoot $filterTableSpacing={filterTableSpacing}>{content}</DataTablePlainRoot>
   );
 }

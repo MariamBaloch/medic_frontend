@@ -1,4 +1,4 @@
-import { Input } from "antd";
+import { Button, Input } from "antd";
 import styled, { css } from "styled-components";
 import { colors } from "@theme/tokens";
 import { AppCard } from "@components/Card";
@@ -69,33 +69,27 @@ const dataTableStyles = css`
     background: ${colors.primary};
   }
 
-  .clear-filters-button {
-    color: ${colors.primary};
-    font-size: 12px;
-    font-weight: 600;
-  }
-
-  .ant-table-tbody > tr.data-table-row-clickable {
+  .ant-table-tbody > tr[data-row-clickable="true"] {
     cursor: pointer;
   }
 
-  .ant-table-tbody > tr.data-table-row-clickable > td:first-child {
+  .ant-table-tbody > tr[data-row-clickable="true"] > td:first-child {
     padding-inline-start: 10px;
   }
 
-  .ant-table-tbody > tr.data-table-row-selected > td {
+  .ant-table-tbody > tr[data-row-selected="true"] > td {
     background: ${colors.backgroundTint};
     border-top: 1px solid ${colors.primary};
     border-bottom: 1px solid ${colors.primary};
   }
 
-  .ant-table-tbody > tr.data-table-row-selected > td:first-child {
+  .ant-table-tbody > tr[data-row-selected="true"] > td:first-child {
     border-left: 1px solid ${colors.primary};
     border-start-start-radius: 10px;
     border-end-start-radius: 10px;
   }
 
-  .ant-table-tbody > tr.data-table-row-selected > td:last-child {
+  .ant-table-tbody > tr[data-row-selected="true"] > td:last-child {
     border-right: 1px solid ${colors.primary};
     border-start-end-radius: 10px;
     border-end-end-radius: 10px;
@@ -112,12 +106,16 @@ export const DataTableRoot = styled(AppCard)`
   ${dataTableStyles}
 `;
 
-export const DataTablePlainRoot = styled.div`
+export const DataTablePlainRoot = styled.div<{ $filterTableSpacing?: boolean }>`
   ${dataTableStyles}
 
-  &.data-table-filter-table-spacing > section:first-of-type {
-    padding-bottom: 18px;
-  }
+  ${({ $filterTableSpacing }) =>
+    $filterTableSpacing &&
+    css`
+      > section:first-of-type {
+        padding-bottom: 18px;
+      }
+    `}
 
   > section {
     padding: 0;
@@ -132,6 +130,12 @@ export const DataTablePlainRoot = styled.div`
   .ant-table-tbody > tr > td:last-child {
     padding-inline-end: 0;
   }
+`;
+
+export const DataTableClearFiltersButton = styled(Button)`
+  color: ${colors.primary};
+  font-size: 12px;
+  font-weight: 600;
 `;
 
 export const DataTableSection = styled.section<{ $tabs?: boolean }>`

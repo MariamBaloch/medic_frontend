@@ -5,7 +5,7 @@ import type { Appointment } from "@features/appointment/api/appointment.schemas"
 import {
   usePatientAppointmentsQuery,
   useReschedulePatientAppointmentMutation,
-} from "@features/appointment/api/appointmentsQueries";
+} from "@features/patient/appointment/api/patientAppointmentsQueries";
 import { useDoctorAvailabilityQuery } from "@features/booking/api/doctorAvailabilityQueries";
 import { WeekAvailability } from "@components/WeekAvailability";
 import type { DoctorAvailabilitySlot, SelectedAppointmentTime } from "@components/WeekAvailability";

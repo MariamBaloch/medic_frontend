@@ -1,9 +1,5 @@
 import dayjs from "dayjs";
-import {
-  CalendarOutlined,
-  CheckCircleFilled,
-  UserOutlined,
-} from "@ant-design/icons";
+import { CalendarOutlined, CheckCircleFilled, UserOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +7,8 @@ import { ROUTES } from "@constants/routes";
 import { PageHeader } from "@components/PageHeader";
 import { useCurrentUserQuery } from "@features/auth/api/authQueries";
 import { useAuthStore } from "@stores/authStore";
-import { useAppointmentStatusesQuery, usePatientAppointmentsQuery } from "@features/appointment/api/appointmentsQueries";
+import { useAppointmentStatusesQuery } from "@features/appointment/api/appointmentsQueries";
+import { usePatientAppointmentsQuery } from "@features/patient/appointment/api/patientAppointmentsQueries";
 import type { Appointment } from "@features/appointment/api/appointment.schemas";
 import { parseAppointmentDate } from "@utils/formatters";
 import { AppointmentDetailsModal } from "@features/appointment/components/AppointmentDetailsModal";
@@ -92,11 +89,19 @@ export function PatientOverviewPage() {
     <OverviewRoot>
       <WelcomeCard>
         <PageHeader
-          eyebrow={<><CheckCircleFilled /> Your care, connected</>}
+          eyebrow={
+            <>
+              <CheckCircleFilled /> Your care, connected
+            </>
+          }
           title={`${greeting}, ${firstName}.`}
           description="Keep your care on track. Book a visit, manage an upcoming appointment, or review your health details."
           action={
-            <Button type="primary" icon={<CalendarOutlined />} onClick={() => navigate(ROUTES.patientBookAppointment)}>
+            <Button
+              type="primary"
+              icon={<CalendarOutlined />}
+              onClick={() => navigate(ROUTES.patientBookAppointment)}
+            >
               Book an appointment
             </Button>
           }

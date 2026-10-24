@@ -11,6 +11,7 @@ export const ROUTES = {
   patientBookAppointment: "/patient/appointments/book",
   doctor: "/doctor",
   doctorOverview: "/doctor/overview",
+  doctorAppointments: "/doctor/appointments",
   doctorAvailability: "/doctor/availability",
   doctorTimeOff: "/doctor/time-off",
   admin: "/admin",

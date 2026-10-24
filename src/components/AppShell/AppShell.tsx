@@ -85,6 +85,13 @@ export function AppShell({
       : role === "DOCTOR"
         ? [
             {
+              key: getAppRoute(basePath, ROUTE_SEGMENTS.appointments),
+              path: getAppRoute(basePath, ROUTE_SEGMENTS.appointments),
+              icon: <CalendarOutlined />,
+              label: "Appointments",
+              title: "Appointments",
+            },
+            {
               key: getAppRoute(basePath, ROUTE_SEGMENTS.availability),
               path: getAppRoute(basePath, ROUTE_SEGMENTS.availability),
               icon: <ClockCircleOutlined />,

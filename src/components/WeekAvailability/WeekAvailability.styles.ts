@@ -118,12 +118,12 @@ export const NoAvailability = styled(Flex)`
   color: ${colors.textSecondary};
   font-size: 11px;
   text-align: center;
+`;
 
-  .dash {
-    margin-bottom: 4px;
-    font-size: 20px;
-    font-weight: 400;
-  }
+export const NoAvailabilityDash = styled(Typography.Text)`
+  margin-bottom: 4px;
+  font-size: 20px;
+  font-weight: 400;
 `;
 
 export const AvailabilityLegend = styled.div`

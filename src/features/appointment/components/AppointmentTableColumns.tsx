@@ -1,5 +1,4 @@
-import { RightOutlined } from "@ant-design/icons";
-import { Button, Space, Typography } from "antd";
+import { Space, Typography } from "antd";
 import type { TableColumnsType } from "antd";
 import type {
   Appointment,
@@ -11,23 +10,35 @@ import {
   formatBookingFee,
 } from "@utils/formatters";
 import { AppointmentDoctorCell } from "./AppointmentDoctorCell";
+import { AppointmentPatientCell } from "./AppointmentPatientCell";
 import { AppointmentStatusCell } from "./AppointmentStatusCell";
+import {
+  AppointmentDetailsArrow,
+  AppointmentDetailsButton,
+} from "./AppointmentTableColumns.styles";
 
 interface CreateAppointmentColumnsOptions {
   statuses: AppointmentStatusOption[];
-  onViewDetails: (appointment: Appointment) => void;
+  person: "doctor" | "patient";
+  onViewDetails?: (appointment: Appointment) => void;
 }
 
 export function AppointmentColumns({
   statuses,
+  person,
   onViewDetails,
 }: CreateAppointmentColumnsOptions): TableColumnsType<Appointment> {
   return [
     {
-      key: "doctor",
-      title: "Doctor / specialization",
+      key: person,
+      title: person === "patient" ? "Doctor / specialization" : "Patient",
       width: "20%",
-      render: (_value, appointment) => <AppointmentDoctorCell appointment={appointment} />,
+      render: (_value, appointment) =>
+        person === "patient" ? (
+          <AppointmentDoctorCell appointment={appointment} />
+        ) : (
+          <AppointmentPatientCell appointment={appointment} />
+        ),
     },
     {
       key: "appointmentDate",
@@ -74,14 +85,9 @@ export function AppointmentColumns({
       width: "16%",
       align: "right",
       render: (_value, appointment) => (
-        <Button
-          type="link"
-          className="appointment-details-link"
-          style={{ paddingInline: 0, height: "auto", fontSize: 12, fontWeight: 300 }}
-          onClick={() => onViewDetails(appointment)}
-        >
-          View details <RightOutlined style={{ fontSize: 11 }} />
-        </Button>
+        <AppointmentDetailsButton type="link" onClick={() => onViewDetails?.(appointment)}>
+          View details <AppointmentDetailsArrow />
+        </AppointmentDetailsButton>
       ),
     },
   ];

@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { useMemo, useState } from "react";
 import { WeekAvailability } from "@components/WeekAvailability";
 import type { SelectedAppointmentTime } from "@components/WeekAvailability";
-import { usePatientAppointmentsQuery } from "@features/appointment/api/appointmentsQueries";
+import { usePatientAppointmentsQuery } from "@features/patient/appointment/api/patientAppointmentsQueries";
 import { useDoctorAvailabilityQuery } from "@features/booking/api/doctorAvailabilityQueries";
 import { StepTitle } from "../StepTitle";
 

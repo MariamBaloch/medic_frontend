@@ -171,6 +171,11 @@ export const appointmentPageSchema = z.object({
   last: z.boolean(),
 });
 
+export const appointmentStatusCountsSchema = z.object({
+  total: z.number().int().nonnegative(),
+  byStatus: z.record(appointmentStatusSchema, z.number().int().nonnegative()),
+});
+
 const isoDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Date must use YYYY-MM-DD");
 
 export const appointmentBookingRequestSchema = z.object({
@@ -191,7 +196,8 @@ export const appointmentRescheduleRequestSchema = z.object({
 });
 
 export const appointmentFiltersSchema = z.object({
-  doctorId: z.number().int().positive().optional(),
+  doctorName: z.string().trim().min(1).optional(),
+  patientName: z.string().trim().min(1).optional(),
   dateFrom: isoDateSchema.optional(),
   dateTo: isoDateSchema.optional(),
   status: appointmentStatusSchema.optional(),
@@ -208,6 +214,7 @@ export type AppointmentDetails = z.infer<typeof appointmentDetailsSchema>;
 export type AppointmentStatus = z.infer<typeof appointmentStatusSchema>;
 export type AppointmentStatusOption = z.infer<typeof appointmentStatusOptionSchema>;
 export type AppointmentPage = z.infer<typeof appointmentPageSchema>;
+export type AppointmentStatusCounts = z.infer<typeof appointmentStatusCountsSchema>;
 export type AppointmentFilters = z.input<typeof appointmentFiltersSchema>;
 export type Specialization = z.infer<typeof specializationSchema>;
 export type AppointmentBookingRequest = z.infer<typeof appointmentBookingRequestSchema>;

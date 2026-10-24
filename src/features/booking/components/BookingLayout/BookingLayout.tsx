@@ -19,7 +19,7 @@ import { BookingStepsCard } from "./BookingLayout.styles";
 import { AppCard } from "@components/Card";
 import type { SelectedAppointmentTime } from "@components/WeekAvailability";
 import type { Doctor } from "@features/booking/api/doctor.schemas";
-import { useBookPatientAppointmentMutation } from "@features/appointment/api/appointmentsQueries";
+import { useBookPatientAppointmentMutation } from "@features/patient/appointment/api/patientAppointmentsQueries";
 import { notifyApp } from "@services/api/appNotifications";
 import {
   formatAppointmentDate,
@@ -51,7 +51,10 @@ export function BookingLayout() {
         startTime: selectedTime.time,
         reason: visitReason.trim(),
       });
-      const location = [selectedDoctor.doctor.hospitalAffiliation, selectedDoctor.doctor.clinicAddress]
+      const location = [
+        selectedDoctor.doctor.hospitalAffiliation,
+        selectedDoctor.doctor.clinicAddress,
+      ]
         .filter(Boolean)
         .join(" · ");
 
@@ -62,7 +65,8 @@ export function BookingLayout() {
           <Flex vertical gap={4}>
             <Typography.Text>{appointment.doctorName}</Typography.Text>
             <Typography.Text>
-              {formatAppointmentDate(appointment.appointmentDate)} · {formatAppointmentTimeRange(appointment.startTime, appointment.endTime)}
+              {formatAppointmentDate(appointment.appointmentDate)} ·{" "}
+              {formatAppointmentTimeRange(appointment.startTime, appointment.endTime)}
             </Typography.Text>
             {location ? <Typography.Text>{location}</Typography.Text> : null}
             <Typography.Text>Fee: {formatBookingFee(appointment.bookingFee)}</Typography.Text>
