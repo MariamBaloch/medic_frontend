@@ -170,6 +170,7 @@ export function DataTable<T extends object>({
 
   const content = (
     <>
+      {title || showClearFilters || filters.length > 0 || onSearchTextChange ? (
       <DataTableSection>
         {title || showClearFilters ? (
           <DataTableFilterHeader>
@@ -215,6 +216,7 @@ export function DataTable<T extends object>({
           ))}
         </DataTableFilterGrid>
       </DataTableSection>
+      ) : null}
 
       {tabs?.length ? (
         <DataTableSection $tabs>
