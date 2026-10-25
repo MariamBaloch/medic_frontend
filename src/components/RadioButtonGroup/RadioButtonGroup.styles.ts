@@ -1,7 +1,7 @@
 import { Radio } from "antd";
 import styled from "styled-components";
 
-export const TimeOffDurationOptions = styled(Radio.Group)`
+export const RadioButtonGroup = styled(Radio.Group)`
   display: grid;
   width: 100%;
   grid-template-columns: repeat(2, minmax(0, 1fr));

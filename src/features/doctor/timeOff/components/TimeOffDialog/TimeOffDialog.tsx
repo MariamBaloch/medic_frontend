@@ -19,7 +19,7 @@ import type {
   AvailabilityException,
   AvailabilityExceptionRequest,
 } from "@features/doctor/availability/api/availability.schemas";
-import { TimeOffDurationOptions } from "./TimeOffDialog.styles";
+import { RadioButtonGroup } from "@components/RadioButtonGroup";
 
 dayjs.extend(customParseFormat);
 
@@ -136,7 +136,7 @@ export function TimeOffDialog({
             label="How much time do you need?"
             style={{ marginBottom: allDay ? 4 : 12 }}
           >
-            <TimeOffDurationOptions
+            <RadioButtonGroup
               optionType="button"
               options={[
                 { label: "All day", value: true },

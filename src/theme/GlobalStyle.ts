@@ -48,4 +48,26 @@ export const GlobalStyle = createGlobalStyle`
   .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)::before {
     background-color: ${colors.backgroundSoft};
   }
+
+.appointment-popover .ant-popover-container {
+  padding: 0 !important;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+ ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: ${({ theme }) => theme.colors.primary} ; 
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+   
+  }
+  ::-webkit-scrollbar-thumb:hover {
+   cursor: pointer;
+  }
 `;

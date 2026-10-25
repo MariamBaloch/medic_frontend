@@ -14,11 +14,13 @@ export function notifyApp({
   message,
   description,
   key,
+  duration,
 }: {
   type: "success" | "info" | "warning" | "error";
   message: ReactNode;
   description?: ReactNode;
   key?: string;
+  duration?: number;
 }) {
   notificationApi?.open({
     type,
@@ -26,7 +28,7 @@ export function notifyApp({
     description,
     key,
     placement: "topRight",
-    duration: 0,
+    duration: duration ?? 0,
   });
 }
 

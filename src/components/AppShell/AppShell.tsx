@@ -2,19 +2,23 @@ import {
   AppstoreOutlined,
   CalendarOutlined,
   ClockCircleOutlined, LogoutOutlined,
-  BellOutlined,
   DownOutlined,
   SettingOutlined,
   UserOutlined,
   LeftOutlined,
   RightOutlined
 } from "@ant-design/icons";
-import { Badge, Button, Dropdown, Menu, Tooltip, Typography } from "antd";
+import {
+  Dropdown,
+  Menu,
+  Typography,
+} from "antd";
 import type { MenuProps } from "antd";
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { AppBrandIcon } from "@components/AppBrandIcon/AppBrandIcon";
+import { NotificationCenter } from "@components/NotificationCenter";
 import { PersonAvatar } from "@components/PersonAvatar";
 import { getAppRoute, ROUTES, ROUTE_SEGMENTS } from "@constants/routes";
 import { useCurrentUserQuery, useLogoutMutation } from "@features/auth/api/authQueries";
@@ -151,7 +155,6 @@ export function AppShell({
       }).format(new Date()),
     [],
   );
-
   useEffect(() => {
     if (currentUserQuery.data) {
       setUser(currentUserQuery.data);
@@ -224,16 +227,7 @@ export function AppShell({
           </PageHeading>
 
           <HeaderActions>
-            <Tooltip title="Notifications">
-              <Badge dot offset={[-15, 15]}>
-                <Button
-                  shape="circle"
-                  type="text"
-                  aria-label="Notifications"
-                  icon={<BellOutlined />}
-                />
-              </Badge>
-            </Tooltip>
+            <NotificationCenter />
             <Dropdown
               menu={{
                 items: [
