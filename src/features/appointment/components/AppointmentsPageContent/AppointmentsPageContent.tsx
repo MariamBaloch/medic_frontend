@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Dispatch, ReactNode, SetStateAction } from "react";
-import { Alert, Button } from "antd";
 import { DataTable } from "@components/DataTable/DataTable";
 import type {
   DataTableFilterConfig,
@@ -15,7 +14,6 @@ import {
   type AppointmentPage, type AppointmentStatusOption,
   type Specialization
 } from "@features/appointment/api/appointment.schemas";
-import { getApiErrorMessage } from "@services/api/errors";
 import { AppointmentColumns } from "../AppointmentTableColumns";
 import { AppointmentTabs } from "../AppointmentTabs";
 
@@ -27,8 +25,6 @@ interface AppointmentsPageContentProps {
   setQueryFilters: Dispatch<SetStateAction<AppointmentFilters>>;
   appointments?: AppointmentPage;
   isLoading: boolean;
-  error?: unknown;
-  onRetry?: () => void;
   statuses: AppointmentStatusOption[];
   specializations: Specialization[];
   isLoadingStatuses?: boolean;
@@ -47,8 +43,6 @@ export function AppointmentsPageContent({
   setQueryFilters,
   appointments,
   isLoading,
-  error,
-  onRetry,
   statuses,
   specializations,
   isLoadingStatuses = false,
@@ -188,16 +182,6 @@ export function AppointmentsPageContent({
     <>
       <PageHeader title={title} description={description} action={action} />
       {warnings}
-      {error ? (
-        <Alert
-          type="error"
-          showIcon
-          title="Could not load appointments"
-          description={getApiErrorMessage(error)}
-          action={onRetry ? <Button onClick={onRetry}>Retry</Button> : undefined}
-          style={{ marginBottom: 16 }}
-        />
-      ) : null}
       <DataTable<Appointment>
         title={"Find an appointment"}
         columns={columns}

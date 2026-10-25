@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { CalendarOutlined, CheckCircleFilled, ClockCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import { Alert, Button } from "antd";
+import { Button } from "antd";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PageHeader } from "@components/PageHeader";
@@ -15,7 +15,6 @@ import {
 import { DoctorAppointmentDetailsModal } from "@features/doctor/appointment/components/DoctorAppointmentDetailsModal";
 import { useAuthStore } from "@stores/authStore";
 import { parseAppointmentDate } from "@utils/formatters";
-import { getApiErrorMessage } from "@services/api/errors";
 import { DashboardActionSection } from "../components/DashboardActionSection";
 import { OverviewRoot, WelcomeCard } from "../OverviewShared.styles";
 import { TodayAppointmentsSection } from "./components/TodayAppointmentsSection";
@@ -67,16 +66,6 @@ export function DoctorOverviewPage() {
           style={{ marginBottom: 0 }}
         />
       </WelcomeCard>
-
-      {scheduleQuery.error || dayAvailabilityQuery.error ? (
-        <Alert
-          type="error"
-          showIcon
-          title="Could not load today's schedule"
-          description={getApiErrorMessage(scheduleQuery.error ?? dayAvailabilityQuery.error)}
-          style={{ marginBottom: 18 }}
-        />
-      ) : null}
 
       <OverviewSectionsGrid>
         <TodayAppointmentsSection

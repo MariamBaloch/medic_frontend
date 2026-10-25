@@ -42,8 +42,6 @@ export function DoctorAppointmentsPage() {
         setQueryFilters={setQueryFilters}
         appointments={appointmentsQuery.data}
         isLoading={appointmentsQuery.isLoading || appointmentsQuery.isFetching}
-        error={appointmentsQuery.error}
-        onRetry={() => void appointmentsQuery.refetch()}
         statuses={statuses}
         specializations={specializationsQuery.data ?? []}
         isLoadingStatuses={statusesQuery.isLoading}
