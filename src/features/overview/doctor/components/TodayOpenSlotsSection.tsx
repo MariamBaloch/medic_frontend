@@ -1,4 +1,5 @@
-import { Empty, Flex, Skeleton } from "antd";
+import { EditOutlined } from "@ant-design/icons";
+import { Button, Empty, Flex, Skeleton } from "antd";
 import type { DoctorDayAvailabilityRange } from "@features/doctor/schedule/api/schedule.schemas";
 import {
   OpenSlotDuration,
@@ -10,11 +11,23 @@ import {
 interface TodayOpenSlotsSectionProps {
   slots: DoctorDayAvailabilityRange[];
   loading: boolean;
+  onEditAvailability: () => void;
 }
 
-export function TodayOpenSlotsSection({ slots, loading }: TodayOpenSlotsSectionProps) {
+export function TodayOpenSlotsSection({
+  slots,
+  loading,
+  onEditAvailability,
+}: TodayOpenSlotsSectionProps) {
   return (
-    <OpenSlotsCard title="Today's open slots">
+    <OpenSlotsCard
+      title="Today's open slots"
+      extra={
+        <Button type="link" size="small" onClick={onEditAvailability}>
+          Manage availability
+        </Button>
+      }
+    >
       {loading ? (
         <Skeleton active paragraph={{ rows: 3 }} />
       ) : slots.length ? (

@@ -88,6 +88,7 @@ export function DoctorOverviewPage() {
         <TodayOpenSlotsSection
           slots={openSlots}
           loading={dayAvailabilityQuery.isPending || dayAvailabilityQuery.isFetching}
+          onEditAvailability={() => navigate(ROUTES.doctorAvailability)}
         />
       </OverviewSectionsGrid>
 
