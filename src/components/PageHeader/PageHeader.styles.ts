@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { colors } from "@theme/tokens";
 
 export const PageHeaderRoot = styled.header<{ $stacked: boolean }>`
-  margin-bottom: 14px;
+  margin-bottom: 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -54,12 +54,8 @@ export const PageHeaderContent = styled.div`
   h2 {
     color: ${colors.text};
     font-family: "Lora", Georgia, "Times New Roman", serif;
-    margin-bottom: 10px !important;
+    margin-bottom: 0px !important;
     font-weight: 500;
-  }
-
-  h3 {
-    
   }
 
   .ant-typography-secondary {
