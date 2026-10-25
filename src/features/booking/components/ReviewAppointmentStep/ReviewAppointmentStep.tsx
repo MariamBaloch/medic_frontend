@@ -7,7 +7,7 @@ import {
 } from "@ant-design/icons";
 import { Button, Typography } from "antd";
 import dayjs from "dayjs";
-import { DoctorSummary } from "@components/DoctorSummary";
+import { PersonSummary } from "@components/PersonSummary";
 import type { SelectedAppointmentTime } from "@components/WeekAvailability";
 import type { Doctor } from "@features/booking/api/doctor.schemas";
 import { formatAppointmentTimeRange, formatBookingFee } from "@utils/formatters";
@@ -59,7 +59,8 @@ export function ReviewAppointmentStep({
             Edit doctor
           </Button>
         </ReviewSectionHeader>
-        <DoctorSummary
+        <PersonSummary
+          type="doctor"
           name={doctorName}
           qualification={doctor?.doctor.qualification}
           specialization={doctor?.doctor.specialization?.name}

@@ -1,6 +1,6 @@
 import { CalendarOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { Button, Empty, Flex, Skeleton, Typography } from "antd";
-import { DoctorSummary } from "@components/DoctorSummary";
+import { PersonSummary } from "@components/PersonSummary";
 import { formatAppointmentDate, formatAppointmentTimeRange } from "@utils/formatters";
 import type {
   Appointment,
@@ -31,12 +31,11 @@ export function UpcomingAppointmentSection({
       ) : appointment ? (
         <Flex vertical gap={16}>
           <Flex align="center" justify="space-between" gap={10}>
-            <DoctorSummary
+            <PersonSummary
+              type="doctor"
               name={appointment.doctorName}
               qualification={appointment.doctorQualification}
-              specialization={
-                appointment.doctorHospitalAffiliation || "Hospital affiliation not provided"
-              }
+              specialization={appointment.specialization?.name}
               imageUrl={appointment.doctorImageUrl || undefined}
               size={48}
             />

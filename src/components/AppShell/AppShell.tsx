@@ -11,12 +11,13 @@ import {
   LeftOutlined,
   RightOutlined,
 } from "@ant-design/icons";
-import { Avatar, Badge, Button, Dropdown, Menu, Tooltip, Typography } from "antd";
+import { Badge, Button, Dropdown, Menu, Tooltip, Typography } from "antd";
 import type { MenuProps } from "antd";
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { AppBrandIcon } from "@components/AppBrandIcon/AppBrandIcon";
+import { PersonAvatar } from "@components/PersonAvatar";
 import { getAppRoute, ROUTES, ROUTE_SEGMENTS } from "@constants/routes";
 import { useCurrentUserQuery, useLogoutMutation } from "@features/auth/api/authQueries";
 import { useAuthStore } from "@stores/authStore";
@@ -248,11 +249,13 @@ export function AppShell({
               trigger={["click"]}
             >
               <UserMenuTrigger type="button" aria-label="Open user menu">
-                <Avatar
+                <PersonAvatar
                   size={34}
                   src={profile?.imageUrl || undefined}
                   icon={<UserOutlined />}
-                  style={{ background: colors.teal }}
+                  $hasImage={Boolean(profile?.imageUrl)}
+                  $objectFit="cover"
+                  style={{ background: colors.teal, color: "#fff" }}
                 />
                 <Typography.Text>{displayName}</Typography.Text>
                 <DownOutlined style={{ fontSize: 10, color: colors.textSecondary }} />

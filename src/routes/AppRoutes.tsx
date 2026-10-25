@@ -8,6 +8,7 @@ import { ProtectedRoute } from "@routes/ProtectedRoute";
 import { PublicRoute } from "@routes/PublicRoute";
 import { ProfilePage } from "@features/profile/ProfilePage";
 import { PatientOverviewPage } from "@features/overview/patient/PatientOverviewPage";
+import { DoctorOverviewPage } from "@features/overview/doctor/DoctorOverviewPage";
 import { DoctorAvailabilityPage } from "@features/doctor/availability/DoctorAvailabilityPage";
 import { DoctorTimeOffPage } from "@features/doctor/timeOff";
 import { DoctorAppointmentsPage } from "@features/doctor/appointment";
@@ -52,7 +53,7 @@ export function AppRoutes() {
           }
         >
           <Route index element={<Navigate to={ROUTE_SEGMENTS.overview} replace />} />
-          <Route path={ROUTE_SEGMENTS.overview} element={null} />
+          <Route path={ROUTE_SEGMENTS.overview} element={<DoctorOverviewPage />} />
           <Route path={ROUTE_SEGMENTS.appointments} element={<DoctorAppointmentsPage />} />
           <Route path={ROUTE_SEGMENTS.schedule} element={<DoctorSchedulePage />} />
           <Route path={ROUTE_SEGMENTS.availability} element={<DoctorAvailabilityPage />} />

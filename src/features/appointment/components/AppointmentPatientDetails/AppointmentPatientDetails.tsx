@@ -9,8 +9,7 @@ import type {
   Appointment,
   AppointmentDetails,
 } from "@features/appointment/api/appointment.schemas";
-import { apiClient } from "@services/api/axios";
-import { getDoctorInitials } from "@utils/formatters";
+import { PersonSummary } from "@components/PersonSummary";
 import {
   PatientCard,
   PatientDetailContent,
@@ -19,8 +18,6 @@ import {
   PatientDetailsList,
   PatientDetailRow,
   PatientDetailValue,
-  PatientName,
-  PatientProfileAvatar,
   PatientSectionTitle,
   PatientSummaryHeader,
 } from "./AppointmentPatientDetails.styles";
@@ -53,9 +50,6 @@ export function AppointmentPatientDetails({ appointment }: AppointmentPatientDet
   const address = [appointment.patientAddress, appointment.patientCity, appointment.patientCountry]
     .filter((part) => part?.trim())
     .join(", ");
-  const imageUrl = appointment.patientImageUrl
-    ? new URL(appointment.patientImageUrl, apiClient.defaults.baseURL).toString()
-    : undefined;
   const fields: PatientField[] = [
     { icon: <IdcardOutlined />, label: "Patient ID", value: appointment.patientId },
     { icon: <EnvironmentOutlined />, label: "Address", value: address },
@@ -82,10 +76,16 @@ export function AppointmentPatientDetails({ appointment }: AppointmentPatientDet
     <PatientCard>
       <PatientSectionTitle level={4}>Patient details</PatientSectionTitle>
       <PatientSummaryHeader>
-        <PatientProfileAvatar size={60} src={imageUrl} icon={<UserOutlined />}>
-          {getDoctorInitials(appointment.patientName)}
-        </PatientProfileAvatar>
-        <PatientName>{appointment.patientName}</PatientName>
+        <PersonSummary
+          type="patient"
+          name={appointment.patientName}
+          imageUrl={appointment.patientImageUrl}
+          size={60}
+          gap={14}
+          nameFontSize={16}
+          imageBackground="tinted"
+          avatarFallback={<UserOutlined />}
+        />
       </PatientSummaryHeader>
       <PatientDetailsList>
         {fields.map((field) => (

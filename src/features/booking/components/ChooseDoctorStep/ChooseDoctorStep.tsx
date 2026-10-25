@@ -7,7 +7,7 @@ import type {
   DataTableFilterValue,
   DataTableFilterValues,
 } from "@components/DataTable";
-import { DoctorSummary } from "@components/DoctorSummary";
+import { PersonSummary } from "@components/PersonSummary";
 import { formatBookingFee } from "@utils/formatters";
 import { StepTitle } from "../StepTitle";
 import { useDoctorsQuery } from "@features/booking/api/doctorsQueries";
@@ -72,7 +72,8 @@ export function ChooseDoctorStep({ selectedDoctorId, onSelectDoctor }: ChooseDoc
         key: "doctor",
         title: "Doctor",
         render: (_value, doctor) => (
-          <DoctorSummary
+          <PersonSummary
+            type="doctor"
             name={`${doctor.firstName} ${doctor.lastName}`}
             qualification={doctor.doctor.qualification}
             specialization={doctor.doctor.specialization?.name}

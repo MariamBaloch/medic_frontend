@@ -1,4 +1,4 @@
-import { DoctorSummary } from "@components/DoctorSummary";
+import { PersonSummary } from "@components/PersonSummary";
 import type { Appointment } from "@features/appointment/api/appointment.schemas";
 
 interface AppointmentDoctorCellProps {
@@ -7,7 +7,8 @@ interface AppointmentDoctorCellProps {
 
 export function AppointmentDoctorCell({ appointment }: AppointmentDoctorCellProps) {
   return (
-    <DoctorSummary
+    <PersonSummary
+      type="doctor"
       name={appointment.doctorName}
       qualification={appointment.doctorQualification}
       specialization={appointment.specialization?.name}

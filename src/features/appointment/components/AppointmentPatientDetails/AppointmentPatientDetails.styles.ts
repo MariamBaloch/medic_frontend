@@ -1,4 +1,4 @@
-import { Avatar, Typography } from "antd";
+import { Typography } from "antd";
 import styled from "styled-components";
 import { colors } from "@theme/tokens";
 
@@ -31,26 +31,6 @@ export const PatientSummaryHeader = styled.div`
   gap: 14px;
   min-width: 0;
   margin-top: 18px;
-`;
-
-export const PatientProfileAvatar = styled(Avatar)`
-  && {
-    flex: 0 0 auto;
-    color: ${colors.primary};
-    background: ${colors.tealLight};
-
-    img {
-      object-fit: contain;
-    }
-  }
-`;
-
-export const PatientName = styled(Text)`
-  && {
-    min-width: 0;
-    font-size: 16px;
-    font-weight: 600;
-  }
 `;
 
 export const PatientDetailsList = styled.section`

@@ -14,4 +14,19 @@ export const doctorScheduleCalendarSchema = z.object({
   appointments: z.array(appointmentSchema),
 });
 
+export const doctorDayAvailabilityRangeSchema = z.object({
+  startTime: z.string(),
+  endTime: z.string(),
+  slotMinutes: z.number(),
+  displayRange: z.string(),
+});
+
+export const doctorDayAvailabilitySchema = z.object({
+  doctorId: z.number(),
+  date: z.string(),
+  availableRanges: z.array(doctorDayAvailabilityRangeSchema),
+});
+
 export type DoctorScheduleCalendar = z.infer<typeof doctorScheduleCalendarSchema>;
+export type DoctorDayAvailabilityRange = z.infer<typeof doctorDayAvailabilityRangeSchema>;
+export type DoctorDayAvailability = z.infer<typeof doctorDayAvailabilitySchema>;

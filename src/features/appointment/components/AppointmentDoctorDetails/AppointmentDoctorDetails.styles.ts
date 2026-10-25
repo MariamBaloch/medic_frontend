@@ -23,7 +23,7 @@ export const SectionTitle = styled(Title)`
     line-height: 1.35;
   }
 `;
-export const DoctorSummaryHeader = styled.div`
+export const PersonSummaryHeader = styled.div`
   margin-top: 18px;
 `;
 export const DoctorDetailsList = styled.section`

@@ -8,7 +8,7 @@ import {
   StarOutlined,
 } from "@ant-design/icons";
 import type { ReactNode } from "react";
-import { DoctorSummary } from "@components/DoctorSummary";
+import { PersonSummary } from "@components/PersonSummary";
 import type {
   Appointment,
   AppointmentDetails,
@@ -23,7 +23,7 @@ import {
   DoctorDetailIcon,
   DoctorDetailRow,
   DoctorDetailsList,
-  DoctorSummaryHeader,
+  PersonSummaryHeader,
   DetailLabel,
   DetailValue,
   SectionTitle,
@@ -92,15 +92,16 @@ export function AppointmentDoctorDetails({ appointment }: AppointmentDoctorDetai
   return (
     <DoctorCard>
       <SectionTitle level={4}>Doctor details</SectionTitle>
-      <DoctorSummaryHeader>
-        <DoctorSummary
+      <PersonSummaryHeader>
+        <PersonSummary
+          type="doctor"
           name={appointment.doctorName}
           qualification={appointment.doctorQualification}
           specialization={appointment.specialization?.name}
           imageUrl={appointment.doctorImageUrl || undefined}
           size={60}
         />
-      </DoctorSummaryHeader>
+      </PersonSummaryHeader>
       <DoctorDetailsList>
         {doctorDetails.map((detail) => (
           <DoctorDetailItem key={detail.label} {...detail} />

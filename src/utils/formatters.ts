@@ -13,7 +13,7 @@ export function getDoctorDisplayName(name: string, qualification?: string | null
   return qualification ? `${formattedName}, ${qualification}` : formattedName;
 }
 
-export function getDoctorInitials(name: string): string {
+export function getPersonInitials(name: string): string {
   return name
     .split(/\s+/)
     .filter(Boolean)

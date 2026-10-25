@@ -14,12 +14,11 @@ import { parseAppointmentDate } from "@utils/formatters";
 import { AppointmentDetailsModal } from "@features/appointment/components/AppointmentDetailsModal";
 import { RecentVisitsSection } from "./components/RecentVisitsSection";
 import { UpcomingAppointmentSection } from "./components/UpcomingAppointmentSection";
-import { DashboardActionSection } from "./components/DashboardActionSection";
+import { DashboardActionSection } from "../components/DashboardActionSection";
+import { OverviewRoot, WelcomeCard } from "../OverviewShared.styles";
 import {
   DashboardActionGrid,
   SecondSectionGrid,
-  WelcomeCard,
-  OverviewRoot,
 } from "./PatientOverviewPage.styles";
 
 function getAppointmentDateTime(appointment: Appointment) {

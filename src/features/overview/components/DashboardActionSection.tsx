@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Button, Flex, Typography } from "antd";
-import { DashboardActionCard, DashboardActionIcon } from "../PatientOverviewPage.styles";
+import { DashboardActionCard, DashboardActionIcon } from "../OverviewShared.styles";
 
 interface DashboardActionSectionProps {
   icon: ReactNode;
