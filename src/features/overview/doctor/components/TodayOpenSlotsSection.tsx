@@ -1,4 +1,3 @@
-import { EditOutlined } from "@ant-design/icons";
 import { Button, Empty, Flex, Skeleton } from "antd";
 import type { DoctorDayAvailabilityRange } from "@features/doctor/schedule/api/schedule.schemas";
 import {
