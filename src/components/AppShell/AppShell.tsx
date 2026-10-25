@@ -1,15 +1,13 @@
 import {
   AppstoreOutlined,
   CalendarOutlined,
-  ClockCircleOutlined,
-  IdcardOutlined,
-  LogoutOutlined,
+  ClockCircleOutlined, LogoutOutlined,
   BellOutlined,
   DownOutlined,
   SettingOutlined,
   UserOutlined,
   LeftOutlined,
-  RightOutlined,
+  RightOutlined
 } from "@ant-design/icons";
 import { Badge, Button, Dropdown, Menu, Tooltip, Typography } from "antd";
 import type { MenuProps } from "antd";
@@ -125,7 +123,7 @@ export function AppShell({
     {
       key: getAppRoute(basePath, ROUTE_SEGMENTS.profile),
       path: getAppRoute(basePath, ROUTE_SEGMENTS.profile),
-      icon: <IdcardOutlined />,
+      icon: <UserOutlined />,
       label: "Profile",
       title: "Profile",
     },
@@ -239,7 +237,7 @@ export function AppShell({
             <Dropdown
               menu={{
                 items: [
-                  { key: "profile", label: "Profile", icon: <IdcardOutlined /> },
+                  { key: "profile", label: "Profile", icon: <UserOutlined /> },
                   { type: "divider" },
                   { key: "sign-out", label: "Sign out", icon: <LogoutOutlined /> },
                 ],
