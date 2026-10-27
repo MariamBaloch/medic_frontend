@@ -75,49 +75,64 @@ export const TimeSlot = styled(Button)<{
   $selected: boolean;
   $booked: boolean;
   $doctorMode?: boolean;
+  $waitlistAvailable?: boolean;
+  $appointment?: boolean;
 }>`
   width: 100%;
   min-height: 40px;
   padding: 8px 4px;
   border-radius: 10px;
-  cursor: ${({ $booked, $doctorMode }) =>
-    $doctorMode ? ($booked ? "pointer" : "default") : $booked ? "not-allowed" : "pointer"};
+  cursor: ${({ $booked, $doctorMode, $appointment }) =>
+    $appointment ? "default" : $doctorMode ? ($booked ? "pointer" : "default") : "pointer"};
   font: inherit;
   font-size: 11px;
 
   && {
     border: 1px solid
-      ${({ $selected, $booked, $doctorMode }) =>
+      ${({ $selected, $booked, $doctorMode, $waitlistAvailable, $appointment }) =>
         $selected
           ? colors.primary
-          : $booked
-            ? $doctorMode
-              ? colors.primary
-              : "transparent"
-            : colors.border};
-    background: ${({ $selected, $booked, $doctorMode }) =>
+          : $waitlistAvailable
+            ? colors.border
+            : $appointment
+              ? colors.border
+              : $booked
+                ? $doctorMode
+                  ? colors.primary
+                  : "transparent"
+                : colors.border};
+    background: ${({ $selected, $booked, $doctorMode, $waitlistAvailable, $appointment }) =>
       $selected
         ? colors.primary
-        : $doctorMode && $booked
-          ? colors.primary
-          : $doctorMode
-            ? "transparent"
-            : $booked
-              ? colors.backgroundSoft
-              : colors.surface};
-    color: ${({ $selected, $booked, $doctorMode }) =>
+        : $waitlistAvailable
+          ? colors.backgroundSoft
+          : $appointment
+            ? colors.backgroundSoft
+            : $doctorMode && $booked
+              ? colors.primary
+              : $doctorMode
+                ? "transparent"
+                : $booked
+                  ? colors.backgroundSoft
+                  : colors.surface};
+    color: ${({ $selected, $booked, $doctorMode, $waitlistAvailable, $appointment }) =>
       $selected
         ? colors.surface
-        : $doctorMode && $booked
-          ? colors.surface
-          : $doctorMode
-            ? colors.primary
-            : $booked
-              ? "#A6B3B0"
-              : colors.primary};
-    font-weight: ${({ $booked, $doctorMode }) => ($booked && $doctorMode ? 600 : 400)};
-    text-decoration: ${({ $booked, $doctorMode }) =>
-      $booked && !$doctorMode ? "line-through" : "none"};
+        : $waitlistAvailable
+          ? colors.primary
+          : $appointment
+            ? colors.textSecondary
+            : $doctorMode
+              ? $booked
+                ? colors.surface
+                : colors.primary
+              : $booked
+                ? "#A6B3B0"
+                : colors.primary};
+    font-weight: ${({ $booked, $doctorMode, $waitlistAvailable, $appointment }) =>
+      ($booked && $doctorMode) || $waitlistAvailable || $appointment ? 600 : 400};
+    text-decoration: ${({ $booked, $doctorMode, $waitlistAvailable, $appointment }) =>
+      $appointment || ($booked && !$doctorMode && !$waitlistAvailable) ? "line-through" : "none"};
   }
 
   &&:disabled {
@@ -127,10 +142,27 @@ export const TimeSlot = styled(Button)<{
   }
 
   &&:hover:not(:disabled) {
-    border-color: ${colors.primary};
-    background-color: ${({ $booked, $doctorMode }) =>
-      $doctorMode && $booked ? colors.primaryHover : undefined};
-    color: ${({ $booked, $doctorMode }) => ($doctorMode && $booked ? colors.surface : undefined)};
+    border-color: ${({ $appointment }) => ($appointment ? colors.border : colors.primary)};
+    background-color: ${({ $booked, $doctorMode, $waitlistAvailable, $appointment, $selected }) =>
+      $selected
+        ? colors.primary
+        : $waitlistAvailable
+          ? colors.backgroundSoft
+          : $appointment
+            ? colors.backgroundSoft
+            : $doctorMode && $booked
+              ? colors.primaryHover
+              : undefined};
+    color: ${({ $booked, $doctorMode, $waitlistAvailable, $appointment, $selected }) =>
+      $selected
+        ? colors.surface
+        : $waitlistAvailable
+          ? colors.primary
+          : $appointment
+            ? colors.textSecondary
+            : $doctorMode && $booked
+              ? colors.surface
+              : undefined};
   }
 
   &:focus-visible {
@@ -175,25 +207,32 @@ export const LegendDot = styled.div<{
   $selected?: boolean;
   $doctorAvailable?: boolean;
   $appointment?: boolean;
+  $waitlist?: boolean;
 }>`
   width: 8px;
   height: 8px;
   border: 1px solid
-    ${({ $booked, $selected, $doctorAvailable, $appointment }) =>
-      $booked || $selected || $appointment
-        ? "transparent"
-        : $doctorAvailable
-          ? colors.textSecondary
-          : colors.teal};
+    ${({ $booked, $selected, $doctorAvailable, $appointment, $waitlist }) =>
+      $booked
+        ? colors.border
+        : $selected || $appointment
+          ? "transparent"
+          : $waitlist
+            ? colors.primary
+            : $doctorAvailable
+              ? colors.textSecondary
+              : colors.teal};
   border-radius: 50%;
-  background: ${({ $booked, $selected, $appointment }) =>
+  background: ${({ $booked, $selected, $appointment, $waitlist }) =>
     $booked
-      ? "#A6B3B0"
+      ? colors.backgroundSoft
       : $selected
         ? colors.primary
         : $appointment
           ? colors.primary
-          : colors.surface};
+          : $waitlist
+            ? colors.backgroundSoft
+            : colors.surface};
 `;
 
 export const BookedSlotWrapper = styled.div`

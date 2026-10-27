@@ -1,7 +1,8 @@
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
-import { Button, Tooltip, Typography } from "antd";
+import { Button, Popover, Tooltip, Typography } from "antd";
 import dayjs, { type Dayjs } from "dayjs";
 import { useMemo } from "react";
+import { colors } from "@theme/tokens";
 import {
   AvailabilityLegend,
   BookedSlotWrapper,
@@ -28,6 +29,10 @@ export interface SelectedAppointmentTime {
   time: string;
   endTime: string;
   durationMinutes: number;
+  status?: "AVAILABLE" | "BOOKED" | "WAITLIST_OFFERED";
+  canJoinWaitlist?: boolean;
+  patientHasOverlappingAppointment?: boolean;
+  patientHasActiveWaitlistEntry?: boolean;
 }
 
 export interface DoctorAvailabilitySlot {
@@ -36,6 +41,10 @@ export interface DoctorAvailabilitySlot {
   startTime: string;
   endTime: string;
   slotMinutes: number;
+  status?: "AVAILABLE" | "BOOKED" | "WAITLIST_OFFERED";
+  canJoinWaitlist?: boolean;
+  patientHasOverlappingAppointment?: boolean;
+  patientHasActiveWaitlistEntry?: boolean;
 }
 
 export interface ExistingPatientBooking {
@@ -71,14 +80,17 @@ function getSunday(date: Dayjs): Dayjs {
 }
 
 function parseApiDate(date: string): Dayjs | null {
-  const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(date);
-  if (!match) {
-    return null;
-  }
+  const isoMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date);
+  const legacyMatch = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(date);
+  const normalized = isoMatch
+    ? date
+    : legacyMatch
+      ? `${legacyMatch[3]}-${legacyMatch[2]}-${legacyMatch[1]}`
+      : null;
+  if (!normalized) return null;
 
-  const [, day, month, year] = match;
-  const parsed = dayjs(`${year}-${month}-${day}`);
-  return parsed.isValid() && parsed.format("DD/MM/YYYY") === date ? parsed : null;
+  const parsed = dayjs(normalized);
+  return parsed.isValid() && parsed.format("YYYY-MM-DD") === normalized ? parsed : null;
 }
 
 function getTimeInMinutes(time: string): number | null {
@@ -174,6 +186,8 @@ export function WeekAvailability({
     <>
       <CalendarNavigation>
         <Button
+          type="link"
+          color="primary"
           icon={<ArrowLeftOutlined />}
           disabled={!canGoToPreviousWeek}
           style={{ justifySelf: "start" }}
@@ -186,6 +200,8 @@ export function WeekAvailability({
           <WeekSubLabel>Sunday – Saturday</WeekSubLabel>
         </WeekLabel>
         <Button
+          type="link"
+          color="primary"
           icon={<ArrowRightOutlined />}
           iconPlacement="end"
           style={{ justifySelf: "end" }}
@@ -210,7 +226,7 @@ export function WeekAvailability({
                 .filter((slot) => {
                   const slotStart = getTimeInMinutes(slot.startTime);
                   const slotEnd = getTimeInMinutes(slot.endTime);
-                  return !bookings.some((booking) => {
+                  const overlapsPatientAppointment = bookings.some((booking) => {
                     const bookingStart = getTimeInMinutes(booking.startTime);
                     const bookingEnd = getTimeInMinutes(booking.endTime);
                     return (
@@ -222,6 +238,7 @@ export function WeekAvailability({
                       bookingStart < slotEnd
                     );
                   });
+                  return !overlapsPatientAppointment;
                 })
                 .map((slot) => ({ type: "available" as const, slot })),
               ...bookings.map((booking) => ({ type: "appointment" as const, booking })),
@@ -240,7 +257,7 @@ export function WeekAvailability({
                   $isUnavailable={
                     mode === "doctor"
                       ? slots.length === 0 && bookings.length === 0
-                      : slots.length === 0
+                      : slots.length === 0 && bookings.length === 0
                   }
                 >
                   <DayName>{date.format("ddd")}</DayName>
@@ -248,7 +265,7 @@ export function WeekAvailability({
                     $isUnavailable={
                       mode === "doctor"
                         ? slots.length === 0 && bookings.length === 0
-                        : slots.length === 0
+                        : slots.length === 0 && bookings.length === 0
                     }
                   >
                     {date.format("D")}
@@ -301,13 +318,44 @@ export function WeekAvailability({
                       );
                     })
                   )
-                ) : slots.length === 0 ? (
+                ) : doctorEntries.length === 0 ? (
                   <NoAvailability vertical align="center" justify="center">
                     <NoAvailabilityDash type="secondary">—</NoAvailabilityDash>
-                    <Text type="secondary">No available times</Text>
+                    <Text type="secondary">No availability or appointments</Text>
                   </NoAvailability>
                 ) : (
-                  slots.map((slot) => {
+                  doctorEntries.map((entry) => {
+                    if (entry.type === "appointment") {
+                      const booking = entry.booking;
+                      const timeLabel = formatTime(booking.startTime);
+                      return (
+                        <Popover
+                          key={`appointment-${booking.id}`}
+                          trigger={["hover", "focus"]}
+                          title={booking.doctorName}
+                          content={
+                            <div>
+                              <div>
+                                {formatTime(booking.startTime)}–{formatTime(booking.endTime)}
+                              </div>
+                              {booking.reason ? <div>{booking.reason}</div> : null}
+                            </div>
+                          }
+                        >
+                          <TimeSlot
+                            htmlType="button"
+                            $selected={false}
+                            $booked
+                            $appointment
+                            aria-label={`Appointment with ${booking.doctorName} from ${formatTime(booking.startTime)} to ${formatTime(booking.endTime)}${booking.reason ? `, ${booking.reason}` : ""}`}
+                          >
+                            {timeLabel}–{formatTime(booking.endTime)}
+                          </TimeSlot>
+                        </Popover>
+                      );
+                    }
+
+                    const slot = entry.slot;
                     const slotStart = getTimeInMinutes(slot.startTime);
                     const slotEnd = getTimeInMinutes(slot.endTime);
                     const overlappingBookings =
@@ -323,7 +371,13 @@ export function WeekAvailability({
                               bookingStart < slotEnd
                             );
                           });
-                    const isBooked = overlappingBookings.length > 0;
+                    const status = slot.status ?? "AVAILABLE";
+                    const isWaitlistSlot = status !== "AVAILABLE";
+                    const canJoinWaitlist = isWaitlistSlot && slot.canJoinWaitlist === true;
+                    const isBooked =
+                      isWaitlistSlot ||
+                      slot.patientHasOverlappingAppointment === true ||
+                      overlappingBookings.length > 0;
                     const isSelected =
                       selectedTime?.date === dateKey && selectedTime.time === slot.startTime;
                     const timeLabel = formatTime(slot.startTime);
@@ -333,12 +387,14 @@ export function WeekAvailability({
                         htmlType="button"
                         $selected={isSelected}
                         $booked={isBooked}
-                        disabled={isBooked}
+                        $waitlistAvailable={canJoinWaitlist}
                         aria-pressed={isSelected}
                         aria-label={
-                          isBooked
-                            ? `${timeLabel}, already booked`
-                            : `Select ${timeLabel} on ${date.format("dddd, MMMM D")}`
+                          isWaitlistSlot
+                            ? `${timeLabel}, ${status === "WAITLIST_OFFERED" ? "offer available" : "booked"}${canJoinWaitlist ? ", join waiting list" : ", waitlist unavailable"}`
+                            : slot.patientHasOverlappingAppointment
+                              ? `${timeLabel}, overlaps your appointment`
+                              : `Select ${timeLabel} on ${date.format("dddd, MMMM D")}`
                         }
                         onClick={() =>
                           onSelectTime?.({
@@ -346,22 +402,50 @@ export function WeekAvailability({
                             time: slot.startTime,
                             endTime: slot.endTime,
                             durationMinutes: slot.slotMinutes,
+                            status,
+                            canJoinWaitlist: slot.canJoinWaitlist,
+                            patientHasOverlappingAppointment: slot.patientHasOverlappingAppointment,
+                            patientHasActiveWaitlistEntry: slot.patientHasActiveWaitlistEntry,
                           })
                         }
                       >
                         {timeLabel}
+                        {isWaitlistSlot && !canJoinWaitlist ? (
+                          <span style={{ display: "block", fontSize: 9, lineHeight: 1.1 }}>
+                            {status === "WAITLIST_OFFERED" ? "Offer pending" : "Booked"}
+                          </span>
+                        ) : null}
                       </TimeSlot>
                     );
 
                     return isBooked ? (
                       <Tooltip
                         key={`${dateKey}-${slot.startTime}`}
-                        title={overlappingBookings
-                          .map(
-                            (booking) =>
-                              `${booking.doctorName}, ${formatTime(booking.startTime)}–${formatTime(booking.endTime)}${booking.reason ? ` · ${booking.reason}` : ""}`,
-                          )
-                          .join("; ")}
+                        trigger={canJoinWaitlist ? ["hover", "focus"] : undefined}
+                        color={canJoinWaitlist ? colors.surface : undefined}
+                        styles={
+                          canJoinWaitlist
+                            ? {
+                                container: { backgroundColor: colors.surface, color: colors.text },
+                              }
+                            : undefined
+                        }
+                        title={
+                          canJoinWaitlist
+                            ? "Join waiting list"
+                            : isWaitlistSlot
+                              ? slot.patientHasOverlappingAppointment
+                                ? "You already have an appointment that overlaps this time."
+                                : slot.patientHasActiveWaitlistEntry && !canJoinWaitlist
+                                  ? "You already have an active waitlist entry for this time."
+                                  : "This slot is not accepting waitlist entries."
+                              : overlappingBookings
+                                  .map(
+                                    (booking) =>
+                                      `${booking.doctorName}, ${formatTime(booking.startTime)}–${formatTime(booking.endTime)}${booking.reason ? ` · ${booking.reason}` : ""}`,
+                                  )
+                                  .join("; ") || "This time overlaps your appointment."
+                        }
                       >
                         <BookedSlotWrapper>{slotButton}</BookedSlotWrapper>
                       </Tooltip>
@@ -392,7 +476,11 @@ export function WeekAvailability({
               <LegendDot /> Available
             </LegendItem>
             <LegendItem>
-              <LegendDot $booked /> Unavailable
+              <LegendDot $booked />
+              <span style={{ textDecoration: "line-through" }}>Unavailable</span>
+            </LegendItem>
+            <LegendItem>
+              <LegendDot $waitlist /> Waitlist available
             </LegendItem>
             <LegendItem>
               <LegendDot $selected /> Selected
