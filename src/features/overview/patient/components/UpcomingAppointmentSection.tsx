@@ -22,7 +22,6 @@ export function UpcomingAppointmentSection({
   statuses,
   loading,
   onManage,
-  onBook,
 }: UpcomingAppointmentSectionProps) {
   return (
     <UpcomingAppointmentCard title="Upcoming appointment">
