@@ -8,7 +8,7 @@ import {
   useCancelPatientAppointmentMutation,
   usePatientAppointmentQuery,
 } from "@features/patient/appointment/api/patientAppointmentsQueries";
-import { notifyApp } from "@services/api/appNotifications";
+import { showApiAlert } from "@services/api/appAlerts";
 import { RescheduleAppointmentDialog } from "./RescheduleAppointmentDialog";
 import { LoadingContainer, ModalActions } from "./AppointmentDetailsModal.styles";
 import { PatientAppointmentDetails } from "@features/patient/appointment/components";
@@ -76,7 +76,7 @@ export function AppointmentDetailsModal({
       {
         onSuccess: (cancelledAppointment) => {
           closeCancelDialog();
-          notifyApp({
+          showApiAlert({
             type: "success",
             message: "Appointment cancelled",
             description: `Your appointment with ${cancelledAppointment.doctorName} on ${cancelledAppointment.appointmentDate} at ${cancelledAppointment.startTime} has been cancelled. Reason: ${cancelledAppointment.cancelledReason || reason}`,

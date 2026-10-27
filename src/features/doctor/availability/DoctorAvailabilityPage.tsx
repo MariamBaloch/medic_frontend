@@ -9,7 +9,7 @@ import { ActionCallout } from "@components/ActionCallout";
 import { DataTable } from "@components/DataTable/DataTable";
 import { PageHeader } from "@components/PageHeader";
 import { ROUTES } from "@constants/routes";
-import { notifyApp } from "@services/api/appNotifications";
+import { showApiAlert } from "@services/api/appAlerts";
 import { formatAppointmentTimeRange } from "@utils/formatters";
 import type {
   AvailabilityDay,
@@ -72,7 +72,7 @@ function showAvailabilitySuccess(
       typeof appointment === "object" && appointment !== null,
   );
 
-  notifyApp({
+  showApiAlert({
     type: "success",
     message,
     description:

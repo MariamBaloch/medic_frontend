@@ -1,11 +1,12 @@
 import { LockOutlined } from "@ant-design/icons";
-import { Button, Flex, Form, Input, message, Modal, Typography } from "antd";
+import { Button, Flex, Form, Input, Modal, Typography } from "antd";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { ROUTES } from "@constants/routes";
 import { useChangePasswordMutation } from "@features/auth/api/authQueries";
 import { useAuthStore } from "@stores/authStore";
+import { showApiAlert } from "@services/api/appAlerts";
 import { SecurityCard } from "./ChangePasswordSection.styles";
 
 interface PasswordFormValues {
@@ -33,7 +34,11 @@ export function ChangePasswordSection() {
       {
         onSuccess: () => {
           closeModal();
-          message.info("Password changed. Please sign in again with your new password.");
+          showApiAlert({
+            type: "success",
+            message: "Password changed",
+            description: "Please sign in again with your new password.",
+          });
           clearSession();
           queryClient.clear();
           navigate(ROUTES.login, { replace: true });

@@ -28,7 +28,7 @@ export function notifyApp({
     description,
     key,
     placement: "topRight",
-    duration: duration ?? 0,
+    duration: duration ?? 10,
   });
 }
 

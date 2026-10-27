@@ -15,6 +15,7 @@ import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { AppBrandIcon } from "@components/AppBrandIcon/AppBrandIcon";
+import { ApiAlertHost } from "@components/ApiAlertHost";
 import { NotificationCenter } from "@components/NotificationCenter";
 import { PersonAvatar } from "@components/PersonAvatar";
 import { getAppRoute, ROUTES, ROUTE_SEGMENTS } from "@constants/routes";
@@ -261,6 +262,7 @@ export function AppShell({
         </AppHeader>
 
         <AppContent>
+          <ApiAlertHost />
           <Outlet />
         </AppContent>
       </AppLayout>

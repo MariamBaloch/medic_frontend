@@ -7,7 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FormField } from "@components/FormField/FormField";
 import { ROUTES } from "@constants/routes";
 import { PhoneInput } from "@components/PhoneInput/PhoneInput";
-import { notifyApp } from "@services/api/appNotifications";
+import { showApiAlert } from "@services/api/appAlerts";
 import {
   useRegisterDoctorMutation,
   useRegisterPatientMutation,
@@ -70,7 +70,7 @@ export function RegisterForm() {
         await registerPatient.mutateAsync(commonPayload);
       }
 
-      notifyApp({
+      showApiAlert({
         type: "success",
         message: "Registration successful",
         description: "Check your email to verify your account.",
@@ -229,7 +229,13 @@ export function RegisterForm() {
                   style={{ width: "100%" }}
                   placeholder="dd/MM/yyyy"
                   format="DD/MM/YYYY"
-                  value={field.value ? dayjs(`${field.value.slice(6)}-${field.value.slice(3, 5)}-${field.value.slice(0, 2)}`) : null}
+                  value={
+                    field.value
+                      ? dayjs(
+                          `${field.value.slice(6)}-${field.value.slice(3, 5)}-${field.value.slice(0, 2)}`,
+                        )
+                      : null
+                  }
                   onChange={(date) => field.onChange(date?.format("DD/MM/YYYY") ?? "")}
                   onBlur={field.onBlur}
                 />

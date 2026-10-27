@@ -34,7 +34,7 @@ export function NotificationCenter() {
         type: "info",
         message: notification.title,
         description: notification.message,
-        duration: 6,
+        duration: 10,
       });
       void queryClient.invalidateQueries({ queryKey: notificationKeys.all });
       void queryClient.invalidateQueries({ queryKey: patientWaitlistKeys.all });

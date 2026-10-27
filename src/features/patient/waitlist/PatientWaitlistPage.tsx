@@ -16,7 +16,7 @@ import type {
   DataTableFilterValue,
   DataTableFilterValues,
 } from "@components/DataTable";
-import { notifyApp } from "@services/api/appNotifications";
+import { showApiAlert } from "@services/api/appAlerts";
 import { getApiErrorMessage } from "@services/api/errors";
 import { formatAppointmentDate, formatTime, toIsoDate } from "@utils/formatters";
 import {
@@ -81,7 +81,7 @@ export function PatientWaitlistPage() {
 
   const handleOpenAppointment = useCallback((entry: WaitlistEntry) => {
     if (!toIsoDate(entry.date)) {
-      notifyApp({
+      showApiAlert({
         type: "error",
         message: "Could not open appointment",
         description: "The appointment date for this waitlist entry is invalid.",
@@ -108,7 +108,7 @@ export function PatientWaitlistPage() {
     );
 
     if (!appointment) {
-      notifyApp({
+      showApiAlert({
         type: "error",
         message: "Could not find appointment",
         description: "The booked appointment could not be matched to this waitlist entry.",
@@ -150,7 +150,7 @@ export function PatientWaitlistPage() {
       error instanceof ZodError
         ? [...new Set(error.issues.map((issue) => issue.message))].join(" · ")
         : getApiErrorMessage(error);
-    notifyApp({
+    showApiAlert({
       type: "error",
       message: "Could not load your waitlist",
       description,
@@ -162,13 +162,13 @@ export function PatientWaitlistPage() {
     async (entry: WaitlistEntry) => {
       try {
         await acceptOfferMutation.mutateAsync(entry.id);
-        notifyApp({
+        showApiAlert({
           type: "success",
           message: "Appointment confirmed",
           description: `${entry.doctorName} · ${formatAppointmentDate(entry.date)} at ${formatTime(entry.startTime)}`,
         });
       } catch (error) {
-        notifyApp({
+        showApiAlert({
           type: "error",
           message: "Could not accept offer",
           description: getActionError(error, "accept"),
@@ -182,13 +182,13 @@ export function PatientWaitlistPage() {
     if (!entryToRemove) return;
     try {
       await removeEntryMutation.mutateAsync(entryToRemove.id);
-      notifyApp({
+      showApiAlert({
         type: "success",
         message: entryToRemove.status === "OFFERED" ? "Offer declined" : "Waitlist entry withdrawn",
       });
       setEntryToRemove(null);
     } catch (error) {
-      notifyApp({
+      showApiAlert({
         type: "error",
         message: "Could not update waitlist entry",
         description: getActionError(error, "remove"),

@@ -142,7 +142,7 @@ export function WaitlistEntryTable({
 
   return (
     <DataTable<WaitlistEntry>
-      title="Find an entry"
+      title="Find a waitlist entry"
       columns={columns}
       dataSource={displayDataSource}
       rowKey="id"

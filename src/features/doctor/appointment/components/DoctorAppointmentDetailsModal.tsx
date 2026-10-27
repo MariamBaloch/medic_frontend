@@ -5,7 +5,7 @@ import type {
   AppointmentStatusOption,
   DoctorAppointmentStatusUpdate,
 } from "@features/appointment/api/appointment.schemas";
-import { notifyApp } from "@services/api/appNotifications";
+import { showApiAlert } from "@services/api/appAlerts";
 import { LoadingContainer } from "@features/appointment/components/AppointmentDetailsModal/AppointmentDetailsModal.styles";
 import { DoctorAppointmentDetails } from "./DoctorAppointmentDetails";
 import {
@@ -58,7 +58,7 @@ export function DoctorAppointmentDetailsModal({
       {
         onSuccess: () => {
           const label = confirmStatus === "COMPLETED" ? "completed" : "no show";
-          notifyApp({
+          showApiAlert({
             type: "success",
             message: "Appointment updated",
             description: `Appointment with ${fullAppointment?.patientName ?? "the patient"} on ${fullAppointment?.appointmentDate ?? "the selected date"} at ${fullAppointment?.startTime ?? "the selected time"} was marked ${label}.`,

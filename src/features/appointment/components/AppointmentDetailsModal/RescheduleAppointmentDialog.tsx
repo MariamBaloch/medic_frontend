@@ -6,7 +6,7 @@ import { useReschedulePatientAppointmentMutation } from "@features/patient/appoi
 import { useDoctorAvailabilityQuery } from "@features/booking/api/doctorAvailabilityQueries";
 import { WeekAvailability } from "@components/WeekAvailability";
 import type { DoctorAvailabilitySlot, SelectedAppointmentTime } from "@components/WeekAvailability";
-import { notifyApp } from "@services/api/appNotifications";
+import { showApiAlert } from "@services/api/appAlerts";
 import { PageHeader } from "@components/PageHeader";
 import { ScheduleOutlined } from "@ant-design/icons";
 import { parseAppointmentDate } from "@utils/formatters";
@@ -156,7 +156,7 @@ export function RescheduleAppointmentDialog({
       },
       {
         onSuccess: (updatedAppointment) => {
-          notifyApp({
+          showApiAlert({
             type: "success",
             message: "Appointment rescheduled",
             description: `Your appointment with ${updatedAppointment.doctorName} has been rescheduled to ${updatedAppointment.appointmentDate} at ${updatedAppointment.startTime}.`,

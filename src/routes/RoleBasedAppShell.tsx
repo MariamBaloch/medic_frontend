@@ -1,6 +1,7 @@
 import { Flex, Result, Spin } from "antd";
 import { Navigate } from "react-router-dom";
 import { AppShell } from "@components/AppShell/AppShell";
+import { ApiAlertHost } from "@components/ApiAlertHost";
 import { ROLE_OVERVIEW_ROUTES, ROUTES } from "@constants/routes";
 import { useCurrentUserQuery } from "@features/auth/api/authQueries";
 import { useAuthStore } from "@stores/authStore";
@@ -20,18 +21,24 @@ export function RoleBasedAppShell({ role, basePath, portalLabel }: RoleBasedAppS
   if (!profile) {
     if (query.isPending) {
       return (
-        <Flex align="center" justify="center" style={{ minHeight: "100dvh" }}>
-          <Spin size="large" />
-        </Flex>
+        <>
+          <ApiAlertHost />
+          <Flex align="center" justify="center" style={{ minHeight: "100dvh" }}>
+            <Spin size="large" />
+          </Flex>
+        </>
       );
     }
 
     return (
-      <Result
-        status="error"
-        title="Unable to load your account"
-        subTitle="Your account details could not be loaded."
-      />
+      <>
+        <ApiAlertHost />
+        <Result
+          status="error"
+          title="Unable to load your account"
+          subTitle="Your account details could not be loaded."
+        />
+      </>
     );
   }
 
@@ -43,8 +50,11 @@ export function RoleBasedAppShell({ role, basePath, portalLabel }: RoleBasedAppS
     return <Navigate to={ROLE_OVERVIEW_ROUTES[profile.role]} replace />;
   }
 
-  const resolvedBasePath = basePath ?? (role === "PATIENT" ? ROUTES.patient : role === "DOCTOR" ? ROUTES.doctor : ROUTES.admin);
-  const resolvedPortalLabel = portalLabel ?? `${role.charAt(0)}${role.slice(1).toLowerCase()} portal`;
+  const resolvedBasePath =
+    basePath ??
+    (role === "PATIENT" ? ROUTES.patient : role === "DOCTOR" ? ROUTES.doctor : ROUTES.admin);
+  const resolvedPortalLabel =
+    portalLabel ?? `${role.charAt(0)}${role.slice(1).toLowerCase()} portal`;
 
   return <AppShell basePath={resolvedBasePath} portalLabel={resolvedPortalLabel} />;
 }

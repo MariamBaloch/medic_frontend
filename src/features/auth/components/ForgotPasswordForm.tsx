@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { FormField } from "@components/FormField/FormField";
 import { ROUTES } from "@constants/routes";
 import { useForgotPasswordMutation } from "@features/auth/api/authQueries";
-import { notifyApp } from "@services/api/appNotifications";
+import { showApiAlert } from "@services/api/appAlerts";
 import {
   AuthFormCard,
   AuthFormElement,
@@ -30,7 +30,7 @@ export function ForgotPasswordForm() {
   const handleSubmit = async ({ email }: FormOutput) => {
     try {
       await mutation.mutateAsync(email);
-      notifyApp({
+      showApiAlert({
         type: "success",
         message: "Check your email",
         description: "You’ll receive a password reset link shortly.",

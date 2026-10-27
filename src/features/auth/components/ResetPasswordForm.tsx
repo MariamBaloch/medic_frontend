@@ -7,7 +7,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { FormField } from "@components/FormField/FormField";
 import { ROUTES } from "@constants/routes";
 import { useResetPasswordMutation } from "@features/auth/api/authQueries";
-import { notifyApp } from "@services/api/appNotifications";
+import { showApiAlert } from "@services/api/appAlerts";
 import {
   AuthFormCard,
   AuthFormElement,
@@ -26,7 +26,7 @@ export function ResetPasswordForm() {
   const token = searchParams.get("token")?.trim();
   useEffect(() => {
     if (!token) {
-      notifyApp({
+      showApiAlert({
         type: "warning",
         message: "Reset link is missing or invalid",
         description: "Request a new password reset link to continue.",
@@ -46,7 +46,11 @@ export function ResetPasswordForm() {
 
     try {
       await mutation.mutateAsync({ token, newPassword });
-      notifyApp({ type: "success", message: "Your password has been reset", description: "Sign in with your new password." });
+      showApiAlert({
+        type: "success",
+        message: "Your password has been reset",
+        description: "Sign in with your new password.",
+      });
       navigate(ROUTES.login, { replace: true });
     } catch {
       return;
@@ -114,7 +118,10 @@ export function ResetPasswordForm() {
 
         <AuthFormFooter>
           <Typography.Text>
-            Need another link? <AuthFormLink as={Link} to={ROUTES.forgotPassword}>Request a reset</AuthFormLink>
+            Need another link?{" "}
+            <AuthFormLink as={Link} to={ROUTES.forgotPassword}>
+              Request a reset
+            </AuthFormLink>
           </Typography.Text>
         </AuthFormFooter>
       </AuthFormElement>

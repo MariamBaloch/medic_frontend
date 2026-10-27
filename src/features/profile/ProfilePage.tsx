@@ -11,6 +11,7 @@ import {
   useUploadProfilePictureMutation,
 } from "@features/auth/api/authQueries";
 import { useAuthStore } from "@stores/authStore";
+import { showApiAlert } from "@services/api/appAlerts";
 import type {
   DoctorProfileUpdate,
   PatientProfileUpdate,
@@ -44,7 +45,7 @@ export function ProfilePage() {
       return;
     }
     avatarUpload.mutate(file, {
-      onSuccess: () => message.success("Profile photo updated."),
+      onSuccess: () => showApiAlert({ type: "success", message: "Profile photo updated." }),
     });
   };
 
@@ -58,7 +59,7 @@ export function ProfilePage() {
       ...(patient ? [patientUpdate.mutateAsync(patient)] : []),
       ...(doctor ? [doctorUpdate.mutateAsync(doctor)] : []),
     ]);
-    message.success("Profile details saved.");
+    showApiAlert({ type: "success", message: "Profile details saved." });
   };
 
   if (!user) {
@@ -95,7 +96,7 @@ export function ProfilePage() {
                 {user.status.replaceAll("_", " ")}
               </Tag>
             </Space>
-            <Flex align="center" gap={10} style={{ marginTop:18 }}>
+            <Flex align="center" gap={10} style={{ marginTop: 18 }}>
               <Upload
                 accept="image/*"
                 showUploadList={false}
@@ -116,8 +117,8 @@ export function ProfilePage() {
 
       <UserAccountForm
         user={user}
-        patientProfile={user.role === "PATIENT" ? user.patient ?? {} : undefined}
-        doctorProfile={user.role === "DOCTOR" ? user.doctor ?? {} : undefined}
+        patientProfile={user.role === "PATIENT" ? (user.patient ?? {}) : undefined}
+        doctorProfile={user.role === "DOCTOR" ? (user.doctor ?? {}) : undefined}
         onSave={submitUserAccount}
       />
 

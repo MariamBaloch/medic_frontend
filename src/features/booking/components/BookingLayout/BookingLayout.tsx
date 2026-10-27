@@ -21,7 +21,7 @@ import { ChooseTimeStep } from "@features/booking/components/ChooseTimeStep";
 import { ReviewAppointmentStep } from "@features/booking/components/ReviewAppointmentStep";
 import { VisitReasonStep } from "@features/booking/components/VisitReasonStep";
 import { getApiErrorMessage } from "@services/api/errors";
-import { notifyApp } from "@services/api/appNotifications";
+import { showApiAlert } from "@services/api/appAlerts";
 import { colors } from "@theme/tokens";
 import {
   formatAppointmentDate,
@@ -50,7 +50,7 @@ export function BookingLayout() {
 
   const handleSelectTime = (selection: SelectedAppointmentTime) => {
     if (selection.patientHasOverlappingAppointment) {
-      notifyApp({
+      showApiAlert({
         type: "warning",
         message: "This time conflicts with an appointment",
         description: "You already have an appointment that overlaps this time.",
@@ -67,7 +67,7 @@ export function BookingLayout() {
         : selection.patientHasActiveWaitlistEntry
           ? "You already have an active waitlist entry for this time."
           : "This slot is not accepting additional waitlist entries.";
-      notifyApp({ type: "warning", message: "You cannot join this waitlist", description });
+      showApiAlert({ type: "warning", message: "You cannot join this waitlist", description });
       return;
     }
 
@@ -94,20 +94,17 @@ export function BookingLayout() {
         .filter(Boolean)
         .join(" · ");
 
-      notifyApp({
+      showApiAlert({
         type: "success",
         message: "Appointment confirmed",
-        description: (
-          <Flex vertical gap={4}>
-            <Typography.Text>{appointment.doctorName}</Typography.Text>
-            <Typography.Text>
-              {formatAppointmentDate(appointment.appointmentDate)} ·{" "}
-              {formatAppointmentTimeRange(appointment.startTime, appointment.endTime)}
-            </Typography.Text>
-            {location ? <Typography.Text>{location}</Typography.Text> : null}
-            <Typography.Text>Fee: {formatBookingFee(appointment.bookingFee)}</Typography.Text>
-          </Flex>
-        ),
+        description: [
+          appointment.doctorName,
+          `${formatAppointmentDate(appointment.appointmentDate)} · ${formatAppointmentTimeRange(appointment.startTime, appointment.endTime)}`,
+          location,
+          `Fee: ${formatBookingFee(appointment.bookingFee)}`,
+        ]
+          .filter(Boolean)
+          .join(" · "),
       });
       navigate(ROUTES.patientAppointments);
     } catch {
@@ -131,7 +128,7 @@ export function BookingLayout() {
         date: dayjs(selectedTime.date).format("DD/MM/YYYY"),
         startTime: selectedTime.time,
       });
-      notifyApp({
+      showApiAlert({
         type: "success",
         message: "Joined the waitlist",
         description:
@@ -139,7 +136,7 @@ export function BookingLayout() {
       });
       navigate(ROUTES.patientWaitlist);
     } catch (error) {
-      notifyApp({
+      showApiAlert({
         type: "error",
         message: "Could not join the waitlist",
         description: getApiErrorMessage(error),

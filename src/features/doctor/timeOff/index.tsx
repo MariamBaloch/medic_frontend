@@ -9,7 +9,7 @@ import { ActionCallout } from "@components/ActionCallout";
 import { DataTable } from "@components/DataTable/DataTable";
 import { PageHeader } from "@components/PageHeader";
 import { ROUTES } from "@constants/routes";
-import { notifyApp } from "@services/api/appNotifications";
+import { showApiAlert } from "@services/api/appAlerts";
 import { formatAppointmentTimeRange } from "@utils/formatters";
 import type {
   AvailabilityException,
@@ -94,14 +94,14 @@ export function DoctorTimeOffPage() {
     try {
       if (editingException) {
         const response = await updateException.mutateAsync({ id: editingException.id, request });
-        notifyApp({
+        showApiAlert({
           type: "success",
           message: "Time off updated",
           description: getTimeOffSummary(request, response.affectedAppointments, response.message),
         });
       } else {
         const response = await createException.mutateAsync(request);
-        notifyApp({
+        showApiAlert({
           type: "success",
           message: "Time off added",
           description: getTimeOffSummary(request, response.affectedAppointments, response.message),
@@ -110,7 +110,7 @@ export function DoctorTimeOffPage() {
       setTimeOffDialogOpen(false);
       setEditingException(undefined);
     } catch {
-      notifyApp({ type: "error", message: "Could not save time off" });
+      showApiAlert({ type: "error", message: "Could not save time off" });
     }
   };
 
@@ -118,10 +118,10 @@ export function DoctorTimeOffPage() {
     async (exceptionId: number) => {
       try {
         await deleteException.mutateAsync(exceptionId);
-        notifyApp({ type: "success", message: "Time off deleted" });
+        showApiAlert({ type: "success", message: "Time off deleted" });
         return true;
       } catch {
-        notifyApp({ type: "error", message: "Could not delete time off" });
+        showApiAlert({ type: "error", message: "Could not delete time off" });
         return false;
       }
     },
