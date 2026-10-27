@@ -1,8 +1,5 @@
 import { apiClient } from "@services/api/axios";
-import {
-  doctorAvailabilitySchema,
-  type DoctorAvailabilitySlot,
-} from "./doctorAvailability.schemas";
+import { doctorAvailabilitySchema, type DoctorAvailability } from "./doctorAvailability.schemas";
 
 interface DoctorAvailabilityFilters {
   doctorId: number;
@@ -14,7 +11,7 @@ export async function getDoctorAvailability({
   doctorId,
   from,
   to,
-}: DoctorAvailabilityFilters): Promise<DoctorAvailabilitySlot[]> {
+}: DoctorAvailabilityFilters): Promise<DoctorAvailability> {
   const params = new URLSearchParams({ from, to });
   const { data } = await apiClient.get(
     `/patient/appointments/doctors/${doctorId}/availability?${params.toString()}`,
