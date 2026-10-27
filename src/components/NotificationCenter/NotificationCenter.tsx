@@ -3,6 +3,7 @@ import { Badge, Button, Empty, Flex, List, Popover, Space, Spin, Tooltip, Typogr
 import { useCallback, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { notifyApp } from "@services/api/appNotifications";
+import { patientWaitlistKeys } from "@features/patient/waitlist/api/waitlistQueries";
 import {
   notificationKeys,
   useMarkAllNotificationsReadMutation,
@@ -36,6 +37,7 @@ export function NotificationCenter() {
         duration: 6,
       });
       void queryClient.invalidateQueries({ queryKey: notificationKeys.all });
+      void queryClient.invalidateQueries({ queryKey: patientWaitlistKeys.all });
     },
     [queryClient],
   );

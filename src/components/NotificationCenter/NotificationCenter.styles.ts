@@ -1,4 +1,4 @@
-import { Flex, Popover, Tabs } from "antd";
+import { Flex, Tabs } from "antd";
 import styled from "styled-components";
 
 export const NotificationPanel = styled(Flex)`
