@@ -1,8 +1,6 @@
 import {
-  EnvironmentOutlined,
-  IdcardOutlined,
   MedicineBoxOutlined,
-  UserOutlined,
+  UserOutlined
 } from "@ant-design/icons";
 import type { ReactNode } from "react";
 import type {

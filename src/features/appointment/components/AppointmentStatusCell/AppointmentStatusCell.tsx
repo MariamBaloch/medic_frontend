@@ -1,10 +1,19 @@
 import { Typography } from "antd";
+import { StatusPill, type StatusPillTone } from "@components/StatusPill";
 import type {
   Appointment,
+  AppointmentStatus,
   AppointmentStatusOption,
 } from "@features/appointment/api/appointment.schemas";
 import { getAppointmentStatusLabel, isUpcomingAppointment } from "@utils/formatters";
-import { AppointmentStatusPill, AppointmentStatusStack } from "./AppointmentStatusCell.styles";
+import { AppointmentStatusStack } from "./AppointmentStatusCell.styles";
+
+const appointmentStatusTone: Record<AppointmentStatus, StatusPillTone> = {
+  BOOKED: "success",
+  COMPLETED: "completed",
+  NO_SHOW: "warning",
+  CANCELLED: "error",
+};
 
 interface AppointmentStatusCellProps {
   appointment: Appointment;
@@ -21,9 +30,11 @@ export function AppointmentStatusCell({
 
   return (
     <AppointmentStatusStack>
-      <AppointmentStatusPill $status={appointment.status}>
+      <StatusPill
+        tone={appointmentStatusTone[appointment.status]}
+      >
         {getAppointmentStatusLabel(appointment.status, statuses)}
-      </AppointmentStatusPill>
+      </StatusPill>
       {upcoming ? <Typography.Text>Upcoming</Typography.Text> : null}
     </AppointmentStatusStack>
   );
