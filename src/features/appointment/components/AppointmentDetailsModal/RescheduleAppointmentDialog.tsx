@@ -2,16 +2,14 @@ import { Button, Flex, Modal, Spin } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useMemo, useState } from "react";
 import type { Appointment } from "@features/appointment/api/appointment.schemas";
-import {
-  usePatientAppointmentsQuery,
-  useReschedulePatientAppointmentMutation,
-} from "@features/patient/appointment/api/patientAppointmentsQueries";
+import { useReschedulePatientAppointmentMutation } from "@features/patient/appointment/api/patientAppointmentsQueries";
 import { useDoctorAvailabilityQuery } from "@features/booking/api/doctorAvailabilityQueries";
 import { WeekAvailability } from "@components/WeekAvailability";
 import type { DoctorAvailabilitySlot, SelectedAppointmentTime } from "@components/WeekAvailability";
 import { notifyApp } from "@services/api/appNotifications";
 import { PageHeader } from "@components/PageHeader";
 import { ScheduleOutlined } from "@ant-design/icons";
+import { parseAppointmentDate } from "@utils/formatters";
 import { ModalActions } from "./AppointmentDetailsModal.styles";
 
 interface RescheduleAppointmentDialogProps {
@@ -29,19 +27,15 @@ function getCurrentWeekStart(): string {
 function getAppointmentSelection(appointment: Appointment | null): SelectedAppointmentTime | null {
   if (!appointment) return null;
 
-  const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(appointment.appointmentDate);
+  const parsedDate = parseAppointmentDate(appointment.appointmentDate);
   const startMatch = /^(\d{2}):(\d{2})$/.exec(appointment.startTime);
   const endMatch = /^(\d{2}):(\d{2})$/.exec(appointment.endTime);
-  if (!match || !startMatch || !endMatch) return null;
+  if (!parsedDate || !startMatch || !endMatch) return null;
 
-  const [, day, month, year] = match;
-  const date = `${year}-${month}-${day}`;
-  const parsedDate = dayjs(date);
+  const date = parsedDate.format("YYYY-MM-DD");
   const startMinutes = Number(startMatch[1]) * 60 + Number(startMatch[2]);
   const endMinutes = Number(endMatch[1]) * 60 + Number(endMatch[2]);
   if (
-    !parsedDate.isValid() ||
-    parsedDate.format("DD/MM/YYYY") !== appointment.appointmentDate ||
     Number(startMatch[1]) > 23 ||
     Number(startMatch[2]) > 59 ||
     Number(endMatch[1]) > 23 ||
@@ -79,18 +73,8 @@ export function RescheduleAppointmentDialog({
   );
   const availabilityQuery = useDoctorAvailabilityQuery(
     open ? (appointment?.doctorId ?? null) : null,
-    dayjs(weekStartDate).format("DD/MM/YYYY"),
-    dayjs(weekEndDate).format("DD/MM/YYYY"),
-  );
-  const appointmentsQuery = usePatientAppointmentsQuery(
-    {
-      dateFrom: weekStartDate,
-      dateTo: weekEndDate,
-      page: 0,
-      size: 100,
-      sort: ["appointmentDate,ASC", "startTime,ASC"],
-    },
-    open,
+    weekStartDate,
+    weekEndDate,
   );
   const rescheduleMutation = useReschedulePatientAppointmentMutation(appointment?.id ?? 0);
 
@@ -104,12 +88,14 @@ export function RescheduleAppointmentDialog({
   }, [open, appointment?.id, currentSelection]);
 
   const availableSlots = useMemo<DoctorAvailabilitySlot[]>(() => {
-    const slots = availabilityQuery.data ?? [];
+    const slots = (availabilityQuery.data?.slots ?? []).filter(
+      (slot) => slot.status === "AVAILABLE",
+    );
     if (!appointment || !currentSelection) return slots;
 
     const currentSlotExists = slots.some(
       (slot) =>
-        slot.date === appointment.appointmentDate &&
+        slot.date === currentSelection.date &&
         slot.startTime === appointment.startTime &&
         slot.endTime === appointment.endTime,
     );
@@ -119,18 +105,34 @@ export function RescheduleAppointmentDialog({
           ...slots,
           {
             ruleId: 0,
-            date: appointment.appointmentDate,
+            date: currentSelection.date,
             startTime: appointment.startTime,
             endTime: appointment.endTime,
             slotMinutes: currentSelection.durationMinutes,
+            status: "AVAILABLE",
+            canJoinWaitlist: false,
+            patientHasOverlappingAppointment: false,
+            patientHasActiveWaitlistEntry: false,
           },
         ];
   }, [appointment, availabilityQuery.data, currentSelection]);
 
   const otherBookings = useMemo(
     () =>
-      (appointmentsQuery.data?.content ?? []).filter((booking) => booking.id !== appointment?.id),
-    [appointment?.id, appointmentsQuery.data?.content],
+      (availabilityQuery.data?.patientAppointments ?? [])
+        .filter((booking) => booking.appointmentId !== appointment?.id)
+        .map((booking) => ({
+          id: booking.appointmentId,
+          doctorId: appointment?.doctorId ?? 0,
+          doctorName: booking.doctorName,
+          patientName: "You",
+          appointmentDate: booking.date,
+          startTime: booking.startTime,
+          endTime: booking.endTime,
+          status: "BOOKED",
+          reason: booking.reason,
+        })),
+    [appointment?.doctorId, appointment?.id, availabilityQuery.data?.patientAppointments],
   );
   const isCurrentSelection =
     currentSelection?.date === selectedTime?.date && currentSelection?.time === selectedTime?.time;
@@ -193,7 +195,7 @@ export function RescheduleAppointmentDialog({
           title="Reschedule your appointment"
           description={`Choose a new available time with Dr. ${appointment?.doctorName}.`}
         />
-        <Spin spinning={availabilityQuery.isLoading || appointmentsQuery.isLoading}>
+        <Spin spinning={availabilityQuery.isLoading || availabilityQuery.isFetching}>
           <WeekAvailability
             availableSlots={availableSlots}
             existingBookings={otherBookings}
