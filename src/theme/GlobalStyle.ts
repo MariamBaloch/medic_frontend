@@ -55,6 +55,19 @@ export const GlobalStyle = createGlobalStyle`
   border-bottom-right-radius: 0;
 }
 
+.ant-steps-item-icon {
+  background-color: ${colors.primary} !important;
+
+  span {
+    color: white;
+  }
+}
+
+.ant-steps .ant-steps-item-icon {
+  width: 35px;
+  height: 35px;
+}
+
  ::-webkit-scrollbar-track {
     background: transparent;
   }
@@ -65,9 +78,14 @@ export const GlobalStyle = createGlobalStyle`
 
   ::-webkit-scrollbar {
     width: 4px;
+    height: 4px;
    
   }
   ::-webkit-scrollbar-thumb:hover {
    cursor: pointer;
+  }
+
+  .ant-badge-count {
+    max-width: 18px;
   }
 `;
