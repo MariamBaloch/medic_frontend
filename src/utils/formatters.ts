@@ -31,6 +31,12 @@ export function formatAppointmentDate(value: string): string {
   return parseAppointmentDate(value)?.format("ddd, MMM D, YYYY") ?? value;
 }
 
+export function toIsoDate(value: string): string | undefined {
+  const displayDate = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value);
+  if (displayDate) return `${displayDate[3]}-${displayDate[2]}-${displayDate[1]}`;
+  return /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : undefined;
+}
+
 interface ParsedTime {
   clock: string;
   period: "AM" | "PM";
@@ -48,6 +54,11 @@ function parseAppointmentTime(value: string): ParsedTime | null {
     clock: `${hour % 12 || 12}:${String(minute).padStart(2, "0")}`,
     period: hour >= 12 ? "PM" : "AM",
   };
+}
+
+export function formatTime(value: string): string {
+  const parsed = parseAppointmentTime(value);
+  return parsed ? `${parsed.clock} ${parsed.period}` : value;
 }
 
 export function formatAppointmentTimeRange(startTime: string, endTime: string): string {
