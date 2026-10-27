@@ -1,4 +1,4 @@
-import { Flex, Typography } from "antd";
+import { Alert, Flex, Typography } from "antd";
 import styled from "styled-components";
 import { colors } from "@theme/tokens";
 
@@ -69,4 +69,29 @@ export const VisitReasonSummary = styled.div`
   background: ${colors.backgroundTint};
   padding: 12px;
   white-space: pre-wrap;
+`;
+
+export const StyledAlert = styled(Alert)`
+  && {
+    margin-top: 20px;
+    padding: 14px;
+    border: 1px solid ${colors.border};
+    background: ${colors.background};
+    font-size: 13px !important;
+  }
+
+  .ant-alert-icon {
+    color: ${colors.primary};
+  }
+
+  .ant-alert-title {
+    color: ${colors.primary} !important;
+    font-weight: 600;
+    margin-bottom: 2px !important;
+    font-size: 13px !important;
+  }
+
+  .ant-alert-description {
+    color: ${colors.textSecondary};
+  }
 `;

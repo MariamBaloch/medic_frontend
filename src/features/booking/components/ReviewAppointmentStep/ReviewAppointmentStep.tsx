@@ -22,6 +22,7 @@ import {
   ReviewSectionHeader,
   ReviewSectionTitle,
   ReviewStepContent,
+  StyledAlert,
   VisitReasonSummary,
 } from "./ReviewAppointmentStep.styles";
 
@@ -29,6 +30,7 @@ interface ReviewAppointmentStepProps {
   doctor: Doctor | null;
   selectedTime: SelectedAppointmentTime | null;
   visitReason: string;
+  isWaitlist?: boolean;
   onEditStep: (step: number) => void;
 }
 
@@ -36,6 +38,7 @@ export function ReviewAppointmentStep({
   doctor,
   selectedTime,
   visitReason,
+  isWaitlist = false,
   onEditStep,
 }: ReviewAppointmentStepProps) {
   const doctorName = doctor ? `${doctor.firstName} ${doctor.lastName}` : "Doctor not selected";
@@ -47,8 +50,12 @@ export function ReviewAppointmentStep({
     <ReviewStepContent>
       <ReviewHeading>
         <StepTitle
-          title="Review your appointment"
-          description="Make sure everything looks right, then confirm your new visit."
+          title={isWaitlist ? "Review your waitlist request" : "Review your appointment"}
+          description={
+            isWaitlist
+              ? "Review the doctor and time you want to join the waitlist for."
+              : "Make sure everything looks right, then confirm your new visit."
+          }
         />
       </ReviewHeading>
 
@@ -71,23 +78,31 @@ export function ReviewAppointmentStep({
 
       <ReviewSection>
         <ReviewSectionHeader>
-          <ReviewSectionTitle>Date, time &amp; location</ReviewSectionTitle>
+          <ReviewSectionTitle>
+            {isWaitlist ? "Date & time" : "Date, time & location"}
+          </ReviewSectionTitle>
           <Button type="link" icon={<EditOutlined />} onClick={() => onEditStep(1)}>
             Edit time
           </Button>
         </ReviewSectionHeader>
         <ReviewDetailsGrid>
           <ReviewDetail>
-            <ReviewDetailIcon><CalendarOutlined /></ReviewDetailIcon>
+            <ReviewDetailIcon>
+              <CalendarOutlined />
+            </ReviewDetailIcon>
             <ReviewDetailContent>
               <Typography.Text type="secondary">Full date</Typography.Text>
               <Typography.Text strong>
-                {selectedTime ? dayjs(selectedTime.date).format("dddd, MMMM D, YYYY") : "Not selected"}
+                {selectedTime
+                  ? dayjs(selectedTime.date).format("dddd, MMMM D, YYYY")
+                  : "Not selected"}
               </Typography.Text>
             </ReviewDetailContent>
           </ReviewDetail>
           <ReviewDetail>
-            <ReviewDetailIcon><ClockCircleOutlined /></ReviewDetailIcon>
+            <ReviewDetailIcon>
+              <ClockCircleOutlined />
+            </ReviewDetailIcon>
             <ReviewDetailContent>
               <Typography.Text type="secondary">Time &amp; duration</Typography.Text>
               <Typography.Text strong>
@@ -97,34 +112,56 @@ export function ReviewAppointmentStep({
               </Typography.Text>
             </ReviewDetailContent>
           </ReviewDetail>
-          <ReviewDetail>
-            <ReviewDetailIcon><EnvironmentOutlined /></ReviewDetailIcon>
-            <ReviewDetailContent>
-              <Typography.Text type="secondary">Location</Typography.Text>
-              <Typography.Text strong>{practiceLocation || "Location unavailable"}</Typography.Text>
-            </ReviewDetailContent>
-          </ReviewDetail>
-          <ReviewDetail>
-            <ReviewDetailIcon><DollarOutlined /></ReviewDetailIcon>
-            <ReviewDetailContent>
-              <Typography.Text type="secondary">Consultation fee</Typography.Text>
-              <Typography.Text strong>{formatBookingFee(doctor?.doctor.consultationFee)}</Typography.Text>
-            </ReviewDetailContent>
-          </ReviewDetail>
+          {!isWaitlist ? (
+            <>
+              <ReviewDetail>
+                <ReviewDetailIcon>
+                  <EnvironmentOutlined />
+                </ReviewDetailIcon>
+                <ReviewDetailContent>
+                  <Typography.Text type="secondary">Location</Typography.Text>
+                  <Typography.Text strong>
+                    {practiceLocation || "Location unavailable"}
+                  </Typography.Text>
+                </ReviewDetailContent>
+              </ReviewDetail>
+              <ReviewDetail>
+                <ReviewDetailIcon>
+                  <DollarOutlined />
+                </ReviewDetailIcon>
+                <ReviewDetailContent>
+                  <Typography.Text type="secondary">Consultation fee</Typography.Text>
+                  <Typography.Text strong>
+                    {formatBookingFee(doctor?.doctor.consultationFee)}
+                  </Typography.Text>
+                </ReviewDetailContent>
+              </ReviewDetail>
+            </>
+          ) : null}
         </ReviewDetailsGrid>
       </ReviewSection>
 
-      <ReviewSection>
-        <ReviewSectionHeader>
-          <ReviewSectionTitle>Reason for appointment</ReviewSectionTitle>
-          <Button type="link" icon={<EditOutlined />} onClick={() => onEditStep(2)}>
-            Edit reason
-          </Button>
-        </ReviewSectionHeader>
-        <VisitReasonSummary>
-          <Typography.Text>{visitReason}</Typography.Text>
-        </VisitReasonSummary>
-      </ReviewSection>
+      {isWaitlist ? (
+        <StyledAlert
+          type="info"
+          showIcon
+          variant="outlined"
+          title="Joining the waitlist does not book this appointment immediately."
+          description="If a place becomes available, you will receive an offer to accept. Offers expire after 15 minutes."
+        />
+      ) : (
+        <ReviewSection>
+          <ReviewSectionHeader>
+            <ReviewSectionTitle>Reason for appointment</ReviewSectionTitle>
+            <Button type="link" icon={<EditOutlined />} onClick={() => onEditStep(2)}>
+              Edit reason
+            </Button>
+          </ReviewSectionHeader>
+          <VisitReasonSummary>
+            <Typography.Text>{visitReason}</Typography.Text>
+          </VisitReasonSummary>
+        </ReviewSection>
+      )}
     </ReviewStepContent>
   );
 }
