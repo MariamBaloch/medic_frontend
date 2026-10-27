@@ -13,6 +13,7 @@ import { DoctorAvailabilityPage } from "@features/doctor/availability/DoctorAvai
 import { DoctorTimeOffPage } from "@features/doctor/timeOff";
 import { DoctorAppointmentsPage } from "@features/doctor/appointment";
 import { DoctorSchedulePage } from "@features/doctor/schedule";
+import { PatientWaitlistPage } from "@features/patient/waitlist/PatientWaitlistPage";
 
 export function AppRoutes() {
   return (
@@ -45,6 +46,7 @@ export function AppRoutes() {
             <Route index element={<PatientAppointmentsPage />} />
             <Route path={ROUTE_SEGMENTS.bookAppointment} element={<BookingPage />} />
           </Route>
+          <Route path={ROUTE_SEGMENTS.waitlist} element={<PatientWaitlistPage />} />
         </Route>
         <Route
           path={ROUTES.doctor}

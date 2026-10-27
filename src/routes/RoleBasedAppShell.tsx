@@ -1,4 +1,4 @@
-import { Button, Flex, Result, Spin } from "antd";
+import { Flex, Result, Spin } from "antd";
 import { Navigate } from "react-router-dom";
 import { AppShell } from "@components/AppShell/AppShell";
 import { ROLE_OVERVIEW_ROUTES, ROUTES } from "@constants/routes";
@@ -30,8 +30,7 @@ export function RoleBasedAppShell({ role, basePath, portalLabel }: RoleBasedAppS
       <Result
         status="error"
         title="Unable to load your account"
-        subTitle="Please try again."
-        extra={<Button type="primary" onClick={() => void query.refetch()}>Try again</Button>}
+        subTitle="Your account details could not be loaded."
       />
     );
   }

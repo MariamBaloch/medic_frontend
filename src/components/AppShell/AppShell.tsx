@@ -1,18 +1,15 @@
 import {
   AppstoreOutlined,
   CalendarOutlined,
-  ClockCircleOutlined, LogoutOutlined,
+  ClockCircleOutlined,
+  LogoutOutlined,
   DownOutlined,
   SettingOutlined,
   UserOutlined,
   LeftOutlined,
-  RightOutlined
+  RightOutlined,
 } from "@ant-design/icons";
-import {
-  Dropdown,
-  Menu,
-  Typography,
-} from "antd";
+import { Dropdown, Menu, Typography } from "antd";
 import type { MenuProps } from "antd";
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
@@ -83,6 +80,13 @@ export function AppShell({
             icon: <CalendarOutlined />,
             label: "Appointments",
             title: "Appointments",
+          },
+          {
+            key: getAppRoute(basePath, ROUTE_SEGMENTS.waitlist),
+            path: getAppRoute(basePath, ROUTE_SEGMENTS.waitlist),
+            icon: <ClockCircleOutlined />,
+            label: "Waitlist",
+            title: "Waitlist",
           },
         ]
       : role === "DOCTOR"
