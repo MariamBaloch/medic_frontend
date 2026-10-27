@@ -1,31 +1,34 @@
-import { Breadcrumb, Button, Divider, Flex, Steps, Typography } from "antd";
-import dayjs from "dayjs";
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { ROUTES } from "@constants/routes";
-import { colors } from "@theme/tokens";
-import { PageHeader } from "@components/PageHeader";
 import {
   ArrowLeftOutlined,
   ArrowRightOutlined,
   CalendarOutlined,
+  ClockCircleOutlined,
   SafetyOutlined,
 } from "@ant-design/icons";
+import { Breadcrumb, Button, Divider, Flex, Steps, Typography } from "antd";
+import dayjs from "dayjs";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AppCard } from "@components/Card";
+import { PageHeader } from "@components/PageHeader";
+import type { SelectedAppointmentTime } from "@components/WeekAvailability";
+import { ROUTES } from "@constants/routes";
+import { useBookPatientAppointmentMutation } from "@features/patient/appointment/api/patientAppointmentsQueries";
+import { useJoinPatientWaitlistMutation } from "@features/patient/waitlist/api/waitlistQueries";
+import type { Doctor } from "@features/booking/api/doctor.schemas";
 import { ChooseDoctorStep } from "@features/booking/components/ChooseDoctorStep";
 import { ChooseTimeStep } from "@features/booking/components/ChooseTimeStep";
-import { VisitReasonStep } from "@features/booking/components/VisitReasonStep";
 import { ReviewAppointmentStep } from "@features/booking/components/ReviewAppointmentStep";
-import { BookingStepsCard } from "./BookingLayout.styles";
-import { AppCard } from "@components/Card";
-import type { SelectedAppointmentTime } from "@components/WeekAvailability";
-import type { Doctor } from "@features/booking/api/doctor.schemas";
-import { useBookPatientAppointmentMutation } from "@features/patient/appointment/api/patientAppointmentsQueries";
+import { VisitReasonStep } from "@features/booking/components/VisitReasonStep";
+import { getApiErrorMessage } from "@services/api/errors";
 import { notifyApp } from "@services/api/appNotifications";
+import { colors } from "@theme/tokens";
 import {
   formatAppointmentDate,
   formatAppointmentTimeRange,
   formatBookingFee,
 } from "@utils/formatters";
+import { BookingStepsCard } from "./BookingLayout.styles";
 
 const { Text } = Typography;
 
@@ -35,14 +38,47 @@ export function BookingLayout() {
   const [selectedTime, setSelectedTime] = useState<SelectedAppointmentTime | null>(null);
   const [visitReason, setVisitReason] = useState("");
   const bookingMutation = useBookPatientAppointmentMutation();
+  const joinWaitlistMutation = useJoinPatientWaitlistMutation();
   const navigate = useNavigate();
+  const isWaitlistSelection =
+    selectedTime?.status === "BOOKED" || selectedTime?.status === "WAITLIST_OFFERED";
+
   const canVisitStep = (step: number) =>
     (step <= 0 || selectedDoctor !== null) &&
     (step <= 1 || selectedTime !== null) &&
-    (step <= 2 || visitReason.trim().length > 0);
+    (step <= 2 || isWaitlistSelection || visitReason.trim().length > 0);
+
+  const handleSelectTime = (selection: SelectedAppointmentTime) => {
+    if (selection.patientHasOverlappingAppointment) {
+      notifyApp({
+        type: "warning",
+        message: "This time conflicts with an appointment",
+        description: "You already have an appointment that overlaps this time.",
+      });
+      return;
+    }
+
+    if (
+      (selection.status === "BOOKED" || selection.status === "WAITLIST_OFFERED") &&
+      !selection.canJoinWaitlist
+    ) {
+      const description = selection.patientHasOverlappingAppointment
+        ? "You already have an appointment that overlaps this time."
+        : selection.patientHasActiveWaitlistEntry
+          ? "You already have an active waitlist entry for this time."
+          : "This slot is not accepting additional waitlist entries.";
+      notifyApp({ type: "warning", message: "You cannot join this waitlist", description });
+      return;
+    }
+
+    if (selection.status === "BOOKED" || selection.status === "WAITLIST_OFFERED") {
+      setVisitReason("");
+    }
+    setSelectedTime(selection);
+  };
 
   const confirmAppointment = async () => {
-    if (!selectedDoctor || !selectedTime || !visitReason.trim()) return;
+    if (!selectedDoctor || !selectedTime || !visitReason.trim() || isWaitlistSelection) return;
 
     try {
       const appointment = await bookingMutation.mutateAsync({
@@ -78,45 +114,87 @@ export function BookingLayout() {
       return;
     }
   };
-  const steps = [
-    {
-      title: "Choose doctor",
-      content: (
-        <ChooseDoctorStep
-          selectedDoctorId={selectedDoctor?.userId ?? null}
-          onSelectDoctor={(doctor) => {
-            setSelectedDoctor(doctor);
-            setSelectedTime(null);
-          }}
-        />
-      ),
-    },
-    {
-      title: "Choose time",
-      content: (
-        <ChooseTimeStep
-          doctorId={selectedDoctor?.doctor.doctorProfileId ?? null}
-          selectedTime={selectedTime}
-          onSelectTime={setSelectedTime}
-        />
-      ),
-    },
-    {
-      title: "Visit reason",
-      content: <VisitReasonStep reason={visitReason} onReasonChange={setVisitReason} />,
-    },
-    {
-      title: "Review appointment",
-      content: (
-        <ReviewAppointmentStep
-          doctor={selectedDoctor}
-          selectedTime={selectedTime}
-          visitReason={visitReason}
-          onEditStep={setCurrentStep}
-        />
-      ),
-    },
-  ];
+
+  const confirmWaitlist = async () => {
+    if (
+      !selectedDoctor ||
+      !selectedTime ||
+      !isWaitlistSelection ||
+      selectedTime.canJoinWaitlist !== true
+    ) {
+      return;
+    }
+
+    try {
+      await joinWaitlistMutation.mutateAsync({
+        doctorId: selectedDoctor.doctor.doctorProfileId,
+        date: dayjs(selectedTime.date).format("DD/MM/YYYY"),
+        startTime: selectedTime.time,
+      });
+      notifyApp({
+        type: "success",
+        message: "Joined the waitlist",
+        description:
+          "You will receive an offer if this time becomes available. Joining the waitlist does not book an appointment immediately.",
+      });
+      navigate(ROUTES.patientWaitlist);
+    } catch (error) {
+      notifyApp({
+        type: "error",
+        message: "Could not join the waitlist",
+        description: getApiErrorMessage(error),
+      });
+    }
+  };
+
+  const doctorStep = {
+    title: "Choose doctor",
+    content: (
+      <ChooseDoctorStep
+        selectedDoctorId={selectedDoctor?.userId ?? null}
+        onSelectDoctor={(doctor) => {
+          setSelectedDoctor(doctor);
+          setSelectedTime(null);
+        }}
+      />
+    ),
+  };
+  const timeStep = {
+    title: "Choose time",
+    content: (
+      <ChooseTimeStep
+        doctorId={selectedDoctor?.doctor.doctorProfileId ?? null}
+        selectedTime={selectedTime}
+        onSelectTime={handleSelectTime}
+      />
+    ),
+  };
+  const reviewStep = {
+    title: "Review waitlist",
+    content: (
+      <ReviewAppointmentStep
+        doctor={selectedDoctor}
+        selectedTime={selectedTime}
+        visitReason={visitReason}
+        isWaitlist={isWaitlistSelection}
+        onEditStep={setCurrentStep}
+      />
+    ),
+  };
+  const steps = isWaitlistSelection
+    ? [doctorStep, timeStep, reviewStep]
+    : [
+        doctorStep,
+        timeStep,
+        {
+          title: "Visit reason",
+          content: <VisitReasonStep reason={visitReason} onReasonChange={setVisitReason} />,
+        },
+        {
+          title: "Review appointment",
+          content: reviewStep.content,
+        },
+      ];
   const isFirstStep = currentStep === 0;
   const isLastStep = currentStep === steps.length - 1;
   const previousStep = steps[currentStep - 1];
@@ -128,9 +206,7 @@ export function BookingLayout() {
         style={{ marginBottom: 10 }}
         separator=">"
         items={[
-          {
-            title: <Link to={ROUTES.patientAppointments}>Appointments</Link>,
-          },
+          { title: <Link to={ROUTES.patientAppointments}>Appointments</Link> },
           {
             title: (
               <Text strong style={{ color: colors.primary }}>
@@ -188,6 +264,8 @@ export function BookingLayout() {
       <Divider />
       <Flex justify="space-between" align="center">
         <Button
+          variant="outlined"
+          color="primary"
           icon={<ArrowLeftOutlined />}
           onClick={() =>
             isFirstStep ? navigate(ROUTES.patientAppointments) : setCurrentStep((step) => step - 1)
@@ -204,6 +282,16 @@ export function BookingLayout() {
             onClick={() => setCurrentStep((step) => step + 1)}
           >
             Continue to {nextStep.title.toLowerCase()}
+          </Button>
+        ) : isLastStep && isWaitlistSelection ? (
+          <Button
+            type="primary"
+            icon={<ClockCircleOutlined />}
+            loading={joinWaitlistMutation.isPending}
+            disabled={!selectedDoctor || !selectedTime || selectedTime.canJoinWaitlist !== true}
+            onClick={() => void confirmWaitlist()}
+          >
+            Join Waitlist
           </Button>
         ) : isLastStep ? (
           <Button
