@@ -16,11 +16,12 @@ export function useSpecializationsQuery(enabled = true) {
   });
 }
 
-export function useAppointmentStatusesQuery() {
+export function useAppointmentStatusesQuery(enabled = true) {
   return useQuery({
     queryKey: appointmentLookupKeys.statuses,
     queryFn: getAppointmentStatuses,
     meta: { notificationTitle: "Could not load appointment statuses" },
     staleTime: 30 * 60 * 1000,
+    enabled,
   });
 }
