@@ -3,6 +3,7 @@ import { AppCard } from "@components/Card";
 import { colors } from "@theme/tokens";
 
 export const DashboardCard = styled(AppCard)`
+  min-width: 0;
   height: 100%;
 
   .ant-card-head {
@@ -16,7 +17,28 @@ export const DashboardCard = styled(AppCard)`
   }
 
   .ant-card-body {
-    padding: 0px 6px 0px 20px;
+    padding: 0 20px 18px;
+  }
+
+  @media (max-width: 600px) {
+    .ant-card-head-wrapper {
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 4px 8px;
+    }
+
+    .ant-card-head-title {
+      white-space: normal;
+    }
+
+    .ant-card-extra {
+      margin-inline-start: 0;
+      padding: 0 0 4px;
+    }
+
+    .ant-card-body {
+      padding: 0 14px 14px;
+    }
   }
 `;
 
@@ -35,6 +57,12 @@ export const UpcomingAppointmentCard = styled(DashboardCard)`
   .ant-card-body {
     padding: 22px 24px;
   }
+
+  @media (max-width: 600px) {
+    .ant-card-body {
+      padding: 16px;
+    }
+  }
 `;
 
 export const AppointmentDetail = styled.div`
@@ -48,55 +76,46 @@ export const AppointmentDetail = styled.div`
 `;
 
 export const RecentVisitRow = styled.div`
+  min-width: 0;
   display: grid;
-  grid-template-columns: minmax(180px, 1.35fr) minmax(130px, 0.9fr) minmax(140px, 1fr) auto auto;
+  grid-template-columns: minmax(0, 1.25fr) minmax(130px, 0.9fr) minmax(100px, auto) auto;
   align-items: center;
   gap: 12px;
   padding: 13px 0;
   border-bottom: 1px solid ${colors.border};
+
+  > * {
+    min-width: 0;
+  }
 
   &:last-child {
     border-bottom: 0;
   }
 
   @media (max-width: 1000px) {
-    grid-template-columns: minmax(0, 1fr) minmax(130px, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
 
-    > :nth-child(3) {
+    > :nth-child(2) {
       grid-column: 1;
       grid-row: 2;
     }
 
-    > :nth-child(4) {
-      grid-column: 2;
-      grid-row: 2;
+    > :nth-child(3) {
+      grid-column: 1;
+      grid-row: 3;
     }
 
-    > :nth-child(5) {
-      grid-column: 3;
-      grid-row: 1 / span 2;
+    > :nth-child(4) {
+      grid-column: 2;
+      grid-row: 1 / span 3;
+      align-self: center;
+      justify-self: end;
     }
   }
 
   @media (max-width: 560px) {
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 8px;
-
-    > :nth-child(2),
-    > :nth-child(3) {
-      grid-column: 1;
-      grid-row: auto;
-    }
-
-    > :nth-child(4) {
-      grid-column: 2;
-      grid-row: 2;
-    }
-
-    > :nth-child(5) {
-      grid-column: 2;
-      grid-row: 1;
-    }
+    gap: 6px 8px;
   }
 `;
 

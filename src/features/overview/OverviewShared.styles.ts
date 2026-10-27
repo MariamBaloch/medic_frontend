@@ -27,8 +27,22 @@ export const WelcomeCard = styled(AppCard)`
     background-position: right center;
     background-repeat: no-repeat;
     background-size: auto 125%;
-    -webkit-mask-image: linear-gradient(90deg, transparent 45%, rgb(0 0 0 / 10%) 55%, rgb(0 0 0 / 45%) 66%, rgb(0 0 0 / 85%) 78%, #000 90%);
-    mask-image: linear-gradient(90deg, transparent 45%, rgb(0 0 0 / 10%) 55%, rgb(0 0 0 / 45%) 66%, rgb(0 0 0 / 85%) 78%, #000 90%);
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent 45%,
+      rgb(0 0 0 / 10%) 55%,
+      rgb(0 0 0 / 45%) 66%,
+      rgb(0 0 0 / 85%) 78%,
+      #000 90%
+    );
+    mask-image: linear-gradient(
+      90deg,
+      transparent 45%,
+      rgb(0 0 0 / 10%) 55%,
+      rgb(0 0 0 / 45%) 66%,
+      rgb(0 0 0 / 85%) 78%,
+      #000 90%
+    );
   }
 
   .ant-card-body {
@@ -38,8 +52,12 @@ export const WelcomeCard = styled(AppCard)`
   }
 
   @media (max-width: 600px) {
-    &::before { display: none; }
-    .ant-card-body { padding: 24px 20px; }
+    &::before {
+      display: none;
+    }
+    .ant-card-body {
+      padding: 24px 20px;
+    }
   }
 `;
 
@@ -47,7 +65,19 @@ export const DashboardActionCard = styled(AppCard)`
   height: 100%;
   background: ${colors.backgroundSoft};
 
-  .ant-card-body { height: 100%; padding: 20px 22px; }
+  .ant-card-body {
+    height: 100%;
+    padding: 20px 22px;
+  }
+
+  @media (max-width: 600px) {
+    .ant-card-body {
+      padding: 16px;
+    }
+    .ant-btn {
+      width: 100%;
+    }
+  }
 `;
 
 export const DashboardActionIcon = styled.span`

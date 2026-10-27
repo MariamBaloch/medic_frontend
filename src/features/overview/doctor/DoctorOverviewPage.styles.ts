@@ -28,6 +28,27 @@ export const DashboardCard = styled(AppCard)`
   .ant-card-body {
     padding: 0 20px 18px;
   }
+
+  @media (max-width: 600px) {
+    .ant-card-head-wrapper {
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 4px 8px;
+    }
+
+    .ant-card-head-title {
+      white-space: normal;
+    }
+
+    .ant-card-extra {
+      margin-inline-start: 0;
+      padding: 0 0 4px;
+    }
+
+    .ant-card-body {
+      padding: 0 14px 14px;
+    }
+  }
 `;
 
 export const OpenSlotsCard = styled(DashboardCard)`
@@ -37,6 +58,7 @@ export const OpenSlotsCard = styled(DashboardCard)`
 `;
 
 export const TodayAppointmentRow = styled.div`
+  min-width: 0;
   display: grid;
   grid-template-columns: minmax(145px, 1fr) minmax(125px, 1fr) minmax(120px, 0.9fr) auto;
   align-items: center;
@@ -46,6 +68,10 @@ export const TodayAppointmentRow = styled.div`
 
   &:last-child {
     border-bottom: 0;
+  }
+
+  > * {
+    min-width: 0;
   }
 
   @media (max-width: 1000px) {
@@ -78,6 +104,7 @@ export const TodayAppointmentRow = styled.div`
 export const OpenSlotRow = styled.div`
   display: flex;
   align-items: center;
+  min-width: 0;
   min-height: 38px;
   gap: 10px;
   margin-bottom: 10px;
@@ -101,6 +128,7 @@ export const OpenSlotRow = styled.div`
 `;
 
 export const OpenSlotTime = styled.span`
+  min-width: 0;
   color: ${colors.primary};
   font-size: 13px;
   font-weight: 500;
@@ -110,6 +138,7 @@ export const OpenSlotDuration = styled.span`
   margin-left: auto;
   color: ${colors.textSecondary};
   font-size: 12px;
+  white-space: nowrap;
 `;
 
 export const DashboardActionGrid = styled.div`

@@ -16,10 +16,7 @@ import { RecentVisitsSection } from "./components/RecentVisitsSection";
 import { UpcomingAppointmentSection } from "./components/UpcomingAppointmentSection";
 import { DashboardActionSection } from "../components/DashboardActionSection";
 import { OverviewRoot, WelcomeCard } from "../OverviewShared.styles";
-import {
-  DashboardActionGrid,
-  SecondSectionGrid,
-} from "./PatientOverviewPage.styles";
+import { DashboardActionGrid, SecondSectionGrid } from "./PatientOverviewPage.styles";
 
 function getAppointmentDateTime(appointment: Appointment) {
   const date = parseAppointmentDate(appointment.appointmentDate);
@@ -45,7 +42,7 @@ export function PatientOverviewPage() {
   const appointmentsQuery = usePatientAppointmentsQuery({
     page: 0,
     size: 100,
-    sort: ["appointmentDate,ASC", "startTime,ASC"],
+    sort: ["appointmentDate,DESC", "startTime,DESC"],
   });
   const statusesQuery = useAppointmentStatusesQuery();
   const statuses = statusesQuery.data ?? [];
@@ -70,7 +67,7 @@ export function PatientOverviewPage() {
       [...appointments]
         .filter((appointment) => {
           const dateTime = getAppointmentDateTime(appointment);
-          return dateTime?.isBefore(dayjs()) ?? false;
+          return appointment.status === "COMPLETED" && (dateTime?.isBefore(dayjs()) ?? false);
         })
         .sort((left, right) => {
           const leftDate = getAppointmentDateTime(left)?.valueOf() ?? 0;
