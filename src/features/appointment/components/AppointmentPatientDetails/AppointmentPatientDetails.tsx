@@ -47,12 +47,7 @@ interface AppointmentPatientDetailsProps {
 }
 
 export function AppointmentPatientDetails({ appointment }: AppointmentPatientDetailsProps) {
-  const address = [appointment.patientAddress, appointment.patientCity, appointment.patientCountry]
-    .filter((part) => part?.trim())
-    .join(", ");
   const fields: PatientField[] = [
-    { icon: <IdcardOutlined />, label: "Patient ID", value: appointment.patientId },
-    { icon: <EnvironmentOutlined />, label: "Address", value: address },
     { icon: <MedicineBoxOutlined />, label: "Blood type", value: appointment.patientBloodType },
     {
       icon: <UserOutlined />,

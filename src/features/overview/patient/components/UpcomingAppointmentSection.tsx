@@ -84,9 +84,6 @@ export function UpcomingAppointmentSection({
             image={Empty.PRESENTED_IMAGE_SIMPLE}
             description="You have no upcoming appointments."
           />
-          <Button type="primary" onClick={onBook}>
-            Book an appointment
-          </Button>
         </Flex>
       )}
     </UpcomingAppointmentCard>
