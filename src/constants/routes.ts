@@ -9,6 +9,7 @@ export const ROUTES = {
   patientOverview: "/patient/overview",
   patientAppointments: "/patient/appointments",
   patientBookAppointment: "/patient/appointments/book",
+  patientWaitlist: "/patient/waitlist",
   doctor: "/doctor",
   doctorOverview: "/doctor/overview",
   doctorAppointments: "/doctor/appointments",
@@ -23,6 +24,7 @@ export const ROUTES = {
 export const ROUTE_SEGMENTS = {
   overview: "overview",
   appointments: "appointments",
+  waitlist: "waitlist",
   schedule: "schedule",
   availability: "availability",
   timeOff: "time-off",
