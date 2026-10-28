@@ -81,9 +81,7 @@ Open [http://localhost:5173](http://localhost:5173). The root route redirects to
 
 ## End-to-end tests
 
-The Playwright tests in `e2e/` use Chromium to exercise appointment booking and rescheduling against a real Medic API. They do not mock API responses.
-
-Install the browser once after installing project dependencies:
+The Playwright scenarios use Chromium to exercise appointment booking and rescheduling against a real Medic API without mocking API responses. Install Chromium once after installing project dependencies:
 
 ```sh
 pnpm exec playwright install chromium
@@ -101,7 +99,7 @@ E2E_PATIENT_THREE_EMAIL=
 E2E_PATIENT_THREE_PASSWORD=
 ```
 
-Run all scenarios headlessly with `pnpm test:e2e`, or run an individual scenario with `pnpm test:e2e:booking-race` and `pnpm test:e2e:reschedule-conflict`. To watch the browser interactions with slowed actions, use `pnpm demo:booking-race` or `pnpm demo:reschedule-conflict`. Playwright starts Vite on `http://127.0.0.1:5174` and proxies API calls to the configured backend. Results and failure artifacts are written to `test-results/`.
+Run all scenarios with `pnpm test:e2e`. The individual scenarios can be run with `pnpm test:e2e:booking-race`, `pnpm test:e2e:booking-same-patient`, `pnpm test:e2e:booking-different-slots`, and `pnpm test:e2e:reschedule-conflict`. Use the corresponding `pnpm demo:booking-race`, `pnpm demo:booking-same-patient`, `pnpm demo:booking-different-slots`, or `pnpm demo:reschedule-conflict` command to watch the browser interactions. Playwright starts Vite on `http://127.0.0.1:5174` and proxies API calls to the configured backend. Results and failure artifacts are written to `test-results/`.
 
 ## Project structure
 
