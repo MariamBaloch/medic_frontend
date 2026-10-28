@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { AppCard } from "@components/Card";
-import { colors } from "@theme/tokens";
+import { breakpoints, colors } from "@theme/tokens";
 
 export const OverviewSectionsGrid = styled.div`
   display: grid;
@@ -8,7 +8,7 @@ export const OverviewSectionsGrid = styled.div`
   gap: 18px;
   margin-bottom: 18px;
 
-  @media (max-width: 900px) {
+  @media (max-width: ${breakpoints.large}px) {
     grid-template-columns: minmax(0, 1fr);
   }
 `;
@@ -29,7 +29,7 @@ export const DashboardCard = styled(AppCard)`
     padding: 0 20px 18px;
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: ${breakpoints.small}px) {
     .ant-card-head-wrapper {
       align-items: flex-start;
       flex-wrap: wrap;
@@ -74,29 +74,12 @@ export const TodayAppointmentRow = styled.div`
     min-width: 0;
   }
 
-  @media (max-width: 1000px) {
-    grid-template-columns: minmax(0, 0.8fr) minmax(125px, 1fr) auto;
+  @media (max-width: ${breakpoints.large}px) {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
 
-    > :nth-child(3) {
-      grid-column: 1;
-      grid-row: 2;
-    }
-    > :nth-child(4) {
-      grid-column: 3;
-      grid-row: 1 / span 2;
-    }
-  }
-
-  @media (max-width: 560px) {
-    grid-template-columns: minmax(0, 1fr) auto;
-    > :nth-child(2),
-    > :nth-child(3) {
-      grid-column: 1;
-      grid-row: auto;
-    }
-    > :nth-child(4) {
-      grid-column: 2;
-      grid-row: 1 / span 3;
+    > :last-child {
+      justify-self: start;
     }
   }
 `;
@@ -112,6 +95,13 @@ export const OpenSlotRow = styled.div`
   color: ${colors.primary};
   background: #e4f0ed;
   border-radius: 8px;
+
+  @media (max-width: ${breakpoints.large}px) {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2px;
+    padding-block: 8px;
+  }
 
   &::before {
     content: "";
@@ -139,6 +129,10 @@ export const OpenSlotDuration = styled.span`
   color: ${colors.textSecondary};
   font-size: 12px;
   white-space: nowrap;
+
+  @media (max-width: ${breakpoints.large}px) {
+    margin-left: 0;
+  }
 `;
 
 export const DashboardActionGrid = styled.div`
@@ -146,10 +140,7 @@ export const DashboardActionGrid = styled.div`
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
 
-  @media (max-width: 900px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  @media (max-width: 640px) {
+  @media (max-width: ${breakpoints.large}px) {
     grid-template-columns: minmax(0, 1fr);
   }
 `;

@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { AppCard } from "@components/Card";
+import { breakpoints } from "@theme/tokens";
 
 export const ScheduleCalendar = styled(AppCard)`
   min-width: 0;
@@ -8,7 +9,7 @@ export const ScheduleCalendar = styled(AppCard)`
     padding: 18px 20px;
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: ${breakpoints.small}px) {
     .ant-card-body {
       padding: 14px 12px;
     }

@@ -26,3 +26,10 @@ export const colors = {
   errorSurface: "#FFF2F0",
   errorBorder: "#FFCCC7",
 } as const;
+
+export const breakpoints = {
+  small: 600,
+  medium: 1000,
+  large: 1176,
+  extraLarge: 1426,
+} as const;

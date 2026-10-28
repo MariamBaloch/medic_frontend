@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { AppCard } from "@components/Card";
-import { colors } from "@theme/tokens";
+import { breakpoints, colors } from "@theme/tokens";
 import overviewImage from "@assets/MedicOverview.png";
 
 export const OverviewRoot = styled.div`
@@ -51,7 +51,7 @@ export const WelcomeCard = styled(AppCard)`
     padding: 30px 34px;
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: ${breakpoints.small}px) {
     &::before {
       display: none;
     }
@@ -70,7 +70,7 @@ export const DashboardActionCard = styled(AppCard)`
     padding: 20px 22px;
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: ${breakpoints.small}px) {
     .ant-card-body {
       padding: 16px;
     }

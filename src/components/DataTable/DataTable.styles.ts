@@ -1,6 +1,6 @@
 import { Button, Input } from "antd";
 import styled, { css } from "styled-components";
-import { colors } from "@theme/tokens";
+import { breakpoints, colors } from "@theme/tokens";
 import { AppCard } from "@components/Card";
 
 const dataTableStyles = css`
@@ -187,7 +187,7 @@ export const DataTableFilterGrid = styled.div<{ $columns: number; $searchColumnR
         : "repeat(2, minmax(0, 1fr))"};
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: ${breakpoints.small}px) {
     grid-template-columns: minmax(0, 1fr);
   }
 `;

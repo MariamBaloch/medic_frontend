@@ -1,7 +1,7 @@
 import { Layout } from "antd";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { colors } from "@theme/tokens";
+import { breakpoints, colors } from "@theme/tokens";
 
 export const AppLayout = styled(Layout)`
   flex: 1 1 auto;
@@ -30,7 +30,6 @@ export const AppSider = styled(Layout.Sider)`
     border-inline-end: 0;
     background: transparent;
   }
-
 `;
 
 export const BrandBlock = styled.div<{ $collapsed: boolean }>`
@@ -130,7 +129,7 @@ export const AppHeader = styled(Layout.Header)`
   background: ${colors.surface};
   border-bottom: 1px solid ${colors.border};
 
-  @media (max-width: 600px) {
+  @media (max-width: ${breakpoints.small}px) {
     padding: 0 16px;
   }
 `;
@@ -197,7 +196,7 @@ export const AppContent = styled(Layout.Content)`
   padding: 28px;
   background: ${colors.background};
 
-  @media (max-width: 600px) {
+  @media (max-width: ${breakpoints.small}px) {
     padding: 18px 14px;
   }
 `;
@@ -208,7 +207,7 @@ export const AppFooter = styled(Layout.Footer)`
   background: ${colors.background};
   font-size: 12px;
 
-  @media (max-width: 600px) {
+  @media (max-width: ${breakpoints.small}px) {
     padding: 12px 14px;
   }
 `;

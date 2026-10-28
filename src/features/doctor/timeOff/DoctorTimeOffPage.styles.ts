@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { AppCard } from "@components/Card";
-import { colors } from "@theme/tokens";
+import { breakpoints, colors } from "@theme/tokens";
 
 export const TimeOffPageRoot = styled.div`
   width: 100%;
@@ -9,7 +9,7 @@ export const TimeOffPageRoot = styled.div`
   flex-direction: column;
   gap: 18px;
 
-  @media (max-width: 600px) {
+  @media (max-width: ${breakpoints.small}px) {
     min-height: calc(100dvh - 112px);
   }
 `;

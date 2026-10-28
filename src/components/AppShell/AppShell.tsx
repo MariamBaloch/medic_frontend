@@ -21,7 +21,7 @@ import { PersonAvatar } from "@components/PersonAvatar";
 import { getAppRoute, ROUTES, ROUTE_SEGMENTS } from "@constants/routes";
 import { useCurrentUserQuery, useLogoutMutation } from "@features/auth/api/authQueries";
 import { useAuthStore } from "@stores/authStore";
-import { colors } from "@theme/tokens";
+import { breakpoints, colors } from "@theme/tokens";
 import {
   BrandBlock,
   BrandCopy,
@@ -62,7 +62,11 @@ export function AppShell({
   const setUser = useAuthStore((state) => state.setUser);
   const currentUserQuery = useCurrentUserQuery();
   const logoutMutation = useLogoutMutation();
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia(`(max-width: ${breakpoints.extraLarge}px)`).matches,
+  );
   const profile = currentUserQuery.data ?? user;
   const role = profile?.role ?? "PATIENT";
   const defaultNavigation: AppShellNavigationItem[] = [
@@ -166,6 +170,15 @@ export function AppShell({
     }
   }, [currentUserQuery.data, setUser]);
 
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(`(max-width: ${breakpoints.extraLarge}px)`);
+    const syncSidebarWithViewport = () => setCollapsed(mediaQuery.matches);
+
+    syncSidebarWithViewport();
+    mediaQuery.addEventListener("change", syncSidebarWithViewport);
+    return () => mediaQuery.removeEventListener("change", syncSidebarWithViewport);
+  }, []);
+
   const handleMenuClick: MenuProps["onClick"] = ({ key }) => {
     const selectedItem = activeNavigation.find((item) => item.key === key);
     if (selectedItem?.path) navigate(selectedItem.path);
@@ -184,7 +197,6 @@ export function AppShell({
     <AppLayout hasSider>
       <AppSider
         width={300}
-        breakpoint="md"
         collapsedWidth={72}
         collapsed={collapsed}
         onCollapse={setCollapsed}

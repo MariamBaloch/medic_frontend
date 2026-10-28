@@ -45,7 +45,7 @@ export function AppointmentColumns({
       title: "Date & time",
       width: "16%",
       render: (_value, appointment) => (
-        <Space orientation="vertical" size={1}>
+        <Space orientation="vertical" size={1} style={{ minWidth: 150 }}>
           <Typography.Text strong>
             {formatAppointmentDate(appointment.appointmentDate)}
           </Typography.Text>

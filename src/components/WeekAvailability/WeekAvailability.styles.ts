@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Button, Flex, Typography } from "antd";
-import { colors } from "@theme/tokens";
+import { breakpoints, colors } from "@theme/tokens";
 
 export const CalendarNavigation = styled.div`
   display: grid;
@@ -9,7 +9,7 @@ export const CalendarNavigation = styled.div`
   gap: 12px;
   margin: 24px 0 16px;
 
-  @media (max-width: 600px) {
+  @media (max-width: ${breakpoints.small}px) {
     grid-template-columns: auto 1fr auto;
     gap: 8px;
   }

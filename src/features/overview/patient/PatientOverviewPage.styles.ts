@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { AppCard } from "@components/Card";
-import { colors } from "@theme/tokens";
+import { breakpoints, colors } from "@theme/tokens";
 
 export const DashboardCard = styled(AppCard)`
   min-width: 0;
@@ -20,7 +20,7 @@ export const DashboardCard = styled(AppCard)`
     padding: 0 20px 18px;
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: ${breakpoints.small}px) {
     .ant-card-head-wrapper {
       align-items: flex-start;
       flex-wrap: wrap;
@@ -48,7 +48,7 @@ export const SecondSectionGrid = styled.div`
   gap: 18px;
   margin-bottom: 18px;
 
-  @media (max-width: 900px) {
+  @media (max-width: ${breakpoints.large}px) {
     grid-template-columns: minmax(0, 1fr);
   }
 `;
@@ -58,7 +58,7 @@ export const UpcomingAppointmentCard = styled(DashboardCard)`
     padding: 22px 24px;
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: ${breakpoints.small}px) {
     .ant-card-body {
       padding: 16px;
     }
@@ -92,7 +92,7 @@ export const RecentVisitRow = styled.div`
     border-bottom: 0;
   }
 
-  @media (max-width: 1000px) {
+  @media (max-width: ${breakpoints.medium}px) {
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: start;
 
@@ -124,7 +124,7 @@ export const DashboardActionGrid = styled.div`
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
 
-  @media (max-width: 640px) {
+  @media (max-width: ${breakpoints.large}px) {
     grid-template-columns: minmax(0, 1fr);
   }
 `;

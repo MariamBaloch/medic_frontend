@@ -3,9 +3,8 @@ import styled from "styled-components";
 import { colors } from "@theme/tokens";
 
 export const ApiAlertRegion = styled.div`
-  position: sticky;
-  top: 0;
-  z-index: 1200;
+  position: relative;
+  width: 100%;
   margin-bottom: 20px;
 
   &:empty {
