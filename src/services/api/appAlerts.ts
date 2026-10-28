@@ -42,7 +42,7 @@ export function showApiAlert({
   currentAlertKey = key;
   if (autoDismissTimeout) clearTimeout(autoDismissTimeout);
   const alertId = currentAlert.id;
-  autoDismissTimeout = setTimeout(() => dismissApiAlert(alertId), 10_000);
+  autoDismissTimeout = setTimeout(() => dismissApiAlert(alertId), 15_000);
   publish();
 }
 

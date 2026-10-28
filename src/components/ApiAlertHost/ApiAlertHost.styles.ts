@@ -16,30 +16,8 @@ export const ApiAlertRegion = styled.div`
 export const StyledApiAlert = styled(Alert)`
   && {
     padding: 14px;
-    border: 1px solid ${colors.border};
     border-radius: 8px;
-    background: ${colors.background};
     font-size: 13px !important;
-  }
-
-  &&[data-alert-type="success"] {
-    border-color: ${colors.border};
-    background: white;
-  }
-
-  &&[data-alert-type="info"] {
-    border-color: ${colors.border};
-    background: ${colors.backgroundSoft};
-  }
-
-  &&[data-alert-type="warning"] {
-    border-color: ${colors.warning};
-    background: ${colors.backgroundSoft};
-  }
-
-  &&[data-alert-type="error"] {
-    border-color: ${colors.errorBorder};
-    background: ${colors.errorSurface};
   }
 
   &[data-alert-type="success"] .ant-alert-icon,
