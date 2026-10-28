@@ -22,7 +22,20 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      "/uploads": "http://localhost:8080",
+      "/api": {
+        target: process.env.E2E_API_BASE_URL || "http://localhost:8080",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ""),
+        configure: (proxy) => {
+          // The browser talks to this Vite origin. Forward the API call server-to-server
+          // without carrying the browser's Origin header to the backend.
+          proxy.on("proxyReq", (proxyRequest) => proxyRequest.removeHeader("origin"));
+        },
+      },
+      "/uploads": {
+        target: process.env.E2E_API_BASE_URL || "http://localhost:8080",
+        changeOrigin: true,
+      },
     },
   },
 });
