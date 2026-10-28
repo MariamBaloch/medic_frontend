@@ -11,10 +11,12 @@
     "format:check": "prettier --check .",
     "test:e2e": "playwright test",
     "test:e2e:booking-same-patient": "playwright test e2e/appointment-same-patient-race.spec.ts",
+    "test:e2e:booking-different-slots": "playwright test e2e/appointment-different-slots-race.spec.ts",
     "test:e2e:booking-race": "playwright test e2e/appointment-race-demo.spec.ts --grep=\"two real patients submit the same appointment slot at once\"",
     "test:e2e:reschedule-conflict": "playwright test e2e/appointment-reschedule-conflict.spec.ts",
     "demo:booking-race": "playwright test --config=playwright.demo.config.ts --headed e2e/appointment-race-demo.spec.ts --grep=\"two real patients submit the same appointment slot at once\"",
     "demo:booking-same-patient": "playwright test --config=playwright.demo.config.ts --headed e2e/appointment-same-patient-race.spec.ts",
+    "demo:booking-different-slots": "playwright test --config=playwright.demo.config.ts --headed e2e/appointment-different-slots-race.spec.ts",
     "demo:reschedule-conflict": "playwright test --config=playwright.demo.config.ts --headed e2e/appointment-reschedule-conflict.spec.ts",
     "preview": "vite preview"
   },

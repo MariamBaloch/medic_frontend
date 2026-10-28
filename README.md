@@ -99,7 +99,7 @@ E2E_PATIENT_THREE_EMAIL=
 E2E_PATIENT_THREE_PASSWORD=
 ```
 
-Run all scenarios with `pnpm test:e2e`. The individual scenarios can be run with `pnpm test:e2e:booking-race`, `pnpm test:e2e:booking-same-patient`, and `pnpm test:e2e:reschedule-conflict`. Use `pnpm demo:booking-race`, `pnpm demo:booking-same-patient`, or `pnpm demo:reschedule-conflict` to watch the browser interactions. Playwright starts Vite on `http://127.0.0.1:5174` and proxies API calls to the configured backend. Results and failure artifacts are written to `test-results/`.
+Run all scenarios with `pnpm test:e2e`. The individual scenarios can be run with `pnpm test:e2e:booking-race`, `pnpm test:e2e:booking-same-patient`, `pnpm test:e2e:booking-different-slots`, and `pnpm test:e2e:reschedule-conflict`. Use the corresponding `pnpm demo:booking-race`, `pnpm demo:booking-same-patient`, `pnpm demo:booking-different-slots`, or `pnpm demo:reschedule-conflict` command to watch the browser interactions. Playwright starts Vite on `http://127.0.0.1:5174` and proxies API calls to the configured backend. Results and failure artifacts are written to `test-results/`.
 
 ## Project structure
 
