@@ -1,5 +1,5 @@
 import { createGlobalStyle, styled } from "styled-components";
-import { colors } from "@theme/tokens";
+import { breakpoints, colors } from "@theme/tokens";
 
 export const GlobalStyle = createGlobalStyle`
   *, *::before, *::after {
@@ -37,7 +37,7 @@ export const LoginPageShell = styled.main`
       ${colors.backgroundTint} 100%
     );
 
-  @media (max-width: 980px) {
+  @media (max-width: ${breakpoints.medium}px) {
     grid-template-columns: 1fr;
   }
 `;
@@ -48,6 +48,16 @@ export const PageColumn = styled.section`
   display: flex;
   flex-direction: column;
   gap: 56px;
+
+  @media (max-width: ${breakpoints.medium}px) {
+    min-height: auto;
+    padding: 28px clamp(24px, 5vw, 56px) 0;
+    gap: 0;
+  }
+
+  @media (max-width: ${breakpoints.small}px) {
+    padding: 18px 16px 0;
+  }
 `;
 
 export const TopBar = styled.header`
@@ -55,6 +65,10 @@ export const TopBar = styled.header`
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+
+  @media (max-width: ${breakpoints.small}px) {
+    gap: 10px;
+  }
 `;
 
 export const Brand = styled.div`
@@ -89,6 +103,12 @@ export const SecurePill = styled.div`
   font-size: 13px;
   font-weight: 700;
 
+  @media (max-width: ${breakpoints.small}px) {
+    padding: 8px 10px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
   &::before {
     content: "▣";
     margin-right: 8px;
@@ -113,6 +133,10 @@ export const HeroPanel = styled.div`
     ),
     ${colors.surface};
   box-shadow: 0 28px 70px color-mix(in srgb, ${colors.sidebar} 9%, transparent);
+
+  @media (max-width: ${breakpoints.medium}px) {
+    display: none;
+  }
 `;
 
 export const AmbientCircle = styled.div<{ $position: "top" | "bottom" }>`
@@ -150,6 +174,15 @@ export const HeroTitle = styled.h1`
   font-size: clamp(42px, 6vw, 76px);
   line-height: 0.95;
   letter-spacing: -0.055em;
+
+  @media (max-width: ${breakpoints.medium}px) {
+    font-size: clamp(38px, 6vw, 58px);
+  }
+
+  @media (max-width: ${breakpoints.small}px) {
+    font-size: clamp(32px, 8vw, 40px);
+    line-height: 1;
+  }
 `;
 
 export const HeroSubtitle = styled.p`
@@ -158,6 +191,12 @@ export const HeroSubtitle = styled.p`
   color: ${colors.textSecondary};
   font-size: clamp(16px, 1.5vw, 19px);
   line-height: 1.7;
+
+  @media (max-width: ${breakpoints.small}px) {
+    margin-top: 14px;
+    font-size: 13px;
+    line-height: 1.55;
+  }
 `;
 
 export const FeatureGrid = styled.div`
@@ -167,8 +206,14 @@ export const FeatureGrid = styled.div`
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
 
-  @media (max-width: 760px) {
-    grid-template-columns: 1fr;
+  @media (max-width: ${breakpoints.medium}px) {
+    margin-top: 26px;
+    gap: 10px;
+  }
+
+  @media (max-width: ${breakpoints.small}px) {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    margin-top: 20px;
   }
 `;
 
@@ -182,6 +227,13 @@ export const FeatureCard = styled.div`
   font-size: 14px;
   font-weight: 700;
   line-height: 1.45;
+
+  @media (max-width: ${breakpoints.small}px) {
+    min-height: 0;
+    padding: 11px;
+    border-radius: 14px;
+    font-size: 11px;
+  }
 
   &::before {
     content: "✓";
@@ -224,5 +276,22 @@ export const FormPanel = styled.aside`
     bottom: -120px;
     border-radius: 999px;
     background: color-mix(in srgb, ${colors.teal} 18%, transparent);
+  }
+
+  @media (max-width: ${breakpoints.medium}px) {
+    min-height: calc(100svh - 100px);
+    padding: 20px 24px 40px;
+    overflow: visible;
+    background: transparent;
+
+    &::before,
+    &::after {
+      display: none;
+    }
+  }
+
+  @media (max-width: ${breakpoints.small}px) {
+    min-height: calc(100svh - 76px);
+    padding: 16px 16px 32px;
   }
 `;
