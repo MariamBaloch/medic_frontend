@@ -18,7 +18,7 @@ The frontend connects to the Medic API for authentication and application data. 
 
 - **React 19** and **React DOM** for the user interface
 - **TypeScript** for static typing
-- **Vite 8** for development and production builds
+- **Vite 8** for development and builds
 - **Ant Design 6** and **Ant Design Icons** for UI components and icons
 - **styled-components** for component styles and theming
 - **React Router 7** for client-side routing
@@ -35,6 +35,7 @@ The frontend connects to the Medic API for authentication and application data. 
 - **Prettier** for formatting
 - **Babel React Compiler** with the Vite React plugin
 - **pnpm** for dependency management
+- **Playwright** for browser-based end-to-end tests
 
 ## Requirements
 
@@ -71,13 +72,34 @@ Open [http://localhost:5173](http://localhost:5173). The root route redirects to
 | Command             | Description                                                      |
 | ------------------- | ---------------------------------------------------------------- |
 | `pnpm dev`          | Start the Vite development server.                               |
-| `pnpm build`        | Type-check the project and create a production build in `dist/`. |
-| `pnpm preview`      | Serve the production build locally. Run `pnpm build` first.      |
+| `pnpm build`        | Type-check the project and create build files in `dist/`.        |
+| `pnpm preview`      | Serve the built app locally. Run `pnpm build` first.             |
 | `pnpm lint`         | Run ESLint across the project.                                   |
 | `pnpm format`       | Format files with Prettier.                                      |
 | `pnpm format:check` | Check formatting without changing files.                         |
+| `pnpm test:e2e`     | Run the Playwright end-to-end scenarios headlessly.              |
 
-For a production build, set `VITE_API_BASE_URL` to the API address that users' browsers can reach before running `pnpm build`.
+## End-to-end tests
+
+The Playwright scenarios use Chromium to exercise appointment booking and rescheduling against a real Medic API without mocking API responses. Install Chromium once after installing project dependencies:
+
+```sh
+pnpm exec playwright install chromium
+```
+
+Copy `.env.e2e.example` to `.env.e2e` and fill in the API URL and patient credentials:
+
+```env
+E2E_API_BASE_URL=http://localhost:8080
+E2E_PATIENT_ONE_EMAIL=
+E2E_PATIENT_ONE_PASSWORD=
+E2E_PATIENT_TWO_EMAIL=
+E2E_PATIENT_TWO_PASSWORD=
+E2E_PATIENT_THREE_EMAIL=
+E2E_PATIENT_THREE_PASSWORD=
+```
+
+Run all scenarios with `pnpm test:e2e`. The individual scenarios can be run with `pnpm test:e2e:booking-race`, `pnpm test:e2e:booking-same-patient`, and `pnpm test:e2e:reschedule-conflict`. Use `pnpm demo:booking-race`, `pnpm demo:booking-same-patient`, or `pnpm demo:reschedule-conflict` to watch the browser interactions. Playwright starts Vite on `http://127.0.0.1:5174` and proxies API calls to the configured backend. Results and failure artifacts are written to `test-results/`.
 
 ## Project structure
 
