@@ -7,6 +7,7 @@ import type {
   AppointmentRescheduleRequest,
 } from "@features/appointment/api/appointment.schemas";
 import { getAppointment } from "@features/appointment/api/appointmentsApi";
+import { doctorAvailabilityKeys } from "@features/booking/api/doctorAvailabilityQueries";
 import {
   bookPatientAppointment,
   cancelPatientAppointment,
@@ -35,7 +36,11 @@ export function useCancelPatientAppointmentMutation(appointmentId: number) {
   return useMutation({
     mutationFn: (request: AppointmentCancellationRequest) =>
       cancelPatientAppointment(appointmentId, request),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: patientAppointmentKeys.all }),
+    onSuccess: () =>
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: patientAppointmentKeys.all }),
+        queryClient.invalidateQueries({ queryKey: doctorAvailabilityKeys.all }),
+      ]),
   });
 }
 
@@ -44,7 +49,11 @@ export function useReschedulePatientAppointmentMutation(appointmentId: number) {
   return useMutation({
     mutationFn: (request: AppointmentRescheduleRequest) =>
       reschedulePatientAppointment(appointmentId, request),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: patientAppointmentKeys.all }),
+    onSuccess: () =>
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: patientAppointmentKeys.all }),
+        queryClient.invalidateQueries({ queryKey: doctorAvailabilityKeys.all }),
+      ]),
   });
 }
 
@@ -66,6 +75,9 @@ export function usePatientAppointmentQuery(appointmentId: number | null) {
     queryFn: () => getAppointment(appointmentId ?? 0),
     meta: { notificationTitle: "Could not load appointment details" },
     enabled: isAuthenticated && appointmentId !== null,
+    staleTime: 0,
+    refetchOnMount: "always",
+    gcTime: 0,
   });
 }
 

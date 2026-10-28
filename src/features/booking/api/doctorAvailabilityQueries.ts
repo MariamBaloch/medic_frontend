@@ -8,12 +8,20 @@ export const doctorAvailabilityKeys = {
     [...doctorAvailabilityKeys.all, doctorId, from, to] as const,
 };
 
-export function useDoctorAvailabilityQuery(doctorId: number | null, from: string, to: string) {
+export function useDoctorAvailabilityQuery(
+  doctorId: number | null,
+  from: string,
+  to: string,
+  options: { refetchOnOpen?: boolean } = {},
+) {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   return useQuery({
     queryKey: doctorAvailabilityKeys.list(doctorId, from, to),
     meta: { notificationTitle: "Could not load doctor availability" },
+    staleTime: options.refetchOnOpen ? 0 : undefined,
+    refetchOnMount: options.refetchOnOpen ? "always" : undefined,
+    gcTime: options.refetchOnOpen ? 0 : undefined,
     queryFn: () => {
       if (doctorId === null) {
         throw new Error("A doctor must be selected to load availability.");

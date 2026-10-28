@@ -1,4 +1,5 @@
 import { Button, Flex, Modal, Spin } from "antd";
+import { isAxiosError } from "axios";
 import dayjs from "dayjs";
 import { useEffect, useMemo, useState } from "react";
 import type { Appointment } from "@features/appointment/api/appointment.schemas";
@@ -16,7 +17,7 @@ interface RescheduleAppointmentDialogProps {
   appointment: Appointment | null;
   open: boolean;
   onClose: () => void;
-  onRescheduled: () => void;
+  onCloseAppointment: () => void;
 }
 
 function getCurrentWeekStart(): string {
@@ -62,7 +63,7 @@ export function RescheduleAppointmentDialog({
   appointment,
   open,
   onClose,
-  onRescheduled,
+  onCloseAppointment,
 }: RescheduleAppointmentDialogProps) {
   const [weekStartDate, setWeekStartDate] = useState(getCurrentWeekStart);
   const [selectedTime, setSelectedTime] = useState<SelectedAppointmentTime | null>(null);
@@ -75,11 +76,14 @@ export function RescheduleAppointmentDialog({
     open ? (appointment?.doctorId ?? null) : null,
     weekStartDate,
     weekEndDate,
+    { refetchOnOpen: true },
   );
   const rescheduleMutation = useReschedulePatientAppointmentMutation(appointment?.id ?? 0);
 
   useEffect(() => {
     if (open) {
+      // Restore the dialog's calendar position from the appointment when it opens.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setWeekStartDate(
         currentSelection ? getWeekStart(currentSelection.date) : getCurrentWeekStart(),
       );
@@ -138,6 +142,7 @@ export function RescheduleAppointmentDialog({
     currentSelection?.date === selectedTime?.date && currentSelection?.time === selectedTime?.time;
 
   const handleKeepCurrent = () => {
+    rescheduleMutation.reset();
     if (currentSelection) {
       setWeekStartDate(getWeekStart(currentSelection.date));
       setSelectedTime(currentSelection);
@@ -161,7 +166,12 @@ export function RescheduleAppointmentDialog({
             message: "Appointment rescheduled",
             description: `Your appointment with ${updatedAppointment.doctorName} has been rescheduled to ${updatedAppointment.appointmentDate} at ${updatedAppointment.startTime}.`,
           });
-          onRescheduled();
+          onCloseAppointment();
+        },
+        onError: (error) => {
+          if (isAxiosError(error) && error.response?.status === 409) {
+            onCloseAppointment();
+          }
         },
       },
     );
@@ -171,7 +181,10 @@ export function RescheduleAppointmentDialog({
     <Modal
       title={null}
       open={open}
-      onCancel={onClose}
+      onCancel={() => {
+        rescheduleMutation.reset();
+        onClose();
+      }}
       width="min(1600px, calc(100vw - 24px))"
       footer={
         <ModalActions>
@@ -195,16 +208,21 @@ export function RescheduleAppointmentDialog({
           title="Reschedule your appointment"
           description={`Choose a new available time with Dr. ${appointment?.doctorName}.`}
         />
-        <Spin spinning={availabilityQuery.isLoading || availabilityQuery.isFetching}>
+        {availabilityQuery.isLoading || availabilityQuery.isFetching ? (
+          <Spin />
+        ) : (
           <WeekAvailability
             availableSlots={availableSlots}
             existingBookings={otherBookings}
             weekStartDate={weekStartDate}
             onWeekChange={setWeekStartDate}
             selectedTime={selectedTime}
-            onSelectTime={setSelectedTime}
+            onSelectTime={(selection) => {
+              rescheduleMutation.reset();
+              setSelectedTime(selection);
+            }}
           />
-        </Spin>
+        )}
       </Flex>
     </Modal>
   );

@@ -1,18 +1,18 @@
 import type { AxiosError, AxiosInstance } from "axios";
 import { ROUTES } from "@constants/routes";
 import { showApiAlert } from "@services/api/appAlerts";
-import { getApiErrorMessage } from "@services/api/errors";
+import { getApiErrorAlertContent } from "@services/api/errors";
 import { useAuthStore } from "@stores/authStore";
 
 export function setupResponseInterceptor(client: AxiosInstance): void {
   client.interceptors.response.use(
     (response) => response,
     (error: AxiosError) => {
-      const message = getApiErrorMessage(error);
+      const alertContent = getApiErrorAlertContent(error);
       const requestPath = error.config?.url?.split("?")[0] ?? "unknown";
       showApiAlert({
         type: "error",
-        message,
+        ...alertContent,
         key: `api-error-${error.config?.method ?? "request"}-${requestPath}-${error.response?.status ?? "network"}`,
       });
 

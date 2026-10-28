@@ -87,6 +87,12 @@ export function AppointmentDetailsModal({
     );
   };
 
+  const handleOpenReschedule = async () => {
+    const result = await appointmentQuery.refetch();
+    if (result.isError || !result.data) return;
+    setIsRescheduleDialogOpen(true);
+  };
+
   const canReschedule =
     fullAppointment?.status === "BOOKED" &&
     isFutureAppointment(fullAppointment.appointmentDate, fullAppointment.startTime);
@@ -97,7 +103,8 @@ export function AppointmentDetailsModal({
           <Button
             color="primary"
             variant="outlined"
-            onClick={() => setIsRescheduleDialogOpen(true)}
+            loading={appointmentQuery.isFetching}
+            onClick={handleOpenReschedule}
           >
             Reschedule appointment
           </Button>
@@ -118,7 +125,7 @@ export function AppointmentDetailsModal({
         width="min(1100px, calc(100vw - 24px))"
         footer={modalFooter}
       >
-        {appointmentQuery.isLoading ? (
+        {appointmentQuery.isLoading || appointmentQuery.isFetching ? (
           <LoadingContainer>
             <Spin />
           </LoadingContainer>
@@ -172,7 +179,7 @@ export function AppointmentDetailsModal({
         appointment={fullAppointment}
         open={isRescheduleDialogOpen}
         onClose={() => setIsRescheduleDialogOpen(false)}
-        onRescheduled={closeDetails}
+        onCloseAppointment={closeDetails}
       />
     </>
   );

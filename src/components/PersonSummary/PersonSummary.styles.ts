@@ -10,7 +10,7 @@ export const PersonSummaryName = styled.span<{ $fontSize?: number }>`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  ${({ $fontSize }) => ($fontSize ? `font-size: ${$fontSize}px;` : "")}
+  ${({ $fontSize }) => ($fontSize ? `font-size: ${$fontSize}px;` : `font-size: 12px;`)}
 `;
 
 export const PersonSummarySpecialization = styled.span`
