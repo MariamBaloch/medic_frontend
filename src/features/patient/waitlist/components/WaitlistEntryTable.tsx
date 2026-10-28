@@ -96,8 +96,10 @@ export function WaitlistEntryTable({
         width: "20%",
         render: (_value, entry) => (
           <Space orientation="vertical" size={2}>
-            <Typography.Text strong>{formatAppointmentDate(entry.date)}</Typography.Text>
-            <Typography.Text type="secondary">
+            <Typography.Text style={{ fontSize: 12 }} strong>
+              {formatAppointmentDate(entry.date)}
+            </Typography.Text>
+            <Typography.Text type="secondary" style={{ fontSize: 11 }}>
               {entry.endTime
                 ? formatAppointmentTimeRange(entry.startTime, entry.endTime)
                 : formatTime(entry.startTime)}
