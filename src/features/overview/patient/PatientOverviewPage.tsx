@@ -95,6 +95,8 @@ export function PatientOverviewPage() {
           action={
             <Button
               type="primary"
+              variant="outlined"
+              style={{ height: 10 }}
               icon={<CalendarOutlined />}
               onClick={() => navigate(ROUTES.patientBookAppointment)}
             >

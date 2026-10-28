@@ -69,7 +69,7 @@ export function UpcomingAppointmentSection({
             </AppointmentDetail>
           </Flex>
           <Button
-            style={{ marginTop: 10 }}
+            style={{ marginTop: 20, height: 40 }}
             type="primary"
             block
             onClick={() => onManage(appointment)}
