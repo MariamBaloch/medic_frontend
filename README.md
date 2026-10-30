@@ -118,4 +118,4 @@ Feature-specific API clients, query hooks, schemas, components, and pages are ge
 
 ## AI assistance
 
-AI tools were used to help create and refine parts of this project, including implementation and documentation. Project contributors remain responsible for reviewing, validating, and maintaining the code.
+AI tools were used to help create and refine parts of this project, including implementation and documentation. Project owner remain responsible for reviewing, validating, and maintaining the code.
