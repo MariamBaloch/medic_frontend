@@ -26,15 +26,17 @@ export function DoctorSchedulePage() {
   const calendarQuery = useDoctorScheduleCalendarQuery(weekStartDate, weekEndDate);
   const statusesQuery = useAppointmentStatusesQuery();
   const statuses = statusesQuery.data ?? [];
+  const upcomingAppointments =
+    calendarQuery.data?.appointments.filter(({ status }) => status === "BOOKED") ?? [];
 
   const openAppointment = useCallback(
     (appointmentId: number) => {
-      const appointment = calendarQuery.data?.appointments.find(({ id }) => id === appointmentId);
+      const appointment = upcomingAppointments.find(({ id }) => id === appointmentId);
       if (!appointment) return;
       setSelectedAppointment(appointment);
       setSelectedAppointmentId(appointment.id);
     },
-    [calendarQuery.data?.appointments],
+    [upcomingAppointments],
   );
 
   return (
@@ -69,7 +71,7 @@ export function DoctorSchedulePage() {
             allowPastWeeks
             mode="doctor"
             availableSlots={calendarQuery.data?.availableSlots ?? []}
-            existingBookings={calendarQuery.data?.appointments ?? []}
+            existingBookings={upcomingAppointments}
             weekStartDate={weekStartDate}
             onWeekChange={setWeekStartDate}
             onAppointmentClick={openAppointment}

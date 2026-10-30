@@ -12,6 +12,15 @@ import {
 } from "./availabilityApi";
 import type { AvailabilityExceptionRequest, AvailabilityRuleRequest } from "./availability.schemas";
 
+function invalidateAvailabilityDependentQueries(queryClient: ReturnType<typeof useQueryClient>) {
+  return Promise.all([
+    queryClient.invalidateQueries({ queryKey: availabilityKeys.all, refetchType: "all" }),
+    queryClient.invalidateQueries({ queryKey: ["doctor", "schedule"], refetchType: "all" }),
+    queryClient.invalidateQueries({ queryKey: ["doctor", "appointments"], refetchType: "all" }),
+    queryClient.invalidateQueries({ queryKey: ["patient", "doctor-availability"], refetchType: "all" }),
+  ]);
+}
+
 export const availabilityKeys = {
   all: ["doctor", "availability"] as const,
   rules: () => [...availabilityKeys.all, "rules"] as const,
@@ -42,7 +51,7 @@ export function useCreateAvailabilityRuleMutation() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (request: AvailabilityRuleRequest) => createAvailabilityRule(request),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: availabilityKeys.rules() }),
+    onSuccess: () => invalidateAvailabilityDependentQueries(queryClient),
   });
 }
 
@@ -51,7 +60,7 @@ export function useUpdateAvailabilityRuleMutation() {
   return useMutation({
     mutationFn: ({ id, request }: { id: number; request: AvailabilityRuleRequest }) =>
       updateAvailabilityRule(id, request),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: availabilityKeys.rules() }),
+    onSuccess: () => invalidateAvailabilityDependentQueries(queryClient),
   });
 }
 
@@ -59,7 +68,7 @@ export function useDeleteAvailabilityRuleMutation() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: deleteAvailabilityRule,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: availabilityKeys.rules() }),
+    onSuccess: () => invalidateAvailabilityDependentQueries(queryClient),
   });
 }
 
@@ -67,7 +76,7 @@ export function useCreateAvailabilityExceptionMutation() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (request: AvailabilityExceptionRequest) => createAvailabilityException(request),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: availabilityKeys.exceptions() }),
+    onSuccess: () => invalidateAvailabilityDependentQueries(queryClient),
   });
 }
 
@@ -76,7 +85,7 @@ export function useUpdateAvailabilityExceptionMutation() {
   return useMutation({
     mutationFn: ({ id, request }: { id: number; request: AvailabilityExceptionRequest }) =>
       updateAvailabilityException(id, request),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: availabilityKeys.exceptions() }),
+    onSuccess: () => invalidateAvailabilityDependentQueries(queryClient),
   });
 }
 
@@ -84,6 +93,6 @@ export function useDeleteAvailabilityExceptionMutation() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: deleteAvailabilityException,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: availabilityKeys.exceptions() }),
+    onSuccess: () => invalidateAvailabilityDependentQueries(queryClient),
   });
 }
