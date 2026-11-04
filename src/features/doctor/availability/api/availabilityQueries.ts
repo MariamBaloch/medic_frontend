@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "@stores/authStore";
+import { doctorScheduleKeys } from "../../schedule/api/scheduleQueries";
 import {
   createAvailabilityException,
   createAvailabilityRule,
@@ -42,7 +43,11 @@ export function useCreateAvailabilityRuleMutation() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (request: AvailabilityRuleRequest) => createAvailabilityRule(request),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: availabilityKeys.rules() }),
+    onSuccess: () =>
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: availabilityKeys.rules() }),
+        queryClient.invalidateQueries({ queryKey: doctorScheduleKeys.all }),
+      ]),
   });
 }
 
@@ -51,7 +56,11 @@ export function useUpdateAvailabilityRuleMutation() {
   return useMutation({
     mutationFn: ({ id, request }: { id: number; request: AvailabilityRuleRequest }) =>
       updateAvailabilityRule(id, request),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: availabilityKeys.rules() }),
+    onSuccess: () =>
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: availabilityKeys.rules() }),
+        queryClient.invalidateQueries({ queryKey: doctorScheduleKeys.all }),
+      ]),
   });
 }
 
@@ -59,7 +68,11 @@ export function useDeleteAvailabilityRuleMutation() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: deleteAvailabilityRule,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: availabilityKeys.rules() }),
+    onSuccess: () =>
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: availabilityKeys.rules() }),
+        queryClient.invalidateQueries({ queryKey: doctorScheduleKeys.all }),
+      ]),
   });
 }
 
@@ -67,7 +80,11 @@ export function useCreateAvailabilityExceptionMutation() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (request: AvailabilityExceptionRequest) => createAvailabilityException(request),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: availabilityKeys.exceptions() }),
+    onSuccess: () =>
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: availabilityKeys.exceptions() }),
+        queryClient.invalidateQueries({ queryKey: doctorScheduleKeys.all }),
+      ]),
   });
 }
 
@@ -76,7 +93,11 @@ export function useUpdateAvailabilityExceptionMutation() {
   return useMutation({
     mutationFn: ({ id, request }: { id: number; request: AvailabilityExceptionRequest }) =>
       updateAvailabilityException(id, request),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: availabilityKeys.exceptions() }),
+    onSuccess: () =>
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: availabilityKeys.exceptions() }),
+        queryClient.invalidateQueries({ queryKey: doctorScheduleKeys.all }),
+      ]),
   });
 }
 
@@ -84,6 +105,10 @@ export function useDeleteAvailabilityExceptionMutation() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: deleteAvailabilityException,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: availabilityKeys.exceptions() }),
+    onSuccess: () =>
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: availabilityKeys.exceptions() }),
+        queryClient.invalidateQueries({ queryKey: doctorScheduleKeys.all }),
+      ]),
   });
 }
