@@ -1,14 +1,14 @@
 import styled from "styled-components";
-import { colors } from "@theme/tokens";
+import { colors, statusColors } from "@theme/tokens";
 
 export type StatusPillTone = "success" | "completed" | "warning" | "error" | "neutral";
 
 const toneColor: Record<StatusPillTone, string> = {
-  success: colors.success,
-  completed: colors.completed,
-  warning: colors.warning,
-  error: colors.error,
-  neutral: colors.textSecondary,
+  success: statusColors.success,
+  completed: statusColors.completed,
+  warning: statusColors.warning,
+  error: statusColors.error,
+  neutral: statusColors.neutral,
 };
 
 export const StyledStatusPill = styled.span<{

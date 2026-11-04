@@ -33,3 +33,11 @@ export const breakpoints = {
   large: 1176,
   extraLarge: 1426,
 } as const;
+
+export const statusColors = {
+  success: "#3F7D65",     
+  completed: "#647C96",   
+  warning: "#B88746",    
+  error: "#B85C5C",       
+  neutral: "#84918E",     
+} as const;
