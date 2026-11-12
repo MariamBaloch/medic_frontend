@@ -41,7 +41,7 @@ export function ChooseDoctorStep({ selectedDoctorId, onSelectDoctor }: ChooseDoc
       label: "Specialization",
       type: "select",
       options: (specializationsQuery.data ?? []).map(({ id, name }) => ({
-        label: name,
+        label: name?.trim() || `Specialization #${id}`,
         value: id,
       })),
       placeholder: specializationsQuery.isLoading ? "Loading…" : "All specializations",

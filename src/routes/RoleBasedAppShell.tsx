@@ -1,9 +1,12 @@
+import { useEffect } from "react";
 import { Flex, Result, Spin } from "antd";
 import { Navigate } from "react-router-dom";
-import { AppShell } from "@components/AppShell/AppShell";
+import { isAxiosError } from "axios";
 import { ApiAlertHost } from "@components/ApiAlertHost";
+import { AppShell } from "@components/AppShell/AppShell";
 import { ROLE_OVERVIEW_ROUTES, ROUTES } from "@constants/routes";
 import { useCurrentUserQuery } from "@features/auth/api/authQueries";
+import { forceLogoutToLogin } from "@services/api/sessionExpiry";
 import { useAuthStore } from "@stores/authStore";
 import type { UserProfile } from "@features/auth/schemas/auth.schemas";
 
@@ -13,20 +16,45 @@ interface RoleBasedAppShellProps {
   portalLabel?: string;
 }
 
-export function RoleBasedAppShell({ role, basePath, portalLabel }: RoleBasedAppShellProps) {
-  const currentUser = useAuthStore((state) => state.user);
-  const query = useCurrentUserQuery();
-  const profile = query.data ?? currentUser;
+function isAuthFailure(error: unknown): boolean {
+  if (!isAxiosError(error)) return false;
+  const status = error.response?.status;
+  return status === 401 || status === 403;
+}
 
-  if (!profile) {
-    if (query.isPending) {
+export function RoleBasedAppShell({ role, basePath, portalLabel }: RoleBasedAppShellProps) {
+  const setUser = useAuthStore((state) => state.setUser);
+  const query = useCurrentUserQuery();
+
+  useEffect(() => {
+    if (query.isError && isAuthFailure(query.error)) {
+      forceLogoutToLogin();
+    }
+  }, [query.isError, query.error]);
+
+  useEffect(() => {
+    if (query.data) {
+      setUser(query.data);
+    }
+  }, [query.data, setUser]);
+
+  if (query.isPending) {
+    return (
+      <>
+        <ApiAlertHost />
+        <Flex align="center" justify="center" style={{ minHeight: "100dvh" }}>
+          <Spin size="large" />
+        </Flex>
+      </>
+    );
+  }
+
+  if (query.isError || !query.data) {
+    if (isAuthFailure(query.error)) {
       return (
-        <>
-          <ApiAlertHost />
-          <Flex align="center" justify="center" style={{ minHeight: "100dvh" }}>
-            <Spin size="large" />
-          </Flex>
-        </>
+        <Flex align="center" justify="center" style={{ minHeight: "100dvh" }}>
+          <Spin size="large" />
+        </Flex>
       );
     }
 
@@ -41,6 +69,8 @@ export function RoleBasedAppShell({ role, basePath, portalLabel }: RoleBasedAppS
       </>
     );
   }
+
+  const profile = query.data;
 
   if (!role) {
     return <Navigate to={ROLE_OVERVIEW_ROUTES[profile.role]} replace />;

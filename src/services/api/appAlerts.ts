@@ -55,6 +55,14 @@ export function dismissApiAlert(id: number) {
   publish();
 }
 
+export function clearApiAlerts() {
+  if (autoDismissTimeout) clearTimeout(autoDismissTimeout);
+  autoDismissTimeout = undefined;
+  currentAlert = null;
+  currentAlertKey = undefined;
+  publish();
+}
+
 export function getCurrentApiAlert() {
   return currentAlert;
 }

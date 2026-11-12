@@ -13,15 +13,6 @@ import {
 } from "./availabilityApi";
 import type { AvailabilityExceptionRequest, AvailabilityRuleRequest } from "./availability.schemas";
 
-function invalidateAvailabilityDependentQueries(queryClient: ReturnType<typeof useQueryClient>) {
-  return Promise.all([
-    queryClient.invalidateQueries({ queryKey: availabilityKeys.all, refetchType: "all" }),
-    queryClient.invalidateQueries({ queryKey: ["doctor", "schedule"], refetchType: "all" }),
-    queryClient.invalidateQueries({ queryKey: ["doctor", "appointments"], refetchType: "all" }),
-    queryClient.invalidateQueries({ queryKey: ["patient", "doctor-availability"], refetchType: "all" }),
-  ]);
-}
-
 export const availabilityKeys = {
   all: ["doctor", "availability"] as const,
   rules: () => [...availabilityKeys.all, "rules"] as const,

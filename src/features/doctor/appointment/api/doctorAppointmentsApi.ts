@@ -1,4 +1,5 @@
 import { apiClient } from "@services/api/axios";
+import { bookingApi } from "@services/api/paths";
 import {
   appointmentFiltersSchema,
   appointmentPageSchema,
@@ -25,7 +26,7 @@ export async function getDoctorAppointments(filters: AppointmentFilters): Promis
   params.append("size", String(validatedFilters.size));
   validatedFilters.sort.forEach((sort) => params.append("sort", sort));
 
-  const { data } = await apiClient.get(`/doctors/appointments?${params.toString()}`);
+  const { data } = await apiClient.get(bookingApi(`/doctors/appointments?${params.toString()}`));
   return appointmentPageSchema.parse(data);
 }
 
@@ -40,7 +41,9 @@ export async function getDoctorAppointmentStatusCounts(filters: AppointmentFilte
     params.append("specializationId", String(validatedFilters.specializationId));
   }
 
-  const { data } = await apiClient.get(`/doctors/appointments/status-counts?${params.toString()}`);
+  const { data } = await apiClient.get(
+    bookingApi(`/doctors/appointments/status-counts?${params.toString()}`),
+  );
   return appointmentStatusCountsSchema.parse(data);
 }
 
@@ -50,7 +53,7 @@ export async function updateDoctorAppointmentStatus(
 ) {
   const validatedRequest = doctorAppointmentStatusUpdateSchema.parse(request);
   const { data } = await apiClient.patch(
-    `/doctors/appointments/${appointmentId}/status`,
+    bookingApi(`/doctors/appointments/${appointmentId}/status`),
     validatedRequest,
   );
   return data;

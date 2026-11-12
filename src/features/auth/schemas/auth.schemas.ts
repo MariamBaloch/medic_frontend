@@ -81,11 +81,20 @@ const doctorProfileSchema = z
   .object({
     specializationId: z.number().nullish(),
     specialization: z
-      .object({ id: z.number(), name: z.string(), description: z.string().nullish() })
+      .object({ id: z.number(), name: z.string().nullish(), description: z.string().nullish() })
       .nullish(),
     qualification: z.string().nullish(),
     yearsOfExperience: z.number().nullish(),
-    consultationFee: z.number().nullish(),
+    consultationFee: z.preprocess((value) => {
+      if (value === "" || value === undefined) return undefined;
+      if (value === null) return null;
+      if (typeof value === "number") return value;
+      if (typeof value === "string") {
+        const amount = Number(value);
+        return Number.isFinite(amount) ? amount : undefined;
+      }
+      return value;
+    }, z.number().nullish()),
     hospitalAffiliation: z.string().nullish(),
     clinicAddress: z.string().nullish(),
     bio: z.string().nullish(),

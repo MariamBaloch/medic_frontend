@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { isAxiosError } from "axios";
 import { useAuthStore } from "@stores/authStore";
 import type {
   AdminRegistrationRequest,
@@ -31,6 +32,12 @@ export const authKeys = {
   currentUser: () => [...authKeys.all, "current-user"] as const,
 };
 
+function isAuthFailure(error: unknown): boolean {
+  if (!isAxiosError(error)) return false;
+  const status = error.response?.status;
+  return status === 401 || status === 403;
+}
+
 export function useCurrentUserQuery() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
@@ -40,6 +47,10 @@ export function useCurrentUserQuery() {
     meta: { notificationTitle: "Could not load your account" },
     enabled: isAuthenticated,
     staleTime: 5 * 60 * 1000,
+    retry: (failureCount, error) => {
+      if (isAuthFailure(error)) return false;
+      return failureCount < 1;
+    },
   });
 }
 

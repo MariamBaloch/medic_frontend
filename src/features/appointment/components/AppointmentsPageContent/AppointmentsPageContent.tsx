@@ -106,7 +106,10 @@ export function AppointmentsPageContent({
       key: "specializationId",
       label: "Specialization",
       type: "select",
-      options: specializations.map(({ id, name }) => ({ label: name, value: id })),
+      options: specializations.map(({ id, name }) => ({
+        label: name?.trim() || `Specialization #${id}`,
+        value: id,
+      })),
       placeholder: isLoadingSpecializations ? "Loading..." : "All specializations",
     },
   ];

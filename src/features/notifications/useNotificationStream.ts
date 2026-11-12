@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { forceLogoutToLogin } from "@services/api/sessionExpiry";
 import { useAuthStore } from "@stores/authStore";
 import { consumeNotificationStream } from "./api/notificationStream";
 import type { AppNotification } from "./api/notification.schemas";
@@ -7,7 +8,6 @@ const reconnectDelayMs = 3_000;
 
 export function useNotificationStream(onNotification: (notification: AppNotification) => void) {
   const token = useAuthStore((state) => state.token);
-  const clearSession = useAuthStore((state) => state.clearSession);
   const seenIds = useRef(new Set<number>());
   const onNotificationRef = useRef(onNotification);
 
@@ -38,8 +38,11 @@ export function useNotificationStream(onNotification: (notification: AppNotifica
         }
       } catch (error) {
         if (controller.signal.aborted) return;
-        if (error instanceof Error && error.message.includes("status 401")) {
-          clearSession();
+        if (
+          error instanceof Error &&
+          (error.message.includes("status 401") || error.message.includes("status 403"))
+        ) {
+          forceLogoutToLogin();
           return;
         }
         retryTimer = setTimeout(() => void connect(), reconnectDelayMs);
@@ -51,5 +54,5 @@ export function useNotificationStream(onNotification: (notification: AppNotifica
       controller.abort();
       if (retryTimer) clearTimeout(retryTimer);
     };
-  }, [clearSession, token]);
+  }, [token]);
 }

@@ -406,7 +406,7 @@ test("two real patients submit the same appointment slot at once", async ({
     ]);
 
     for (const booking of successfulBookings) {
-      const response = await request.put(`${apiOrigin}/patient/appointments/${booking.id}/cancel`, {
+      const response = await request.put(`${apiOrigin}/api/booking/patient/appointments/${booking.id}/cancel`, {
         headers: { authorization: booking.authorization },
         data: { reason: "Playwright booking race demo cleanup" },
       });

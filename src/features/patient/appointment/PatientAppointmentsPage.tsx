@@ -1,9 +1,10 @@
 import { CalendarOutlined } from "@ant-design/icons";
 import { Button } from "antd";
-import { useCallback, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { ROUTES } from "@constants/routes";
 import {
+  appointmentStatusSchema,
   type Appointment,
   type AppointmentFilters,
 } from "@features/appointment/api/appointment.schemas";
@@ -18,13 +19,20 @@ import {
 import { AppointmentDetailsModal } from "@features/appointment/components/AppointmentDetailsModal";
 import { AppointmentsPageContent } from "@features/appointment/components/AppointmentsPageContent";
 
+function statusFromSearchParam(value: string | null): AppointmentFilters["status"] {
+  const parsed = appointmentStatusSchema.safeParse(value);
+  return parsed.success ? parsed.data : undefined;
+}
+
 export function PatientAppointmentsPage() {
   const navigate = useNavigate();
-  const [queryFilters, setQueryFilters] = useState<AppointmentFilters>({
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [queryFilters, setQueryFilters] = useState<AppointmentFilters>(() => ({
     page: 0,
     size: 10,
     sort: ["appointmentDate,DESC", "startTime,DESC"],
-  });
+    status: statusFromSearchParam(searchParams.get("status")),
+  }));
   const [selectedAppointmentId, setSelectedAppointmentId] = useState<number | null>(null);
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const appointmentsQuery = usePatientAppointmentsQuery(queryFilters);
@@ -32,6 +40,21 @@ export function PatientAppointmentsPage() {
   const specializationsQuery = useSpecializationsQuery();
   const statuses = statusesQuery.data ?? [];
   const statusCounts = usePatientAppointmentStatusCounts(queryFilters);
+
+  useEffect(() => {
+    const current = searchParams.get("status");
+    const desired = queryFilters.status ?? null;
+    if (current === desired) return;
+
+    const nextParams = new URLSearchParams(searchParams);
+    if (desired) {
+      nextParams.set("status", desired);
+    } else {
+      nextParams.delete("status");
+    }
+    setSearchParams(nextParams, { replace: true });
+  }, [queryFilters.status, searchParams, setSearchParams]);
+
   const handleViewDetails = useCallback((appointment: Appointment) => {
     setSelectedAppointment(appointment);
     setSelectedAppointmentId(appointment.id);

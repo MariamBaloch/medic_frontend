@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import type { UserProfile } from "@features/auth/schemas/auth.schemas";
+import { isJwtExpired } from "@services/api/jwt";
 
 interface AuthState {
   token: string | null;
@@ -29,10 +30,15 @@ export const useAuthStore = create<AuthState>()(
         user: state.user,
         isAuthenticated: state.isAuthenticated,
       }),
+      onRehydrateStorage: () => (state) => {
+        if (!state?.token) return;
+        if (isJwtExpired(state.token)) {
+          useAuthStore.setState({ token: null, user: null, isAuthenticated: false });
+        }
+      },
     },
   ),
 );
-
 
 if (typeof window !== "undefined") {
   window.addEventListener("storage", (event) => {
@@ -48,6 +54,10 @@ if (typeof window !== "undefined") {
         state?: Pick<AuthState, "token" | "user" | "isAuthenticated">;
       };
       if (persisted.state) {
+        if (persisted.state.token && isJwtExpired(persisted.state.token)) {
+          useAuthStore.getState().clearSession();
+          return;
+        }
         useAuthStore.setState(persisted.state);
       }
     } catch {

@@ -1,4 +1,5 @@
 import { apiClient } from "@services/api/axios";
+import { bookingApi } from "@services/api/paths";
 import {
   joinWaitlistRequestSchema,
   waitlistFiltersSchema,
@@ -24,21 +25,21 @@ export async function getPatientWaitlistEntries(filters: WaitlistFilters): Promi
   params.append("page", String(validatedFilters.page));
   params.append("size", String(validatedFilters.size));
 
-  const { data } = await apiClient.get(`/patient/waitlist?${params.toString()}`);
+  const { data } = await apiClient.get(bookingApi(`/patient/waitlist?${params.toString()}`));
   return waitlistPageSchema.parse(data);
 }
 
 export async function joinPatientWaitlist(request: JoinWaitlistRequest) {
   const validatedRequest = joinWaitlistRequestSchema.parse(request);
-  const { data } = await apiClient.post("/patient/waitlist", validatedRequest);
+  const { data } = await apiClient.post(bookingApi("/patient/waitlist"), validatedRequest);
   return data;
 }
 
 export async function removePatientWaitlistEntry(entryId: number) {
-  await apiClient.delete(`/patient/waitlist/${entryId}`);
+  await apiClient.delete(bookingApi(`/patient/waitlist/${entryId}`));
 }
 
 export async function acceptPatientWaitlistOffer(entryId: number) {
-  const { data } = await apiClient.post(`/patient/waitlist/${entryId}/accept`);
+  const { data } = await apiClient.post(bookingApi(`/patient/waitlist/${entryId}/accept`));
   return data;
 }

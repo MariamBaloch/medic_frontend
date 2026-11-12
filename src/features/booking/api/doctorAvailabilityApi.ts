@@ -1,4 +1,5 @@
 import { apiClient } from "@services/api/axios";
+import { bookingApi } from "@services/api/paths";
 import { doctorAvailabilitySchema, type DoctorAvailability } from "./doctorAvailability.schemas";
 
 interface DoctorAvailabilityFilters {
@@ -14,7 +15,7 @@ export async function getDoctorAvailability({
 }: DoctorAvailabilityFilters): Promise<DoctorAvailability> {
   const params = new URLSearchParams({ from, to });
   const { data } = await apiClient.get(
-    `/patient/appointments/doctors/${doctorId}/availability?${params.toString()}`,
+    bookingApi(`/patient/appointments/doctors/${doctorId}/availability?${params.toString()}`),
   );
   return doctorAvailabilitySchema.parse(data);
 }

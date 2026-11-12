@@ -205,7 +205,7 @@ test("a stale reschedule conflicts after the same appointment was rescheduled", 
     await Promise.all(pages.map((page) => expect(page).toHaveURL(/\/patient\/overview$/)));
     const authorization = `Bearer ${loginPayloads[0].token}`;
 
-    const doctorsResponse = await request.get(`${apiOrigin}/doctors?hasFutureAvailability=true`, {
+    const doctorsResponse = await request.get(`${apiOrigin}/api/identity/doctors`, {
       headers: { authorization },
     });
     expect(
@@ -227,7 +227,7 @@ test("a stale reschedule conflicts after the same appointment was rescheduled", 
       const to = toDate.toISOString().slice(0, 10);
       for (const doctor of doctors) {
         const availabilityResponse = await request.get(
-          `${apiOrigin}/patient/appointments/doctors/${doctor.doctor.doctorProfileId}/availability?from=${from}&to=${to}`,
+          `${apiOrigin}/api/booking/patient/appointments/doctors/${doctor.doctor.doctorProfileId}/availability?from=${from}&to=${to}`,
           { headers: { authorization } },
         );
         if (!availabilityResponse.ok()) continue;
@@ -254,7 +254,7 @@ test("a stale reschedule conflicts after the same appointment was rescheduled", 
       "No doctor had three free appointment times in a future week within the next 17 weeks.",
     ).toBeTruthy();
 
-    const bookingResponse = await request.post(`${apiOrigin}/patient/appointments`, {
+    const bookingResponse = await request.post(`${apiOrigin}/api/booking/patient/appointments`, {
       headers: { authorization },
       data: {
         doctorId: chosenDoctor!.doctor.doctorProfileId,
@@ -352,7 +352,7 @@ test("a stale reschedule conflicts after the same appointment was rescheduled", 
     await Promise.all(contexts.map((context) => context.close()));
     if (createdAppointment) {
       const cleanupResponse = await request.put(
-        `${apiOrigin}/patient/appointments/${createdAppointment.id}/cancel`,
+        `${apiOrigin}/api/booking/patient/appointments/${createdAppointment.id}/cancel`,
         {
           headers: { authorization: createdAppointment.authorization },
           data: { reason: "Playwright reschedule conflict demo cleanup" },

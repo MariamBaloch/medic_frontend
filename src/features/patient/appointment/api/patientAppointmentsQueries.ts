@@ -27,7 +27,11 @@ export function useBookPatientAppointmentMutation() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (request: AppointmentBookingRequest) => bookPatientAppointment(request),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: patientAppointmentKeys.all }),
+    onSuccess: () =>
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: patientAppointmentKeys.all }),
+        queryClient.invalidateQueries({ queryKey: doctorAvailabilityKeys.all }),
+      ]),
   });
 }
 

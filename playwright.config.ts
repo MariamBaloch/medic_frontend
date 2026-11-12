@@ -36,7 +36,8 @@ export default defineConfig({
     url: appOrigin,
     env: {
       E2E_API_BASE_URL: apiOrigin,
-      VITE_API_BASE_URL: `${appOrigin}/api`,
+      // Same origin as the Vite app so /api/{service}/** is proxied to the gateway.
+      VITE_API_BASE_URL: appOrigin,
     },
     reuseExistingServer: false,
     timeout: 120_000,

@@ -280,7 +280,7 @@ test("the same patient submits the same appointment slot twice at once", async (
     ]);
     if (successfulBooking) {
       const response = await request.put(
-        `${apiOrigin}/patient/appointments/${successfulBooking.id}/cancel`,
+        `${apiOrigin}/api/booking/patient/appointments/${successfulBooking.id}/cancel`,
         {
           headers: { authorization: successfulBooking.authorization },
           data: { reason: "Playwright same-patient booking race cleanup" },

@@ -1,4 +1,5 @@
 import {
+  EnvironmentOutlined,
   MedicineBoxOutlined,
   UserOutlined
 } from "@ant-design/icons";
@@ -45,7 +46,12 @@ interface AppointmentPatientDetailsProps {
 }
 
 export function AppointmentPatientDetails({ appointment }: AppointmentPatientDetailsProps) {
+  const location = [appointment.patientAddress, appointment.patientCity, appointment.patientCountry]
+    .map((part) => part?.trim())
+    .filter((part): part is string => Boolean(part))
+    .join(", ");
   const fields: PatientField[] = [
+    { icon: <EnvironmentOutlined />, label: "Address", value: location || null },
     { icon: <MedicineBoxOutlined />, label: "Blood type", value: appointment.patientBloodType },
     {
       icon: <UserOutlined />,

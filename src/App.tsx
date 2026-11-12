@@ -4,9 +4,12 @@ import { ThemeProvider } from "styled-components";
 import { AppRoutes } from "@routes/AppRoutes";
 import { queryClient } from "@services/api/queryClient";
 import { AppNotificationBridge } from "@services/api/appNotifications";
+import { clearSessionIfTokenExpired } from "@services/api/sessionExpiry";
 import { antdTheme } from "@theme/antdTheme";
 import { styledTheme } from "@theme/styledTheme";
 import { GlobalStyle } from "@theme/GlobalStyle";
+
+clearSessionIfTokenExpired();
 
 function App() {
   return (

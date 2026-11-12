@@ -1,4 +1,5 @@
 import { apiClient } from "@services/api/axios";
+import { identityApi } from "@services/api/paths";
 import {
   adminRegistrationSchema,
   changePasswordSchema,
@@ -51,67 +52,67 @@ export interface DoctorProfileUpdate {
 
 export async function login(input: LoginRequest): Promise<LoginResponse> {
   const payload = loginRequestSchema.parse(input);
-  const { data } = await apiClient.post("/auth/users/login", payload);
+  const { data } = await apiClient.post(identityApi("/auth/users/login"), payload);
   return loginResponseSchema.parse(data);
 }
 
 export async function logout(): Promise<void> {
-  await apiClient.post("/auth/users/logout");
+  await apiClient.post(identityApi("/auth/users/logout"));
 }
 
 export async function getCurrentUser(): Promise<UserProfile> {
-  const { data } = await apiClient.get("/user");
+  const { data } = await apiClient.get(identityApi("/user"));
   return userProfileSchema.parse(data);
 }
 
 export async function updateUserAccount(input: UserAccountUpdate): Promise<void> {
-  await apiClient.put("/user", input);
+  await apiClient.put(identityApi("/user"), input);
 }
 
 export async function updatePatientProfile(input: PatientProfileUpdate): Promise<void> {
-  await apiClient.patch("/profile/patient", input);
+  await apiClient.patch(identityApi("/profile/patient"), input);
 }
 
 export async function updateDoctorProfile(input: DoctorProfileUpdate): Promise<void> {
-  await apiClient.patch("/profile/doctor", input);
+  await apiClient.patch(identityApi("/profile/doctor"), input);
 }
 
 export async function uploadProfilePicture(file: File): Promise<void> {
   const formData = new FormData();
   formData.append("file", file);
-  await apiClient.patch("/user/avatar", formData, {
+  await apiClient.patch(identityApi("/user/avatar"), formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
 }
 
 export async function registerPatient(input: PatientRegistrationRequest): Promise<void> {
-  await apiClient.post("/auth/users/register/patient", patientRegistrationSchema.parse(input));
+  await apiClient.post(identityApi("/auth/users/register/patient"), patientRegistrationSchema.parse(input));
 }
 
 export async function registerDoctor(input: DoctorRegistrationRequest): Promise<void> {
-  await apiClient.post("/auth/users/register/doctor", doctorRegistrationSchema.parse(input));
+  await apiClient.post(identityApi("/auth/users/register/doctor"), doctorRegistrationSchema.parse(input));
 }
 
 export async function registerAdmin(input: AdminRegistrationRequest): Promise<void> {
-  await apiClient.post("/auth/users/register/admin", adminRegistrationSchema.parse(input));
+  await apiClient.post(identityApi("/auth/users/register/admin"), adminRegistrationSchema.parse(input));
 }
 
 export async function verifyEmail(token: string): Promise<void> {
-  await apiClient.get("/auth/users/verify", {
+  await apiClient.get(identityApi("/auth/users/verify"), {
     params: { token: verifyEmailTokenSchema.parse(token) },
   });
 }
 
 export async function forgotPassword(email: string): Promise<void> {
-  await apiClient.post("/auth/users/forgot-password", null, {
+  await apiClient.post(identityApi("/auth/users/forgot-password"), null, {
     params: { email: forgotPasswordEmailSchema.parse(email) },
   });
 }
 
 export async function resetPassword(input: ResetPasswordRequest): Promise<void> {
-  await apiClient.post("/auth/users/reset-password", resetPasswordSchema.parse(input));
+  await apiClient.post(identityApi("/auth/users/reset-password"), resetPasswordSchema.parse(input));
 }
 
 export async function changePassword(input: ChangePasswordRequest): Promise<void> {
-  await apiClient.post("/auth/users/change-password", changePasswordSchema.parse(input));
+  await apiClient.post(identityApi("/auth/users/change-password"), changePasswordSchema.parse(input));
 }

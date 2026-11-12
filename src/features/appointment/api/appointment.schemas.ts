@@ -9,9 +9,23 @@ export const appointmentStatusesSchema = z.array(appointmentStatusOptionSchema);
 
 export const specializationSchema = z.object({
   id: z.number(),
-  name: z.string(),
+  // Booking snapshots may only include specialization id (name/description null).
+  name: z.string().nullish(),
   description: z.string().nullish(),
 });
+
+const moneyAmountSchema = z.preprocess((value) => {
+  if (value === "" || value === undefined) return undefined;
+  if (value === null) return null;
+  if (typeof value === "number") return value;
+  if (typeof value === "string") {
+    const amount = Number(value);
+    return Number.isFinite(amount) ? amount : undefined;
+  }
+  return value;
+}, z.number().nullish());
+
+export const optionalMoneySchema = moneyAmountSchema;
 
 const appointmentDoctorSchema = z.object({
   doctorId: z.number(),
@@ -61,7 +75,7 @@ const normalizedAppointmentSchema = z.object({
   endTime: z.string(),
   status: appointmentStatusSchema,
   reason: z.string().nullish(),
-  bookingFee: z.number().nullish(),
+  bookingFee: moneyAmountSchema,
   cancelledReason: z.string().nullish(),
 });
 
@@ -76,7 +90,7 @@ const nestedAppointmentSchema = z
     endTime: z.string(),
     status: appointmentStatusSchema,
     reason: z.string().nullish(),
-    bookingFee: z.number().nullish(),
+    bookingFee: moneyAmountSchema,
     cancelledReason: z.string().nullish(),
   })
   .transform(({ doctor, patient, ...appointment }) => ({
@@ -103,7 +117,7 @@ const normalizedAppointmentDetailsSchema = z.object({
   appointmentDate: z.string(),
   startTime: z.string(),
   endTime: z.string(),
-  bookingFee: z.number().nullish(),
+  bookingFee: moneyAmountSchema,
   status: appointmentStatusSchema,
   reason: z.string().nullish(),
   cancelledReason: z.string().nullish(),
@@ -136,7 +150,7 @@ const nestedAppointmentDetailsSchema = z
     appointmentDate: z.string(),
     startTime: z.string(),
     endTime: z.string(),
-    bookingFee: z.number().nullish(),
+    bookingFee: moneyAmountSchema,
     status: appointmentStatusSchema,
     reason: z.string().nullish(),
     cancelledReason: z.string().nullish(),

@@ -106,9 +106,13 @@ export function BookingLayout() {
           .filter(Boolean)
           .join(" · "),
       });
-      navigate(ROUTES.patientAppointments);
-    } catch {
-      return;
+      navigate({ pathname: ROUTES.patientAppointments, search: "?status=BOOKED" });
+    } catch (error) {
+      showApiAlert({
+        type: "error",
+        message: "Could not confirm appointment",
+        description: getApiErrorMessage(error),
+      });
     }
   };
 

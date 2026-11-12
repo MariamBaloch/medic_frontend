@@ -1,4 +1,5 @@
 import { apiClient } from "@services/api/axios";
+import { bookingApi } from "@services/api/paths";
 import {
   appointmentFiltersSchema,
   appointmentPageSchema,
@@ -16,7 +17,7 @@ import {
 
 export async function bookPatientAppointment(request: AppointmentBookingRequest) {
   const validatedRequest = appointmentBookingRequestSchema.parse(request);
-  const { data } = await apiClient.post("/patient/appointments", validatedRequest);
+  const { data } = await apiClient.post(bookingApi("/patient/appointments"), validatedRequest);
   return appointmentSchema.parse(data);
 }
 
@@ -26,7 +27,7 @@ export async function cancelPatientAppointment(
 ) {
   const validatedRequest = appointmentCancellationRequestSchema.parse(request);
   const { data } = await apiClient.put(
-    `/patient/appointments/${appointmentId}/cancel`,
+    bookingApi(`/patient/appointments/${appointmentId}/cancel`),
     validatedRequest,
   );
   return appointmentSchema.parse(data);
@@ -38,7 +39,7 @@ export async function reschedulePatientAppointment(
 ) {
   const validatedRequest = appointmentRescheduleRequestSchema.parse(request);
   const { data } = await apiClient.put(
-    `/patient/appointments/${appointmentId}/reschedule`,
+    bookingApi(`/patient/appointments/${appointmentId}/reschedule`),
     validatedRequest,
   );
   return appointmentSchema.parse(data);
@@ -62,7 +63,7 @@ export async function getPatientAppointments(
   params.append("size", String(validatedFilters.size));
   validatedFilters.sort.forEach((sort) => params.append("sort", sort));
 
-  const { data } = await apiClient.get(`/patient/appointments?${params.toString()}`);
+  const { data } = await apiClient.get(bookingApi(`/patient/appointments?${params.toString()}`));
   return appointmentPageSchema.parse(data);
 }
 
@@ -77,6 +78,8 @@ export async function getPatientAppointmentStatusCounts(filters: AppointmentFilt
     params.append("specializationId", String(validatedFilters.specializationId));
   }
 
-  const { data } = await apiClient.get(`/patient/appointments/status-counts?${params.toString()}`);
+  const { data } = await apiClient.get(
+    bookingApi(`/patient/appointments/status-counts?${params.toString()}`),
+  );
   return appointmentStatusCountsSchema.parse(data);
 }

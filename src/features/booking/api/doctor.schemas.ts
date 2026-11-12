@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { specializationSchema } from "@features/appointment/api/appointment.schemas";
+import { optionalMoneySchema, specializationSchema } from "@features/appointment/api/appointment.schemas";
 
 export const doctorSchema = z.object({
   userId: z.number().int(),
@@ -17,7 +17,7 @@ export const doctorSchema = z.object({
     specialization: specializationSchema.nullish(),
     qualification: z.string().nullish(),
     yearsOfExperience: z.number().nullish(),
-    consultationFee: z.number().nullish(),
+    consultationFee: optionalMoneySchema,
     hospitalAffiliation: z.string().nullish(),
     clinicAddress: z.string().nullish(),
     bio: z.string().nullish(),

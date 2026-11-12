@@ -1,3 +1,4 @@
+import { notificationApi } from "@services/api/paths";
 import type { AppNotification } from "./notification.schemas";
 
 interface NotificationStreamOptions {
@@ -58,7 +59,7 @@ export async function consumeNotificationStream({
   onNotification,
 }: NotificationStreamOptions): Promise<void> {
   const baseUrl = apiBaseUrl.replace(/\/$/, "");
-  const response = await fetch(`${baseUrl}/notifications/subscribe`, {
+  const response = await fetch(`${baseUrl}${notificationApi("/subscribe")}`, {
     headers: { Accept: "text/event-stream", Authorization: `Bearer ${token}` },
     signal,
   });
