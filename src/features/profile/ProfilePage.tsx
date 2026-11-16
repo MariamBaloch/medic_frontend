@@ -12,6 +12,7 @@ import {
 } from "@features/auth/api/authQueries";
 import { useAuthStore } from "@stores/authStore";
 import { showApiAlert } from "@services/api/appAlerts";
+import { resolveAvatarUrl } from "@services/api/imageUrl";
 import type {
   DoctorProfileUpdate,
   PatientProfileUpdate,
@@ -84,7 +85,7 @@ export function ProfilePage() {
 
       <AppCard title="Account">
         <Flex align="center" gap={18}>
-          <Avatar size={76} src={user.imageUrl || undefined} icon={<UserOutlined />} />
+          <Avatar size={76} src={resolveAvatarUrl(user.imageUrl)} icon={<UserOutlined />} />
           <Flex vertical>
             <Typography.Title level={4} style={{ margin: "0 0" }}>
               {fullName || user.email}

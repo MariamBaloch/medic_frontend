@@ -41,9 +41,9 @@ function getStatusTone(status: WaitlistStatus) {
     case "BOOKED":
       return "success" as const;
     case "EXPIRED":
+    case "CANCELLED":
       return "error" as const;
     case "WAITING":
-    case "CANCELLED":
       return "neutral" as const;
   }
 }

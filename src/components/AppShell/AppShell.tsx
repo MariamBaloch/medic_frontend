@@ -20,6 +20,7 @@ import { NotificationCenter } from "@components/NotificationCenter";
 import { PersonAvatar } from "@components/PersonAvatar";
 import { getAppRoute, ROUTES, ROUTE_SEGMENTS } from "@constants/routes";
 import { useCurrentUserQuery, useLogoutMutation } from "@features/auth/api/authQueries";
+import { resolveAvatarUrl } from "@services/api/imageUrl";
 import { useAuthStore } from "@stores/authStore";
 import { breakpoints, colors } from "@theme/tokens";
 import {
@@ -145,6 +146,7 @@ export function AppShell({
   const displayName = profile
     ? [profile.firstName, profile.lastName].filter(Boolean).join(" ").trim() || profile.email
     : "Loading profile";
+  const avatarUrl = resolveAvatarUrl(profile?.imageUrl);
   const title =
     location.pathname === getAppRoute(basePath, ROUTE_SEGMENTS.profile)
       ? "Profile"
@@ -260,9 +262,9 @@ export function AppShell({
               <UserMenuTrigger type="button" aria-label="Open user menu">
                 <PersonAvatar
                   size={34}
-                  src={profile?.imageUrl || undefined}
+                  src={avatarUrl}
                   icon={<UserOutlined />}
-                  $hasImage={Boolean(profile?.imageUrl)}
+                  $hasImage={Boolean(avatarUrl)}
                   $objectFit="cover"
                   style={{ background: colors.teal, color: "#fff" }}
                 />

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Space, Typography } from "antd";
 import { PersonAvatar } from "@components/PersonAvatar";
-import { apiClient } from "@services/api/axios";
+import { resolveAvatarUrl } from "@services/api/imageUrl";
 import { getDoctorDisplayName, getPersonInitials } from "@utils/formatters";
 import {
   PersonSummaryContent,
@@ -24,15 +24,6 @@ export interface PersonSummaryProps {
   avatarFallback?: ReactNode;
 }
 
-function resolveImageUrl(imageUrl: string | null | undefined): string | undefined {
-  if (!imageUrl) return undefined;
-  try {
-    return new URL(imageUrl, apiClient.defaults.baseURL).toString();
-  } catch {
-    return imageUrl;
-  }
-}
-
 export function PersonSummary({
   type,
   name,
@@ -45,7 +36,7 @@ export function PersonSummary({
   imageBackground,
   avatarFallback,
 }: PersonSummaryProps) {
-  const resolvedImageUrl = resolveImageUrl(imageUrl);
+  const resolvedImageUrl = resolveAvatarUrl(imageUrl);
   const displayName = type === "doctor" ? getDoctorDisplayName(name, qualification) : name;
 
   return (
