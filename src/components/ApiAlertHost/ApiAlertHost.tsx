@@ -4,16 +4,20 @@ import { dismissApiAlert, getCurrentApiAlert, subscribeToApiAlerts } from "@serv
 import { ApiAlertRegion, StyledApiAlert } from "./ApiAlertHost.styles";
 import { CloseOutlined } from "@ant-design/icons";
 
-export function ApiAlertHost() {
+interface ApiAlertHostProps {
+  scrollIntoView?: boolean;
+}
+
+export function ApiAlertHost({ scrollIntoView = true }: ApiAlertHostProps) {
   const [alert, setAlert] = useState(getCurrentApiAlert);
   const alertRegionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => subscribeToApiAlerts(setAlert), []);
   useEffect(() => {
-    if (alert) {
+    if (alert && scrollIntoView) {
       alertRegionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-  }, [alert]);
+  }, [alert, scrollIntoView]);
 
   return (
     <ApiAlertRegion ref={alertRegionRef}>

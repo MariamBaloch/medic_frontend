@@ -249,6 +249,33 @@ export const FeatureCard = styled.div`
   }
 `;
 
+export const AuthFormColumn = styled.div`
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 450px);
+
+  &:has([data-wide="true"]) {
+    width: min(100%, 600px);
+  }
+
+  > :first-child {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 16px);
+    left: 0;
+    margin-bottom: 0;
+  }
+
+  @media (max-width: ${breakpoints.medium}px) {
+    > :first-child {
+      position: static;
+      margin-bottom: 20px;
+    }
+  }
+`;
+
 export const FormPanel = styled.aside`
   min-height: 100vh;
   padding: 36px clamp(20px, 4vw, 56px);
@@ -279,8 +306,9 @@ export const FormPanel = styled.aside`
   }
 
   @media (max-width: ${breakpoints.medium}px) {
-    min-height: calc(100svh - 100px);
+    min-height: auto;
     padding: 20px 24px 40px;
+    place-items: start center;
     overflow: visible;
     background: transparent;
 

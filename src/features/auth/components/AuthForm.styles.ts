@@ -5,7 +5,9 @@ interface AuthFormCardProps {
   $wide?: boolean;
 }
 
-export const AuthFormCard = styled.section<AuthFormCardProps>`
+export const AuthFormCard = styled.section.attrs<AuthFormCardProps>(({ $wide }) => ({
+  "data-wide": $wide ? "true" : undefined,
+}))<AuthFormCardProps>`
   width: min(100%, ${({ $wide }) => ($wide ? "600px" : "450px")});
   position: relative;
   z-index: 1;

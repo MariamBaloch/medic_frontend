@@ -121,9 +121,9 @@ export const userProfileSchema = z.object({
 export const patientRegistrationSchema = registrationSchema;
 export const doctorRegistrationSchema = registrationSchema.extend({
   specializationId: z
-    .number({ error: "Specialization ID is required" })
-    .int("Specialization ID must be a whole number")
-    .positive("Specialization ID is required"),
+    .number({ error: "Specialization is required" })
+    .int("Specialization is required")
+    .positive("Specialization is required"),
   licenseNumber: z.string().trim().min(1, "License number is required").max(100),
 });
 export const adminRegistrationSchema = registrationSchema;

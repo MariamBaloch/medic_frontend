@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { Button, DatePicker, Input, InputNumber, Segmented, Select } from "antd";
+import { Button, DatePicker, Input, Segmented, Select } from "antd";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
@@ -22,6 +22,7 @@ import {
   RegisterFieldsGrid,
   AuthFormElement,
 } from "./AuthForm.styles";
+import { useSpecializationsQuery } from "@features/appointment/api/appointmentsQueries";
 import { registrationFormSchema } from "@features/auth/schemas/auth.schemas";
 
 export function RegisterForm() {
@@ -46,6 +47,7 @@ export function RegisterForm() {
   const accountType = useWatch({ control: form.control, name: "accountType" });
   const registerPatient = useRegisterPatientMutation();
   const registerDoctor = useRegisterDoctorMutation();
+  const specializationsQuery = useSpecializationsQuery();
   const isSubmitting = registerPatient.isPending || registerDoctor.isPending;
 
   const handleSubmit = async (values: FormOutput) => {
@@ -314,20 +316,25 @@ export function RegisterForm() {
                 render={({ field, fieldState }) => (
                   <FormField
                     $compact
-                    label="Specialization ID"
+                    label="Specialization"
                     htmlFor="specializationId"
                     required
                     validateStatus={fieldState.error ? "error" : undefined}
                     help={fieldState.error?.message}
                   >
-                    <InputNumber
+                    <Select
                       id="specializationId"
                       style={{ width: "100%" }}
-                      min={1}
-                      placeholder="1"
-                      controls={false}
-                      value={field.value ?? null}
-                      onChange={(value) => field.onChange(value ?? undefined)}
+                      showSearch
+                      optionFilterProp="label"
+                      placeholder="Select a specialization"
+                      loading={specializationsQuery.isLoading}
+                      value={field.value}
+                      options={(specializationsQuery.data ?? []).map(({ id, name }) => ({
+                        value: id,
+                        label: name || `Specialization ${id}`,
+                      }))}
+                      onChange={field.onChange}
                       onBlur={field.onBlur}
                     />
                   </FormField>

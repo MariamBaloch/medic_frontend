@@ -7,6 +7,7 @@ import {
   BrandName,
   FeatureCard,
   FeatureGrid,
+  AuthFormColumn,
   FormPanel,
   GlobalStyle,
   HeroContent,
@@ -19,6 +20,7 @@ import {
   SecurePill,
   TopBar,
 } from "./AuthLayout.styles";
+import { ApiAlertHost } from "@components/ApiAlertHost";
 import { AppBrandIcon } from "@components/AppBrandIcon/AppBrandIcon";
 
 const features = [
@@ -75,7 +77,12 @@ export function AuthLayout({ children }: AuthLayoutProps) {
           </HeroPanel>
         </PageColumn>
 
-        <FormPanel>{children}</FormPanel>
+        <FormPanel>
+          <AuthFormColumn>
+            <ApiAlertHost scrollIntoView={false} />
+            {children}
+          </AuthFormColumn>
+        </FormPanel>
       </LoginPageShell>
     </>
   );

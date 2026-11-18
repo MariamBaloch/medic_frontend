@@ -4,7 +4,9 @@ import {
   ClockCircleOutlined,
   LogoutOutlined,
   DownOutlined,
-  SettingOutlined,
+  TeamOutlined,
+  FileSearchOutlined,
+  UserAddOutlined,
   UserOutlined,
   LeftOutlined,
   RightOutlined,
@@ -128,10 +130,25 @@ export function AppShell({
           ]
         : [
             {
-              key: "admin-tools",
-              icon: <SettingOutlined />,
-              label: "Administration · TBD",
-              disabled: true,
+              key: getAppRoute(basePath, ROUTE_SEGMENTS.doctors),
+              path: getAppRoute(basePath, ROUTE_SEGMENTS.doctors),
+              icon: <TeamOutlined />,
+              label: "Doctors",
+              title: "Doctors",
+            },
+            {
+              key: getAppRoute(basePath, ROUTE_SEGMENTS.audit),
+              path: getAppRoute(basePath, ROUTE_SEGMENTS.audit),
+              icon: <FileSearchOutlined />,
+              label: "Audit log",
+              title: "Audit log",
+            },
+            {
+              key: getAppRoute(basePath, ROUTE_SEGMENTS.administrators),
+              path: getAppRoute(basePath, ROUTE_SEGMENTS.administrators),
+              icon: <UserAddOutlined />,
+              label: "Administrators",
+              title: "Administrators",
             },
           ]),
     {

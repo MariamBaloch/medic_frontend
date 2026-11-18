@@ -18,6 +18,9 @@ export const ROUTES = {
   doctorTimeOff: "/doctor/time-off",
   admin: "/admin",
   adminOverview: "/admin/overview",
+  adminDoctors: "/admin/doctors",
+  adminAudit: "/admin/audit",
+  adminAdministrators: "/admin/administrators",
   notFound: "*",
 } as const;
 
@@ -30,6 +33,9 @@ export const ROUTE_SEGMENTS = {
   timeOff: "time-off",
   profile: "profile",
   bookAppointment: "book",
+  doctors: "doctors",
+  audit: "audit",
+  administrators: "administrators",
 } as const;
 
 export const ROLE_OVERVIEW_ROUTES = {

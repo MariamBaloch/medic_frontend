@@ -5,6 +5,7 @@ import { getDoctors } from "./doctorsApi";
 interface DoctorSearchFilters {
   search: string;
   specializationId?: number;
+  requireUpcomingAvailability?: boolean;
 }
 
 export const doctorKeys = {

@@ -14,6 +14,10 @@ import { DoctorTimeOffPage } from "@features/doctor/timeOff";
 import { DoctorAppointmentsPage } from "@features/doctor/appointment";
 import { DoctorSchedulePage } from "@features/doctor/schedule";
 import { PatientWaitlistPage } from "@features/patient/waitlist/PatientWaitlistPage";
+import { AdminAuditPage } from "@features/admin/AdminAuditPage";
+import { AdminDoctorsPage } from "@features/admin/AdminDoctorsPage";
+import { AdminOverviewPage } from "@features/admin/AdminOverviewPage";
+import { RegisterAdminPage } from "@features/admin/RegisterAdminPage";
 
 export function AppRoutes() {
   return (
@@ -69,7 +73,10 @@ export function AppRoutes() {
           }
         >
           <Route index element={<Navigate to={ROUTE_SEGMENTS.overview} replace />} />
-          <Route path={ROUTE_SEGMENTS.overview} element={null} />
+          <Route path={ROUTE_SEGMENTS.overview} element={<AdminOverviewPage />} />
+          <Route path={ROUTE_SEGMENTS.doctors} element={<AdminDoctorsPage />} />
+          <Route path={ROUTE_SEGMENTS.audit} element={<AdminAuditPage />} />
+          <Route path={ROUTE_SEGMENTS.administrators} element={<RegisterAdminPage />} />
           <Route path={ROUTE_SEGMENTS.profile} element={<ProfilePage />} />
         </Route>
       </Route>

@@ -8,7 +8,7 @@ export const doctorSchema = z.object({
   lastName: z.string(),
   dateOfBirth: z.string(),
   phone: z.string(),
-  gender: z.string(),
+  gender: z.string().nullish(),
   role: z.literal("DOCTOR"),
   status: z.string(),
   imageUrl: z.string().nullish(),
@@ -21,6 +21,7 @@ export const doctorSchema = z.object({
     hospitalAffiliation: z.string().nullish(),
     clinicAddress: z.string().nullish(),
     bio: z.string().nullish(),
+    isVerified: z.boolean().nullish(),
     audit: z.object({
       createdAt: z.string(),
       updatedAt: z.string(),
