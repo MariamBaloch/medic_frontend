@@ -254,11 +254,8 @@ export const AuthFormColumn = styled.div`
   z-index: 1;
   display: flex;
   flex-direction: column;
-  width: min(100%, 450px);
-
-  &:has([data-wide="true"]) {
-    width: min(100%, 600px);
-  }
+  width: fit-content;
+  max-width: 100%;
 
   > :first-child {
     position: absolute;
