@@ -1,4 +1,6 @@
-en# Medic Frontend
+# Medic Frontend
+
+The deployed app is [https://d4405qjwlfxlp.cloudfront.net/](https://d4405qjwlfxlp.cloudfront.net/).
 
 Medic is a role-based healthcare portal built as a React single-page application. Patients can manage their profile and appointments, book visits, and join a waitlist for booked times. Doctors can manage their profile, schedule, availability, time off, and appointments.
 
