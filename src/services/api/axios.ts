@@ -3,6 +3,12 @@ import type { AxiosHeaders, InternalAxiosRequestConfig } from "axios";
 import { setupResponseInterceptor } from "@services/api/interceptors";
 import { useAuthStore } from "@stores/authStore";
 
+declare module "axios" {
+  interface AxiosRequestConfig {
+    skipErrorAlert?: boolean;
+  }
+}
+
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
 export const apiClient = axios.create({

@@ -9,6 +9,7 @@ import {
 } from "@ant-design/icons";
 import type { ReactNode } from "react";
 import { PersonSummary } from "@components/PersonSummary";
+import { useDoctorProfileImage } from "@features/appointment/api/profileImages";
 import type {
   Appointment,
   AppointmentDetails,
@@ -58,6 +59,11 @@ interface AppointmentDoctorDetailsProps {
 }
 
 export function AppointmentDoctorDetails({ appointment }: AppointmentDoctorDetailsProps) {
+  const imageUrl = useDoctorProfileImage(
+    appointment.id,
+    appointment.doctorId,
+    appointment.doctorImageUrl,
+  );
   const doctorDetails: DoctorDetailItemProps[] = [
     {
       icon: <SafetyCertificateOutlined />,
@@ -98,7 +104,7 @@ export function AppointmentDoctorDetails({ appointment }: AppointmentDoctorDetai
           name={appointment.doctorName}
           qualification={appointment.doctorQualification}
           specialization={appointment.specialization?.name}
-          imageUrl={appointment.doctorImageUrl || undefined}
+          imageUrl={imageUrl}
           size={60}
         />
       </PersonSummaryHeader>

@@ -6,8 +6,13 @@ import {
   specializationsSchema,
 } from "./appointment.schemas";
 
-export async function getAppointment(appointmentId: number) {
-  const { data } = await apiClient.get(bookingApi(`/appointments/${appointmentId}`));
+export async function getAppointment(
+  appointmentId: number,
+  options?: { skipErrorAlert?: boolean },
+) {
+  const { data } = await apiClient.get(bookingApi(`/appointments/${appointmentId}`), {
+    skipErrorAlert: options?.skipErrorAlert,
+  });
   return appointmentDetailsSchema.parse(data);
 }
 

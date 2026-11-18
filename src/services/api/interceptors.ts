@@ -18,6 +18,10 @@ export function setupResponseInterceptor(client: AxiosInstance): void {
         return Promise.reject(error);
       }
 
+      if (error.config?.skipErrorAlert) {
+        return Promise.reject(error);
+      }
+
       const alertContent = getApiErrorAlertContent(error);
       const requestPath = requestUrl.split("?")[0] || "unknown";
       showApiAlert({

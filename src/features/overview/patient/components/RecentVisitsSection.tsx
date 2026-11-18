@@ -1,6 +1,6 @@
 import { RightOutlined } from "@ant-design/icons";
 import { Button, Empty, Flex, Skeleton, Typography } from "antd";
-import { PersonSummary } from "@components/PersonSummary";
+import { AppointmentDoctorCell } from "@features/appointment/components/AppointmentDoctorCell";
 import { formatAppointmentDate, formatAppointmentTimeRange } from "@utils/formatters";
 import type { Appointment, AppointmentStatusOption } from "@features/appointment/api/appointment.schemas";
 import { AppointmentStatusCell } from "@features/appointment/components/AppointmentStatusCell";
@@ -32,12 +32,9 @@ export function RecentVisitsSection({
         <Flex vertical>
           {appointments.map((appointment) => (
             <RecentVisitRow key={appointment.id}>
-              <PersonSummary
-                type="doctor"
-                name={appointment.doctorName}
-                qualification={appointment.doctorQualification}
-                specialization={appointment.specialization?.name ?? "Medical visit"}
-                imageUrl={appointment.doctorImageUrl || undefined}
+              <AppointmentDoctorCell
+                appointment={appointment}
+                specializationFallback="Medical visit"
               />
               <Flex vertical>
                 <Typography.Text strong>{formatAppointmentDate(appointment.appointmentDate)}</Typography.Text>
