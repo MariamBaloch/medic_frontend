@@ -6,7 +6,8 @@ interface AuthFormCardProps {
 }
 
 export const AuthFormCard = styled.section<AuthFormCardProps>`
-  width: min(100%, ${({ $wide }) => ($wide ? "600px" : "450px")});
+  width: ${({ $wide }) => ($wide ? "600px" : "450px")};
+  max-width: 100%;
   position: relative;
   z-index: 1;
   border: 1px solid color-mix(in srgb, ${colors.border} 18%, transparent);

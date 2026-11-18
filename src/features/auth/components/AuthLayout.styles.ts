@@ -254,7 +254,7 @@ export const AuthFormColumn = styled.div`
   z-index: 1;
   display: flex;
   flex-direction: column;
-  width: fit-content;
+  width: max-content;
   max-width: 100%;
 
   > :first-child {
@@ -268,6 +268,8 @@ export const AuthFormColumn = styled.div`
   @media (max-width: ${breakpoints.medium}px) {
     > :first-child {
       position: static;
+      width: 0;
+      min-width: 100%;
       margin-bottom: 20px;
     }
   }
